@@ -1,0 +1,150 @@
+=======
+CONCEPT
+=======
+
+Mandala World
+-------------
+    * Elemental Realms
+        + Realm of Space
+            - artifact: Wheel
+                ~ gives you ability to warp through space 
+                  (you can teleport back to any known teleporter or set your own point of teleportation)
+                ~ decreases Space each time you use it
+                ~ allowed to obtain only if you are of pure Space
+            - having intercourse with Space creatures increases Space in you and decreases other elements
+            - connected with: 
+                ~ Realm of Water (teleport)
+                ~ Realm of Purity (teleport)
+            - can be accessed only if you have rest 4 elemental artifacts (combine to access teleport) or Wheel (teleport back to Realm)
+        + Realm of Water
+            - artifact: Vajra
+                ~ gives you ability to stun creatures
+                ~ decreases Water each time you use it
+                ~ allowed to obtain only if you are of pure Water
+            - having intercourse with Water creatures increases Water in you and decreases other elements
+            - connected with:
+                ~ Realm of Earth (underwater cave entrance)
+        + Realm of Earth
+            - artifact: Jewel
+                ~ give you ability to pass certain walls
+                ~ decreases Earth each time you use it
+                ~ allowed to obtain only if you are of pure Earth
+            - having intercourse with Earth creatures increases Earth in you and decreases other elements
+            - connected with:
+                ~ Realm of Water (underwater cave)
+                ~ Realm of Fire (volcano throat)
+                ~ Realm of Duality (teleport)
+        + Realm of Fire
+            - artifact: Lotus
+                ~ ??? ability
+                ~ decreases Fire each time you use it
+                ~ allowed to obtain only if you are of pure Fire
+            - having intercourse with Fire creatures increases Fire in you and decreases other elements
+            - connected with:
+                ~ Realm of Earth (volcano throat)
+                ~ Realm of Air (volcano crater)
+                ~ Realm of Corruption (teleport)
+        + Realm of Air
+            - artifact: Sword
+                ~ gives you ability to escape (cut through) bondages
+                ~ decreases Air each time you use it
+                ~ allowed to obtain only if you are of pure Air
+            - having intercourse with Air creatures increases Air in you and decreases other elements
+            - connected with:
+                ~ Realm of Fire (launch from volcano crater)
+                ~ Realm of Water (fall down)
+    * Intention Realms
+        + Realm of Purity (Dakini)
+            - allowed to enter only if you are enlightened (have all 5 elemental artifacts)
+            - king: Heruka
+                ~ prefer to have vaginal intercourse
+                ~ never take you until you become his consort
+                ~ if you are 100% Pure, he ask you to purify Ravana and grant Chasity Bell as a tool for your task
+            - artefact: Chastity Belt
+                ~ protects from vaginal intercourse
+                ~ purifies creatures who are trying to take you vaginally
+            - after you complete Heruka's task and return to him, you take following titles (depending on your initial race):
+                ~ Wisdom Dakini
+                ~ Queen of Purity
+                ~ Purity Protector
+        + Realm of Duality (Yakshini)
+            - allowed to enter only if you have Jewel (passing wall)
+            - king: Kubera
+                ~ prefer to have oral intercourse (69?)
+                ~ allow to give him pleasure (anytime?) only on your will
+                ~ if you are < 50% Pure or Corrupted, he ask you to bring Heruka/Ravana to peace and grant Pacifier as a tool for your task
+            - artefact: Pacifier
+                ~ bring to balance both you and creatures who are trying to take you orally
+                ~ you can optionally suck it alone and turn to balance also
+            - after you complete Kubera's task and return to him, you take following titles (depending on your initial race):
+                ~ Worldly Dakini
+                ~ Queen of Duality
+                ~ Duality Keeper
+        + Realm of Corruption (Rakshasi)
+            - free to visit
+            - you must have excellent skills (mighty demons all around trying to rape you)
+            - king: Ravana
+                ~ prefer to have anal intercourse
+                ~ always rape (and corrupt) you regardless of your status
+                ~ if you are 100% Corrupted, he ask you to corrupt Heruka and grant Anal Tentacle as a tool for your task
+            - artefact: Anal Tentacle
+                ~ continuosly raping you anally
+                ~ corrupts creatures by raping them with a free end
+            - after you complete Ravana's task and return to him, you take following titles (depending on your initial race):
+                ~ Fallen Dakini
+                ~ Queen of Corruption
+                ~ Corruption Breeder
+
+Experience System
+-----------------
+    * Levels
+        + each stat has 50 total levels
+        + expLev(1) = 0, expLev(N) = e^((N - 1) / 4) - 1) * Lk
+        + Lk = 100 by default, lesser is for talented, bigger is for untalented
+    * Variable stats
+        + pain
+	    - decrease with time
+	    - higher sensitivity, slower decrement rate
+	    - increase when you take wider/longer thing than your slot's max radius/depth
+	    - higher sensitivity, faster increment rate
+            - higher level of pain, slower pleasure is increasing, very high levels can even decrease pleasure
+            - when you reach max pain level, you are dying (is it permanemt?)
+        + pleasure
+	    - decrease with time
+	    - higher sensitivity, slower decrement rate
+	    - increase when you take friction in your slot
+	    - higher sensitivity, faster increment rate
+            - higher level of pleasure, slower pain is increasing, near orgasmic pleasure levels can even decrease pain
+            - when you reach max pleasure level, you are taking orgasm and experience
+        + experience pool
+            - increase when experience is taken
+            - reallocating to different experience dependent stats on specific actions
+            - stop increasing when you reach max experience value (50L exp value)
+    * Experience dependent stats
+	+ total level
+        + Slot stats
+            - max potential slot diameter depends on level*wideRatio
+            - max potential slot length depends on level
+            - max current slot diameter sD(xp) = min(curLevN, (ln(xp / Lk) + 1) * 4 + 1) * maxD(50) / 50
+            - max current slot length is same formula as diameter
+        + Pain max level
+            - get experience from pool when you taking pain
+            - higher pain, more experience reallocate
+        + Pleasure max level
+            - get experience from pool when you taking pleasure
+            - higher pleasure, more experience reallocate
+	+ 8 artifacts levels
+            - get experience from pool when you are using corresponding artifact
+    * Level dependent stats:
+        + each new level you have N points to spend between stats
+	+ sensitivity (complection)
+	+ pain resistance
+	+ arousal boost
+	+ speed (single impulse value)
+    * Sources of experience:
+        + increasing pleasure level (minor experience -> reallocate pool -> pleasure max level)
+        + increasing pain level (minor experience -> reallocate pool -> pain max level)
+	+ reaching orgasm (exponential to diameter)
+	+ dying from pain (probably permanent death instead)
+	+ taking seed from creature (exponential to creatures' level + increase elemental stat)
+	+ using artifact (reallocate pool -> elemental level exp)

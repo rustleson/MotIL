@@ -1,0 +1,77 @@
+[ ] * main stats:
+[ ]     + slots
+[ ]         - L/R hands
+[ ]         - vagina
+[ ]         - mouth
+[ ]         - anus
+[ ]     + slot stats
+[ ]         - max. diameter [0, limit]
+[ ]         - max. length [0, limit]
+[+]     + 5 elemental scales [0, 1]
+[+]         - better formula for changing colors
+[+]         - better formula for mixing colors
+[+]     + purity/corruption scale [-1, +1]
+[ ]     + 8 artifacts stats
+[ ]         - slot attached [or none]
+[ ]         - level of use
+[ ]     + basic stats
+[+]         - tribe / hair color / eyes color / hair length
+[ ]         - current pain level
+[ ]         - max pain level [level dependent]
+[ ]         - pain decay speed [level dependent]
+[ ]         - sensitivity (?) [level dependent]
+[ ]         - experience
+[ ]         - experience pool
+[+]         - level
+
+[ ] * protagonist design
+[+]     + curved poly adjustment
+[+]     + custom drawing functions for bodies 
+[+]     + bodies drawing order
+[+]     + aura
+[+]     + aura speed improvement
+[+]     + main body shapes and joints
+[+]     + main body colors dependent of elemental levels
+[+]     + main body aura dependent of purity level
+[+]     + breasts / nipples
+[+]     + hair (diff color)
+[+]     + eyes / nose
+[+]     + tribe dependent details
+[+]         - thin complection / horns (Rakshasi)
+[+]         - normal complection / halo (Dakini)
+[+] 	    - fat complection / diadem (Yakshini)
+[ ]     + update model with sizes/details on the fly
+[ ]     + level/sensitivity dependent sizes
+[+]     + hands slots
+[+]     + mouth slot
+[+]     + anus slot
+[+]     + vagina slot
+
+[ ] * protagonist movement
+[ ]     + poses / impulses
+[ ]     + slots interaction
+[ ]     + front/side/back views and transitions (?is it necessary?)
+
+[ ] * menus
+[ ]     + main
+[ ]         - new game
+[ ]         - load game
+[ ]         - configure
+[ ]         - help
+[ ]     + character generation
+[ ]         - choose starting elemental plane (rotating mandala)
+[ ]         - choose tribe
+[ ]         - customize hair color
+[ ]         - customize hair length
+[ ]         - customize eyes color
+[ ]     + stats/upgrade
+[ ]     + dialogs
+
+[ ] * monsters
+[ ]     + stats
+[ ]     + tentacled monster
+[ ]         - generation
+[ ]         - design
+[ ]         - transitions
+[ ]         - AI
+[ ]         - slots interaction

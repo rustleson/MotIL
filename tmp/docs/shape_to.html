@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- headlinks removed -->
+<link rel="shortcut icon" href="../../../../misc/favicon.ico"/>
+    <title>Linking graphics to bodies in Box2D AS3 - Box2D Wiki</title>
+    <style type="text/css">/*<![CDATA[*/ @import "../../../../skins/offline/main.css"; /*]]>*/</style>
+    <link rel="stylesheet" type="text/css" media="print" href="../../../../skins/common/commonPrint.css" />
+
+    <!--[if lt IE 5.5000]><style type="text/css">@import "../../../../skins/monobook/IE50Fixes.css";</style><![endif]-->
+    <!--[if IE 5.5000]><style type="text/css">@import "../../../../skins/monobook/IE55Fixes.css";</style><![endif]-->
+    <!--[if IE 6]><style type="text/css">@import "../../../../skins/monobook/IE60Fixes.css";</style><![endif]-->
+    <!--[if IE]><script type="text/javascript" src="../../../../skins/common/IEFixes.js"></script>
+<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+    <script type="text/javascript" src="../../../../skins/common/wikibits.js"></script>
+    <script type="text/javascript" src="../../../../skins/offline/md5.js"></script>
+    <script type="text/javascript" src="../../../../skins/offline/utf8.js"></script>
+
+    <script type="text/javascript" src="../../../../skins/offline/lookup.js"></script>
+    <script type="text/javascript" src="../../../../raw/gen.js"></script> </head>
+  <body
+    class="ns-0 ns-subject page-Linking_graphics_to_bodies_in_Box2D_AS3">
+    <div id="globalWrapper">
+      <div id="column-content">
+<div id="content">
+<a name="top" id="contentTop"></a>
+
+<h1 class="firstHeading">Linking graphics to bodies in Box2D AS3</h1>
+<div id="bodyContent">
+<h3 id="siteSub">From Box2D Wiki</h3>
+<div id="contentSub"></div>
+<!-- start content -->
+<p>This article is meant to offer some help when you are trying to represent objects in Box2D with Flash Sprites or MovieClips to them. I will assume that you know how to create a world, and create physics bodies inside of it. Take a look at the <a href="../../../../articles/m/a/n/Manual_AS3_7fc3.html" title="Manual/AS3">Manual</a> if you don't.
+
+</p>
+<a name="Method" id="Method"></a><h2> <span class="mw-headline">Method</span></h2>
+<p>Box2D will only handle the physics calculations of your application, it does not handle skinning, but it can provide the location and rotation of each object at every frame. Using this information, we can move our graphics to the right location.
+</p><p>A simple way of syncing up our graphics with a Box2D world would be the following.
+</p>
+<div dir="ltr" style="text-align: left;"><pre class="actionscript source-actionscript"><span class="co1">//A world has been created, in variable myWorld. </span>
+<span class="kw2">var</span> myWorld:b2World;
+&nbsp;
+<span class="co1">//A body has been added to the world, as variable myBody.</span>
+<span class="kw2">var</span> myBody:b2Body;
+
+&nbsp;
+<span class="co1">//Some kind of sprite or movieclip has been added to the stage, as myGraphic.</span>
+<span class="kw2">var</span> myGraphic:DisplayObject;
+&nbsp;
+<span class="co1">//Because Box2D works with MKS scale, 1 pixel should not map directly to 1 Box2D Unit,</span>
+<span class="co1">// that is why we use a physics scale.</span>
+<span class="kw2">var</span> physScale:<span class="kw3">Number</span> = <span class="nu0">30</span>;
+
+&nbsp;
+<span class="co1">//The following code is executed every frame, along with b2World.Step().</span>
+<span class="kw2">function</span> moveBody<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+    <span class="kw2">var</span> bodyPosition:b2Vec2 = myBody.<span class="me1">GetPosition</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw2">var</span> bodyRotation:<span class="kw3">Number</span> = myBody.<span class="me1">GetAngle</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    myGraphic.<span class="me1">x</span> = bodyPosition.<span class="me1">x</span> <span class="sy0">*</span> physScale;
+    myGraphic.<span class="me1">y</span> = bodyPosition.<span class="me1">y</span> <span class="sy0">*</span> physScale;
+    myGraphic.<span class="me1">rotation</span> = bodyRotation <span class="sy0">*</span> <span class="br0">&#40;</span><span class="nu0">180</span><span class="sy0">/</span><span class="kw3">Math</span>.<span class="kw3">PI</span><span class="br0">&#41;</span> <span class="sy0">%</span> <span class="nu0">360</span>; <span class="co1">//Don't forget to convert to degrees!</span>
+
+<span class="br0">&#125;</span></pre></div>
+<a name="A_different_approach" id="A_different_approach"></a><h2> <span class="mw-headline">A different approach</span></h2>
+<p>The method mentioned above results in the sprite position being slightly off from the actual position of the box. If you use a large scaling constant it probably isn't an issue, but if you use a small constant you should use the more technically correct version, show below to position your sprite:
+</p>
+<div dir="ltr" style="text-align: left;"><pre class="actionscript source-actionscript"><span class="co1">//The following code is executed every frame, along with b2World.Step().</span>
+<span class="kw2">function</span> moveBody<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#123;</span>
+&nbsp;
+    <span class="co1">// World state position</span>
+    <span class="kw2">var</span> bodyPosition:b2Vec2 = myBody.<span class="me1">GetPosition</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw2">var</span> bodyRotation:<span class="kw3">Number</span> = myBody.<span class="me1">GetAngle</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+
+&nbsp;
+    <span class="co1">// Sprite rotation based (0,0) correct for size by moving sprite before rotation.</span>
+    <span class="co1">// ie. rotation about the center of the sprite.</span>
+    myGraphic.<span class="me1">rotation</span> = <span class="nu0">0</span>; <span class="co1">// If not, matrix starts wrong.</span>
+    <span class="kw2">var</span> m:Matrix = myGraphic.<span class="me1">transform</span>.<span class="me1">matrix</span>;
+    m.<span class="me1">identity</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    m.<span class="me1">tx</span> = -myGraphic.<span class="kw3">width</span> <span class="sy0">/</span> <span class="nu0">2</span>&nbsp;;
+    m.<span class="me1">ty</span> = -myGraphic.<span class="kw3">height</span> <span class="sy0">/</span> <span class="nu0">2</span>;
+    m.<span class="me1">rotate</span><span class="br0">&#40;</span>bodyRotation<span class="br0">&#41;</span>; <span class="co1">// Already in radians</span>
+
+&nbsp;
+    <span class="co1">// Now set the position to the world position</span>
+    m.<span class="me1">tx</span> += bodyPosition.<span class="me1">x</span> <span class="sy0">*</span> physScale;
+    m.<span class="me1">ty</span> += bodyPosition.<span class="me1">y</span> <span class="sy0">*</span> physScale;
+
+&nbsp;
+    <span class="co1">// ...and set the whole thing at once via the matrix.</span>
+    <span class="co1">// ie. Update the sprite.</span>
+    myGraphic.<span class="me1">transform</span>.<span class="me1">matrix</span> = m;
+<span class="br0">&#125;</span></pre></div>
+<a name="A_Better_Approach" id="A_Better_Approach"></a><h2> <span class="mw-headline">A Better Approach</span></h2>
+
+<p>While the previous approach works well enough, it requires that you keep specific variables for each of your DisplayObjects and bodies. A more scalable approach is to create Actor objects, that function as links between bodies and graphics. Below is a simple actor class.
+</p>
+<div dir="ltr" style="text-align: left;"><pre class="actionscript source-actionscript"><span class="kw3">public</span> <span class="kw2">class</span> Actor <span class="br0">&#123;</span>
+    <span class="kw3">public</span> <span class="kw2">var</span> body:b2Body;
+    <span class="kw3">public</span> <span class="kw2">var</span> graphic:DisplayObject;
+
+&nbsp;
+    <span class="kw3">public</span> <span class="kw2">function</span> Actor<span class="br0">&#40;</span>b:b2Body, g:DisplayObject<span class="br0">&#41;</span><span class="br0">&#123;</span>
+        body = b;
+        graphic = g;
+    <span class="br0">&#125;</span>
+&nbsp;
+    <span class="kw3">public</span> <span class="kw2">function</span> updatePosition<span class="br0">&#40;</span><span class="br0">&#41;</span>:<span class="kw3">void</span> <span class="br0">&#123;</span>
+
+<span class="kw2">var</span> bodyPosition:b2Vec2 = body.<span class="me1">GetPosition</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+<span class="kw2">var</span> bodyRotation:<span class="kw3">Number</span> = body.<span class="me1">GetAngle</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+<span class="kw2">var</span> matrix:Matrix = graphic.<span class="me1">transform</span>.<span class="me1">matrix</span>;
+
+&nbsp;
+        <span class="co1">// Sprite rotation based (0,0) correct for size by moving sprite before rotation.</span>
+        <span class="co1">// ie. rotation about the center of the sprite.</span>
+graphic.<span class="me1">rotation</span> = <span class="nu0">0</span>;<span class="co1">// If not, matrix starts wrong.</span>
+&nbsp;
+
+matrix.<span class="me1">tx</span> = -graphic.<span class="kw3">width</span> <span class="sy0">/</span> <span class="nu0">2</span>;
+matrix.<span class="me1">ty</span> = -graphic.<span class="kw3">height</span> <span class="sy0">/</span> <span class="nu0">2</span>;
+<span class="co1">//rotate</span>
+
+matrix.<span class="me1">rotate</span><span class="br0">&#40;</span>bodyRotation<span class="br0">&#41;</span>;<span class="co1">// Already in radians</span>
+<span class="co1">//move to the world position</span>
+matrix.<span class="me1">tx</span> += bodyPosition.<span class="me1">x</span> <span class="sy0">*</span> scale;
+matrix.<span class="me1">ty</span> += bodyPosition.<span class="me1">y</span> <span class="sy0">*</span> scale;
+
+&nbsp;
+graphic.<span class="me1">transform</span>.<span class="me1">matrix</span> = matrix;
+&nbsp;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div>
+<p>Now you create an actor every time you create a body, and you add both the body and the graphic to this actor. You can also assign the actor to the userData of the body, so that you can link the actor to the body's event. Then you can create a list of actors, and iterate through this list, updating the positions and rotations of each of your graphics.
+</p>
+<div dir="ltr" style="text-align: left;"><pre class="actionscript source-actionscript"><span class="co1">//Initialize an array that will hold all actors.</span>
+<span class="kw2">var</span> allActors:<span class="kw3">Array</span> = <span class="kw2">new</span> <span class="kw3">Array</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+
+&nbsp;
+<span class="co1">//Create a new actor for our body</span>
+<span class="kw2">var</span> myActor:Actor = <span class="kw2">new</span> Actor<span class="br0">&#40;</span>myBody, myGraphic<span class="br0">&#41;</span>;
+myBody.<span class="me1">m_userData</span> = myActor;
+&nbsp;
+<span class="co1">//Add our body to the stack.</span>
+
+allActors.<span class="kw3">push</span><span class="br0">&#40;</span>myActor<span class="br0">&#41;</span>;
+&nbsp;
+<span class="co1">//This function can now be called each frame, and it will update the position of all graphics but it still need to work with step.</span>
+<span class="kw2">function</span> on_enter_frame<span class="br0">&#40;</span><span class="kw3">e</span>:Event<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">for</span> <span class="kw1">each</span> <span class="br0">&#40;</span><span class="kw2">var</span> a:Actor <span class="kw1">in</span> allActors<span class="br0">&#41;</span> <span class="br0">&#123;</span>
+
+&nbsp;
+        <span class="co1">//we call the actor's method</span>
+        a.<span class="me1">updatePosition</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre></div>
+<table style="width:100%; background:#F0ECE2; border:1px solid #D5CEBA;">
+
+<tr>
+<td style="width:70px; vertical-align:top;"><a href="../../../../articles/i/c/o/File%7EIcon-tutorials.png_6f46.html" class="image" title="Image:Icon-tutorials.png‎"><img alt="Image:Icon-tutorials.png‎" src="../../../../images/6/65/Icon-tutorials.png" width="64" height="64" border="0" /></a>
+</td><td><font size="4"><a href="../../../../articles/l/i/s/List_of_tutorials.html" title="List of tutorials">Tutorials</a></font>
+<p><font size="3">General</font>
+
+</p>
+<ul><li><a href="../../../../articles/a/d/d/Adding_an_Entry_To_TestBed_3250.html" title="Adding an Entry To TestBed">Adding an Entry To TestBed</a>
+</li><li><a href="../../../../articles/b/u/f/Buffering_ContactPoints_7436.html" title="Buffering ContactPoints">Buffering ContactPoints</a>
+</li></ul>
+<p><font size="3">AS3</font>
+</p>
+<ul><li><a href="../../../../articles/k/e/y/Keyboard_controlled_bodies_in_Box2D_AS3_16c7.html" title="Keyboard controlled bodies in Box2D AS3">Keyboard controlled bodies in Box2D AS3</a>
+</li><li><strong class="selflink">Linking graphics to bodies in Box2D AS3</strong>
+</li><li><a href="../../../../articles/l/i/s/Listening_to_contact_events_in_Box2D_AS3_f6a8.html" title="Listening to contact events in Box2D AS3">Listening to contact events in Box2D AS3</a>
+</li></ul>
+</td></tr></table>
+
+<!--
+NewPP limit report
+Preprocessor node count: 39/1000000
+Post-expand include size: 558/2097152 bytes
+Template argument size: 44/2097152 bytes
+Expensive parser function count: 0/100
+#ifexist count: 0/100
+-->
+<div class="printfooter">
+</div>
+<div id="catlinks"><div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="../../../../articles/c/a/t/Special%7ECategories_101d.html" title="Special:Categories">Category</a>:&#32;<span dir='ltr'><a href="../../../../articles/g/u/i/Category%7EGuides_430a.html" title="Category:Guides">Guides</a></span></div></div></div> <!-- end content -->
+<div class="visualClear"></div>
+</div>
+</div>
+      </div>
+
+      <div id="column-one">
+<div id="p-cactions" class="portlet">
+<h5>Views</h5>
+<ul>
+<li id="ca-nstab-main"
+class="selected" ><a href="../../../../articles/l/i/n/Linking_graphics_to_bodies_in_Box2D_AS3_6498.html">Page</a></li><li id="ca-talk"
+><a href="../../../../articles/l/i/n/Talk%7ELinking_graphics_to_bodies_in_Box2D_AS3_4f11.html">Discussion</a></li><li id="ca-current"
+><a href="http://p3nlh218.shr.prod.phx3.secureserver.net/wiki/index.php/Linking_graphics_to_bodies_in_Box2D_AS3">Current revision</a></li> </ul>
+</div>
+
+<div class="portlet" id="p-logo">
+<a style="background-image: url(../../../../misc/icon.gif);"
+href="../../../../index.html"
+title="Main Page"></a>
+</div>
+<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+<div class='portlet' id='p-navigation'>
+<h5>Navigation</h5>
+<div class='pBody'>
+<ul>
+
+<li id="n-mainpage-description"><a href="../../../../index.html">Main Page</a></li>
+<li id="n-portal"><a href="../../../../articles/c/o/m/Box2D_Wiki%7ECommunity_Portal_b22c.html">Community portal</a></li>
+<li id="n-currentevents"><a href="../../../../articles/c/u/r/Box2D_Wiki%7ECurrent_events_2f6e.html">Current events</a></li>
+<li id="n-help"><a href="../../../../articles/c/o/n/Help%7EContents_22de.html">Help</a></li>
+</ul>
+</div>
+</div>
+
+<div class='portlet' id='p-SEARCH'>
+<h5>SEARCH</h5>
+<div class='pBody'>
+<ul>
+</ul>
+</div>
+</div>
+<div class='portlet' id='p-TOOLBOX'>
+
+<h5>TOOLBOX</h5>
+<div class='pBody'>
+<ul>
+</ul>
+</div>
+</div>
+<div class='portlet' id='p-LANGUAGES'>
+<h5>LANGUAGES</h5>
+
+<div class='pBody'>
+<ul>
+</ul>
+</div>
+</div>
+<div id="p-search" class="portlet">
+<h5><label for="searchInput">Search</label></h5>
+<div id="searchBody" class="pBody">
+
+<form action="javascript:goToStatic(3)" id="searchform"><div>
+<input id="searchInput" name="search" type="text"
+accesskey="f" value="" />
+<input type='submit' name="go" class="searchButton" id="searchGoButton"
+value="Go" />
+</div></form>
+</div>
+</div>
+</div><!-- end of the left (by default at least) column -->
+      <div class="visualClear"></div>
+      <div id="footer">
+
+    <div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="../../../../skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" /></a></div> <ul id="f-list">
+<li id="f-credits">This page was last modified 09:13, 25 March 2010 by <a href="../../../../articles/m/t/_/User%7EMT_64a7.html" class="new" title="User:MT (page does not exist)">Maximilien Thiel</a>. Based on work by <a href="../../../../articles/s/h/a/User%7EShadowmint_1306.html" class="new" title="User:Shadowmint (page does not exist)">Doug</a>&#32;and&#32;<a href="../../../../articles/a/n/d/User%7EAndroid_4dcc.html" title="User:Android">Thomas</a>&#32;and&#32;Box2D Wiki users <a href="../../../../articles/m/a/j/User%7EMajjinbuuya_f240.html" class="new" title="User:Majjinbuuya (page does not exist)">Majjinbuuya</a>&#32;and&#32;<a href="../../../../articles/b/o/r/User%7EBorisTheBrave_c8a7.html" class="new" title="User:BorisTheBrave (page does not exist)">BorisTheBrave</a>.</li> <li id="f-about"><a href="../../../../articles/a/b/o/Box2D_Wiki%7EAbout_fc97.html" title="Box2D Wiki:About">About Box2D Wiki</a></li> <li id="f-disclaimer"><a href="../../../../articles/g/e/n/Box2D_Wiki%7EGeneral_disclaimer_76ac.html" title="Box2D Wiki:General disclaimer">Disclaimers</a></li> </ul>
+
+      </div>
+    </div>
+  </body>
+</html>
