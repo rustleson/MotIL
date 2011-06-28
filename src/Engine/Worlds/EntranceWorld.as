@@ -58,8 +58,10 @@ package Engine.Worlds {
 	    backgrounds.push({ratio: 1, bitmap: bd3});
 
 	    stats.space = 1;
-	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-	    stats.level = 1;
+	    stats.tribe = ProtagonistStats.RAKSHASI_TRIBE;
+	    stats.level = 50;
+	    stats.constitution = 50;
+	    stats.speed = 50;
 	    //stats.hairLength = 0;
 
 	    // objects

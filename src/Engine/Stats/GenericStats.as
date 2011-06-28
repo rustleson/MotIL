@@ -22,10 +22,10 @@ package Engine.Stats {
 	private var _maxPleasure:ExpStat = new ExpStat(30, 300); 
 	
 	// point stats
-	private var _sensitivity:PointStat = new PointStat(0.1, 1); 
-	private var _painResistance:PointStat = new PointStat(0.1, 1); 
-	private var _arousalBoost:PointStat = new PointStat(0.1, 1); 
-	private var _speed:PointStat = new PointStat(0.1, 1); 
+	private var _constitution:PointStat = new PointStat(1, 50); 
+	private var _painResistance:PointStat = new PointStat(1, 0.4); 
+	private var _arousalBoost:PointStat = new PointStat(1, 2.5); 
+	private var _speed:PointStat = new PointStat(1, 10); 
 	
 	public const SPACE_COLOR:Array = [0xDD, 0xD7, 0xD0];
 	public const WATER_COLOR:Array = [0x00, 0x22, 0xCC];
@@ -35,6 +35,8 @@ package Engine.Stats {
 
 	public const PLEASURE_DECREMENT:Number = 0.05;
 	public const PAIN_DECREMENT:Number = 0.05;
+	public const WIDE_RANGE:Number = 0.1;
+	public const HEIGHT_RANGE:Number = 1/3;
 
 	public function GenericStats(){
 	    this._expPool.max = 20000;
@@ -181,35 +183,81 @@ package Engine.Stats {
 	public function takePain(dv:Number):void {
 	    this._pain.value += dv;
 	    this._maxPain.exp += this._expPool.leakValue(this._pain.value);
-	    this._pain.max = this._maxPain.value2;
+	    this._pain.max = this._maxPain.value2 * this.wideRatio;
 	}
 
 	public function takePleasure(dv:Number):void {
 	    this._pleasure.value += dv;
 	    this._maxPleasure.exp += this._expPool.leakValue(this._pleasure.value);
-	    this._pleasure.max = this._maxPleasure.value2;
+	    this._pleasure.max = this._maxPleasure.value2 * this.heightRatio;
 	}
 
 	public function timeStep():void {
-	    this._pain.incRate = 1 - this._pleasure.value / this._pleasure.max * 1.3;
-	    this._pleasure.incRate = 1 - this._pain.value / this._pain.max * 1.3;
-	    this._pain.decRate = 1 / this._sensitivity.value;
-	    this._pleasure.decRate = 1 / this._sensitivity.value;
+	    this._pain.incRate = this.sensitivity * this.painResistance * (1 - this._pleasure.value / this._pleasure.max * 1.2);
+	    this._pleasure.incRate = this.sensitivity * this.arousalBoost * (1 - this._pain.value / this._pain.max * 1.2);
+	    this._pain.decRate = 1 / this.sensitivity;
+	    this._pleasure.decRate = 1 / this.sensitivity;
 	    this._pain.value -= PAIN_DECREMENT;
 	    this._pleasure.value -= PLEASURE_DECREMENT;
 	    
 	}
 
-	/* UTIL FUNCTIONS */
+	/* POINT STATS */
 
-	public function mixedElementsColor():uint {
+	public function get constitution():Number {
+	    return this._constitution.value;
+	}
+
+	public function get painResistance():Number {
+	    return this._painResistance.value;
+	}
+
+	public function get arousalBoost():Number {
+	    return this._arousalBoost.value;
+	}
+
+	public function get speed():Number {
+	    return this._speed.value;
+	}
+
+	public function set constitution(v:Number):void {
+	    this._constitution.level = v;
+	}
+
+	public function set painResistance(v:Number):void {
+	    this._painResistance.level = v;
+	}
+
+	public function set arousalBoost(v:Number):void {
+	    this._arousalBoost.level = v;
+	}
+
+	public function set speed(v:Number):void {
+	    this._speed.level = v;
+	}
+
+	/* SECONDARY STATS */
+
+	public function get wideRatio():Number {
+	    return 1 + ((this.constitution-1) - (this.level-1)/2) / 24.5 * WIDE_RANGE / 2;
+	}
+
+	public function get heightRatio():Number {
+	    return 1 + (this.level - 1) / 49 * HEIGHT_RANGE;
+	}
+
+	public function get sensitivity():Number {
+	    return Math.pow(10, (1 - this.wideRatio) * 4);
+	}
+
+	public function get mixedElementsColor():uint {
 	    var r:uint = Math.min(0xDD, Math.round(SPACE_COLOR[0] * this._space + WATER_COLOR[0] * this._water + EARTH_COLOR[0] * this._earth + FIRE_COLOR[0] * this._fire + AIR_COLOR[0] * this._air));
 	    var g:uint = Math.min(0xDD, Math.round(SPACE_COLOR[1] * this._space + WATER_COLOR[1] * this._water + EARTH_COLOR[1] * this._earth * this._earth + FIRE_COLOR[1] * this._fire + AIR_COLOR[1] * this._air)); 
 	    var b:uint = Math.min(0xDD, Math.round(SPACE_COLOR[2] * this._space + WATER_COLOR[2] * this._water + EARTH_COLOR[2] * this._earth + FIRE_COLOR[2] * this._fire + AIR_COLOR[2] * this._air)); 
 	    return (r << 16) + (g << 8) + b;
 	}
 
-	public function getAuraColor():uint {
+	public function get auraColor():uint {
 	    if (this._alignment > 0)
 		return 0xffffff;
 	    if (this._alignment < 0)
@@ -218,7 +266,7 @@ package Engine.Stats {
 	    
 	}
 
-	public function getAuraIntencity():Number {
+	public function get auraIntencity():Number {
 	    if (this._alignment > 0)
 		return Math.abs(this._alignment);
 	    return Math.abs(this._alignment) * 1.5;

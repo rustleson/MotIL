@@ -16,13 +16,13 @@
 [ ]         - level of use
 [ ]     + basic stats
 [+]         - tribe / hair color / eyes color / hair length
-[ ]         - current pain level
-[ ]         - max pain level [level dependent]
-[ ]         - pain decay speed [level dependent]
-[ ]         - sensitivity (?) [level dependent]
-[ ]         - experience
-[ ]         - experience pool
-[+]         - level
+[+]         - pain stats
+[+]         - pleasure stats
+[+]         - experience stats
+[+]         - secondary stats
+[+]         - CON/DUR/EXC/SPD
+[ ]         - experience sources
+[ ]         - adjust stats coefficients
 
 [ ] * protagonist design
 [+]     + curved poly adjustment

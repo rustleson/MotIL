@@ -86,21 +86,18 @@ package Engine.Stats {
 	    this._tribe = tr;
 	}
 
-	public function getWideRatio():Number {
+	public override function get wideRatio():Number {
+	    var dr:Number = super.wideRatio - 1;
 	    switch (this.tribe) {
 	      case DAKINI_TRIBE: 
-		  return 1;
+		  return 1 + dr ;
 	      case YAKSHINI_TRIBE: 
-		  return 1.25;
+		  return 1.25 + dr;
 	      case RAKSHASI_TRIBE: 
-		  return 0.85;
+		  return 0.85 + dr;
 	      default:
-		  return 1;
+		  return 1 + dr;
 	    }
-	}
-
-	public function getHeightRatio():Number {
-	    return 1 + (this.level - 1) / 49 / 3;
 	}
 
 	public function isEnlightened():Boolean {

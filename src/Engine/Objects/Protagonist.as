@@ -47,17 +47,17 @@ package Engine.Objects {
 	    nippleUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x33, 0x6b, 0x9b, 0xc1, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
 	    hairUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [1, 1, 1], gradientRatios: [0x00, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
 	    this.stats = st;
-	    this.wideRatio = this.stats.getWideRatio();
-	    this.headUnit *= this.stats.getHeightRatio();
-	    this.color = stats.mixedElementsColor();
-	    this.bodyUserData.auraColor = stats.getAuraColor();
-	    this.headUserData.auraColor = stats.getAuraColor();
-	    this.handLUserData.auraColor = stats.getAuraColor();
-	    this.handRUserData.auraColor = stats.getAuraColor();
-	    this.bodyUserData.auraIntencity = stats.getAuraIntencity();
-	    this.headUserData.auraIntencity = stats.getAuraIntencity();
-	    this.handLUserData.auraIntencity = stats.getAuraIntencity();
-	    this.handRUserData.auraIntencity = stats.getAuraIntencity();
+	    this.wideRatio = this.stats.wideRatio;
+	    this.headUnit *= this.stats.heightRatio;
+	    this.color = stats.mixedElementsColor;
+	    this.bodyUserData.auraColor = stats.auraColor;
+	    this.headUserData.auraColor = stats.auraColor;
+	    this.handLUserData.auraColor = stats.auraColor;
+	    this.handRUserData.auraColor = stats.auraColor;
+	    this.bodyUserData.auraIntencity = stats.auraIntencity;
+	    this.headUserData.auraIntencity = stats.auraIntencity;
+	    this.handLUserData.auraIntencity = stats.auraIntencity;
+	    this.handRUserData.auraIntencity = stats.auraIntencity;
 	    this.hairColor = stats.hairColor;
 	    this.alpha = 1;
 	    bd.userData = bodyUserData;
@@ -686,7 +686,7 @@ package Engine.Objects {
 	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: 10 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 30 / (180/Math.PI) };
 		timeout = defaultTimeout;
 		toggleMotors(true);
-		bodies.stomach.ApplyImpulse(new b2Vec2(-1, 0), bodies.stomach.GetWorldCenter());
+		bodies.stomach.ApplyImpulse(new b2Vec2(-this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(83)){ // S
 		targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
@@ -694,7 +694,7 @@ package Engine.Objects {
 	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
 		timeout = defaultTimeout;
 		toggleMotors(true);
-		bodies.hips.ApplyImpulse(new b2Vec2(0, 1), bodies.hips.GetWorldCenter());
+		bodies.hips.ApplyImpulse(new b2Vec2(0, this.stats.speed), bodies.hips.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(68)){ // D
 		targetAngles = {jointHead: 10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
@@ -702,7 +702,7 @@ package Engine.Objects {
 	                        jointUpperLegL: -10 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -30 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
 		timeout = defaultTimeout;
 		toggleMotors(true);
-		bodies.stomach.ApplyImpulse(new b2Vec2(1, 0), bodies.stomach.GetWorldCenter());
+		bodies.stomach.ApplyImpulse(new b2Vec2(this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(87)){ // W
 		targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
@@ -710,7 +710,7 @@ package Engine.Objects {
 	                        jointUpperLegL: 10 / (180/Math.PI), jointUpperLegR: -10 / (180/Math.PI), jointLowerLegL: -10 / (180/Math.PI), jointLowerLegR: 10 / (180/Math.PI) };
 		timeout = defaultTimeout;
 		toggleMotors(true);
-		bodies.shoulders.ApplyImpulse(new b2Vec2(0, -1), bodies.shoulders.GetWorldCenter());
+		bodies.shoulders.ApplyImpulse(new b2Vec2(0, -this.stats.speed), bodies.shoulders.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(77)){ // M
 		if (!this.stats.anusSlot.isFree) {
@@ -754,51 +754,51 @@ package Engine.Objects {
 	    }
 	    if (Input.isKeyPressed(49)){ // 1
 		this.stats.space += 0.05;
-		this.color = stats.mixedElementsColor();
+		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(50)){ // 2
 		this.stats.water += 0.05;
-		this.color = stats.mixedElementsColor();
+		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(51)){ // 3
 		this.stats.earth += 0.05;
-		this.color = stats.mixedElementsColor();
+		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(52)){ // 4
 		this.stats.fire += 0.05;
-		this.color = stats.mixedElementsColor();
+		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(53)){ // 5
 		this.stats.air += 0.05;
-		this.color = stats.mixedElementsColor();
+		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(54)){ // 6
 		this.stats.alignment -= 0.05;
-		this.bodyUserData.auraColor = stats.getAuraColor();
-		this.bodyUserData.auraIntencity = stats.getAuraIntencity();
-		this.headUserData.auraColor = stats.getAuraColor();
-		this.headUserData.auraIntencity = stats.getAuraIntencity();
-		this.handLUserData.auraColor = stats.getAuraColor();
-		this.handLUserData.auraIntencity = stats.getAuraIntencity();
-		this.handRUserData.auraColor = stats.getAuraColor();
-		this.handRUserData.auraIntencity = stats.getAuraIntencity();
+		this.bodyUserData.auraColor = stats.auraColor;
+		this.bodyUserData.auraIntencity = stats.auraIntencity;
+		this.headUserData.auraColor = stats.auraColor;
+		this.headUserData.auraIntencity = stats.auraIntencity;
+		this.handLUserData.auraColor = stats.auraColor;
+		this.handLUserData.auraIntencity = stats.auraIntencity;
+		this.handRUserData.auraColor = stats.auraColor;
+		this.handRUserData.auraIntencity = stats.auraIntencity;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(55)){ // 7
 		this.stats.alignment += 0.05;
-		this.bodyUserData.auraColor = stats.getAuraColor();
-		this.bodyUserData.auraIntencity = stats.getAuraIntencity();
-		this.headUserData.auraColor = stats.getAuraColor();
-		this.headUserData.auraIntencity = stats.getAuraIntencity();
-		this.handLUserData.auraColor = stats.getAuraColor();
-		this.handLUserData.auraIntencity = stats.getAuraIntencity();
-		this.handRUserData.auraColor = stats.getAuraColor();
-		this.handRUserData.auraIntencity = stats.getAuraIntencity();
+		this.bodyUserData.auraColor = stats.auraColor;
+		this.bodyUserData.auraIntencity = stats.auraIntencity;
+		this.headUserData.auraColor = stats.auraColor;
+		this.headUserData.auraIntencity = stats.auraIntencity;
+		this.handLUserData.auraColor = stats.auraColor;
+		this.handLUserData.auraIntencity = stats.auraIntencity;
+		this.handRUserData.auraColor = stats.auraColor;
+		this.handRUserData.auraIntencity = stats.auraIntencity;
 		this.wasUpdated = true;
 	    }
 			

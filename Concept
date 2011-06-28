@@ -108,7 +108,7 @@ Experience System
 	    - increase when you take wider/longer thing than your slot's max radius/depth
 	    - higher sensitivity, faster increment rate
             - higher level of pain, slower pleasure is increasing, very high levels can even decrease pleasure
-            - when you reach max pain level, you are dying (is it permanemt?)
+            - when you reach max pain level, you are dying (is it permanent?)
         + pleasure
 	    - decrease with time
 	    - higher sensitivity, slower decrement rate
@@ -137,10 +137,14 @@ Experience System
             - get experience from pool when you are using corresponding artifact
     * Level dependent stats:
         + each new level you have N points to spend between stats
-	+ sensitivity (complection)
-	+ pain resistance
-	+ arousal boost
-	+ speed (single impulse value)
+	+ CON: constitution
+	+ DUR: durability (pain resistance)
+	+ EXC: excitability (arousal boost)
+	+ SPD: speed (single impulse value)
+    * Secondary stats:
+        + heightRatio = 1 + (LEV - 1) / 49 * k1
+        + wideRatio = baseValue + ((CON-1) - (LEV-1)/2) / 24.5 * k2
+        + sensitivity = 10 ^ ((1 - wideRatio) * k3)
     * Sources of experience:
         + increasing pleasure level (minor experience -> reallocate pool -> pleasure max level)
         + increasing pain level (minor experience -> reallocate pool -> pain max level)
