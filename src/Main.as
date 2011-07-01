@@ -17,7 +17,6 @@ package{
 
     [SWF(width='640', height='480', backgroundColor='#000000', frameRate='30')]
 	
-
 	public class Main extends MovieClip{
 
 	    static public var fpsCounter:FpsCounter = new FpsCounter();

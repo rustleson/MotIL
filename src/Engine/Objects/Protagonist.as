@@ -752,6 +752,12 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
+	    if (Input.isKeyPressed(73)){ // I
+		this.stats.statsDialog.toggleLarge();
+	    }
+	    if (Input.isKeyPressed(8)){ // Backspace
+		this.stats.statsDialog.toggleHide();
+	    }
 	    if (Input.isKeyPressed(49)){ // 1
 		this.stats.space += 0.05;
 		this.color = stats.mixedElementsColor;

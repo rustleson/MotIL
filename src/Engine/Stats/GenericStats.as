@@ -27,11 +27,11 @@ package Engine.Stats {
 	private var _arousalBoost:PointStat = new PointStat(1, 2.5); 
 	private var _speed:PointStat = new PointStat(1, 10); 
 	
-	public const SPACE_COLOR:Array = [0xDD, 0xD7, 0xD0];
-	public const WATER_COLOR:Array = [0x00, 0x22, 0xCC];
-	public const EARTH_COLOR:Array = [0xD0, 0xB7, 0x00];
-	public const FIRE_COLOR:Array  = [0xDD, 0x11, 0x00];
-	public const AIR_COLOR:Array   = [0x00, 0xCC, 0x11];
+	public static const SPACE_COLOR:Array = [0xDD, 0xD7, 0xD0];
+	public static const WATER_COLOR:Array = [0x00, 0x22, 0xCC];
+	public static const EARTH_COLOR:Array = [0xD0, 0xB7, 0x00];
+	public static const FIRE_COLOR:Array  = [0xDD, 0x11, 0x00];
+	public static const AIR_COLOR:Array   = [0x00, 0xCC, 0x11];
 
 	public const PLEASURE_DECREMENT:Number = 0.05;
 	public const PAIN_DECREMENT:Number = 0.05;
@@ -270,6 +270,10 @@ package Engine.Stats {
 	    if (this._alignment > 0)
 		return Math.abs(this._alignment);
 	    return Math.abs(this._alignment) * 1.5;
+	}
+
+	public static function decodeColor(c:Array):uint {
+	    return (c[0] << 16) + (c[1] << 8) + c[2];
 	}
 
     }

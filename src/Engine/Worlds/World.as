@@ -13,6 +13,7 @@ package Engine.Worlds {
     import flash.display.*;
     import Engine.Objects.*;
     import Engine.Stats.*;
+    import Engine.Dialogs.MainStatsDialog;
     import flash.events.EventDispatcher;	
     import flash.geom.Matrix;
 	
@@ -43,8 +44,8 @@ package Engine.Worlds {
 	    objectsOrder = new Array();
 	    backgrounds = new Array();
 	    stats = new ProtagonistStats();
-	    stats.statsSprite = Main.statsSprite;
-			
+	    stats.statsDialog = new MainStatsDialog(appWidth, appHeight);
+	    stats.statsDialog.sprite = Main.statsSprite;
 	    var worldAABB:b2AABB = new b2AABB();
 	    worldAABB.lowerBound.Set(-1000.0, -1000.0);
 	    worldAABB.upperBound.Set(1000.0, 1000.0);
@@ -113,7 +114,7 @@ package Engine.Worlds {
 		    sprite.addChild(objSprite);
 		}
 	    }
-	    stats.renderStats(appWidth);
+	    stats.updateStats();
 	    
 	    // joints
 	    /*for (var jj:b2Joint = world.GetJointList(); jj; jj = jj.GetNext()){
