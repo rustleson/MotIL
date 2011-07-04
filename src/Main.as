@@ -36,7 +36,7 @@ package{
 		addChild(sprite);
 		addChild(statsSprite);
 		fpsCounter.x = 7;
-		fpsCounter.y = 5;
+		fpsCounter.y = 430;
 		addChild(fpsCounter);
 		input = new Input(sprite);
 		appWidth = stage.stageWidth;

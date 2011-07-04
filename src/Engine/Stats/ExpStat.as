@@ -65,7 +65,7 @@ package Engine.Stats {
 	}
 	
 	private function exp2lev(exp:Number):int {
-	    return int((Math.log(exp / this.progressRate) + 1) * 4 + 1);
+	    return int(Math.log(exp / this.progressRate + 1) * 4 + 1);
 	}
 	    
 	private function lev2exp(lev:int):Number {

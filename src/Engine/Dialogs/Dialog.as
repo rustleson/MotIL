@@ -27,6 +27,12 @@ package Engine.Dialogs {
 		    this.sprite.addChild(widget.sprite);
 		}
 	    }
+	    for each (widgetName in this.widgetsOrder) {
+		widget = widgets[widgetName];
+		if (!this.sprite.contains(widget.tooltipSprite)) {
+		    this.sprite.addChild(widget.tooltipSprite);
+		}
+	    }
 	}
 
     }

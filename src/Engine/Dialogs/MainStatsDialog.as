@@ -7,17 +7,24 @@ package Engine.Dialogs {
 
 	private var _mode:String = 'hide';
 	private var _state:String = 'small';
+	private var visibleWidgets:Array;
 
 	public function MainStatsDialog(w:Number, h:Number):void {
 	    super(w, h);
-	    this.widgets['panel'] = new PanelWidget(w - 5, 5, 127, 82, w - 10, h - 10, 0x444444, 'Main Stats', true);
+	    this.widgets['panel'] = new PanelWidget(w - 5, 5, 124, 96, w - 10, h - 10, 0x444444, 'Main Stats', true);
 	    this.widgets['space'] = new PercentWidget(w - 12, 12, 102, 6, GenericStats.decodeColor(GenericStats.SPACE_COLOR), 'Space', Icons.Space, true);
 	    this.widgets['water'] = new PercentWidget(w - 12, 24, 102, 6, GenericStats.decodeColor(GenericStats.WATER_COLOR), 'Water', Icons.Water, true);
 	    this.widgets['earth'] = new PercentWidget(w - 12, 36, 102, 6, GenericStats.decodeColor(GenericStats.EARTH_COLOR), 'Earth', Icons.Earth, true);
 	    this.widgets['fire'] = new PercentWidget(w - 12, 48, 102, 6, GenericStats.decodeColor(GenericStats.FIRE_COLOR), 'Fire', Icons.Fire, true);
 	    this.widgets['air'] = new PercentWidget(w - 12, 60, 102, 6, GenericStats.decodeColor(GenericStats.AIR_COLOR), 'Air', Icons.Air, true);
-	    this.widgets['karma'] = new KarmaWidget(w - 12, 72, 102, 6, 'Karma', true);
-	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma'];
+	    this.widgets['karma'] = new KarmaWidget(w - 12, 72, 102, 6, 'Karma', Icons.Karma, true);
+	    this.widgets['pain'] = new PercentWidget(w - 210, 12, 102, 6, 0x8855ff, 'Pain', Icons.Pain, true);
+	    this.widgets['pleasure'] = new PercentWidget(w - 420, 12, 102, 6, 0xff55dd, 'Bliss', Icons.Pleasure, true);
+	    this.widgets['level'] = new PercentWidget(w - 12, 84, 102, 6, 0xffdd55, 'Exp', Icons.Experience, true);
+	    this.widgets['maxpain'] = new PercentWidget(w - 210, 24, 102, 6, 0x8855ff, 'Treshold', Icons.Pain, true);
+	    this.widgets['maxpleasure'] = new PercentWidget(w - 420, 24, 102, 6, 0xff55dd, 'Orgasm', Icons.Pleasure, true);
+	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure'];
+	    this.visibleWidgets = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level'];
 	    this.toggleHide();
 	}
 
@@ -33,7 +40,7 @@ package Engine.Dialogs {
 		    if (this._state == 'small') {
 			if (widgetName == 'panel')
 			    widget.small();
-			else
+			else if (visibleWidgets.indexOf(widgetName) > 0)
 			    widget.small(10);
 		    } else {
 			if (widgetName == 'panel')
@@ -71,8 +78,10 @@ package Engine.Dialogs {
 		    } else {
 			if (widgetName == 'panel')
 			    widget.small(10);
-			else
+			else if (visibleWidgets.indexOf(widgetName) > 0)
 			    widget.small();
+			else
+			    widget.hidden();
 		    }
 		}
 	    } else {

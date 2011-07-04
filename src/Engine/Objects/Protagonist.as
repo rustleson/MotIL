@@ -807,7 +807,7 @@ package Engine.Objects {
 		this.handRUserData.auraIntencity = stats.auraIntencity;
 		this.wasUpdated = true;
 	    }
-			
+	    this.stats.timeStep();
 	    super.update();
 
 	}

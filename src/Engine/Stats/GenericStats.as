@@ -18,8 +18,8 @@ package Engine.Stats {
 
 	// experience stats
 	private var _level:ExpStat = new ExpStat(); 
-	private var _maxPain:ExpStat = new ExpStat(30, 300); 
-	private var _maxPleasure:ExpStat = new ExpStat(30, 300); 
+	private var _maxPain:ExpStat = new ExpStat(100, 30, 300); 
+	private var _maxPleasure:ExpStat = new ExpStat(100, 30, 300); 
 	
 	// point stats
 	private var _constitution:PointStat = new PointStat(1, 50); 
@@ -200,6 +200,26 @@ package Engine.Stats {
 	    this._pain.value -= PAIN_DECREMENT;
 	    this._pleasure.value -= PLEASURE_DECREMENT;
 	    
+	}
+
+	public function get pain():VariableStat {
+	    return this._pain;
+	}
+
+	public function get pleasure():VariableStat {
+	    return this._pleasure;
+	}
+
+	public function get exp():ExpStat {
+	    return this._level;
+	}
+
+	public function get maxPain():ExpStat {
+	    return this._maxPain;
+	}
+
+	public function get maxPleasure():ExpStat {
+	    return this._maxPleasure;
 	}
 
 	/* POINT STATS */

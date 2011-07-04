@@ -59,7 +59,10 @@ package Engine.Worlds {
 
 	    stats.space = 1;
 	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-	    stats.level = 1;
+	    stats.level = 5;
+	    stats.takeExp(56);
+	    stats.takePain(23);
+	    stats.takePleasure(13);
 	    stats.constitution = 1;
 	    stats.speed = 1;
 	    //stats.hairLength = 0;

@@ -1,8 +1,16 @@
 package Engine.Dialogs.Widgets {
 	
     import flash.display.*;
+    import flash.events.MouseEvent;
+    import flash.text.*;
 
     public class Widget {
+
+	[Embed(source="/Assets/Galaxy.ttf", fontFamily="Small", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const SMALL_FONT:String;
+
+	[Embed(source="/Assets/Harmony.ttf", fontFamily="Tiny", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const TINY_FONT:String;
 
 	public var sprite:Sprite; 
 	public var needUpdate:Boolean; 
@@ -15,6 +23,9 @@ package Engine.Dialogs.Widgets {
 	private var _transitionSteps:int = 0; 
 	private var _transitionFrom:Number = 0; 
 	private var _transitionTo:Number = 0; 
+	private var tooltipText:TextField;
+	public var tooltipSprite:Sprite;
+	private var tooltipFormat:TextFormat;
 
 	public function Widget($x:Number = 0, $y:Number = 0, $title:String = ''):void {
 	    this.sprite = new Sprite();
@@ -22,6 +33,23 @@ package Engine.Dialogs.Widgets {
 	    this.x = $x;
 	    this.y = $y;
 	    this.title = $title;
+	    // tooltip text
+	    this.tooltipText = new TextField();
+	    this.tooltipText.text = '';
+	    this.tooltipText.width = 150;
+	    this.tooltipText.selectable = false;
+	    this.tooltipText.embedFonts = true;
+	    this.tooltipText.wordWrap = true;
+	    this.tooltipFormat = new TextFormat("Tiny", 8, 0xdddddd);
+	    this.tooltipFormat.align = TextFieldAutoSize.LEFT;	    
+	    this.tooltipText.setTextFormat(this.tooltipFormat);
+	    this.tooltipSprite = new Sprite();
+	    this.tooltipSprite.addChild(this.tooltipText);
+	    //this.sprite.addChild(this.tooltipSprite);
+	    this.tooltipSprite.alpha = 0.6;
+	    this.tooltipSprite.visible = false;
+	    this.sprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
+	    this.sprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
 	}
 
 	public function update():void {
@@ -93,7 +121,32 @@ package Engine.Dialogs.Widgets {
 	public function get transitionComplete():Boolean {
 	    return (this._transition == 0 && this._timeout == 0);
 	}
+
+	public function setTooltip(text:String, dx:Number = 0, dy:Number = 0):void {
+	    var x:Number = this.x + dx;
+	    var y:Number = this.y + dy;
+	    this.tooltipText.text = text;
+	    this.tooltipText.x = x;
+	    this.tooltipText.y = y;
+	    this.tooltipText.setTextFormat(this.tooltipFormat);
+	    this.tooltipText.width = 150;
+	    this.tooltipText.height = this.tooltipText.textHeight + 10;
+	    this.tooltipSprite.graphics.clear();
+	    this.tooltipSprite.graphics.lineStyle(0, 0, 0);
+	    this.tooltipSprite.graphics.beginFill(0x000000, 1);
+	    this.tooltipSprite.graphics.drawRoundRect(x - 3, y, 156, this.tooltipText.textHeight + 4, 10, 10);
+	    this.tooltipSprite.graphics.endFill();
+	}
 	    
+	private function mouseOverHandler(event:MouseEvent):void {
+	    if (this.tooltipText.text)
+		this.tooltipSprite.visible = true;
+	}
+
+	private function mouseOutHandler(event:MouseEvent):void {
+	    this.tooltipSprite.visible = false;
+	}
+
     }
 	
 }
