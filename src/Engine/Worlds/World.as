@@ -46,6 +46,9 @@ package Engine.Worlds {
 	    stats = new ProtagonistStats();
 	    stats.statsDialog = new MainStatsDialog(appWidth, appHeight);
 	    stats.statsDialog.sprite = Main.statsSprite;
+	    stats.initStats();
+	    stats.updateStats();
+	    stats.statsDialog.rebuild();
 	    var worldAABB:b2AABB = new b2AABB();
 	    worldAABB.lowerBound.Set(-1000.0, -1000.0);
 	    worldAABB.upperBound.Set(1000.0, 1000.0);

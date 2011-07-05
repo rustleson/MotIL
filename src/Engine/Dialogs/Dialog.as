@@ -21,8 +21,17 @@ package Engine.Dialogs {
 
 	public function update():void {
 	    for each (var widgetName:String in this.widgetsOrder) {
+		var widget:Widget = this.widgets[widgetName];
+		widget.update();
+		widget.sprite.visible = (widget.state != '' && (widget.state != 'hidden' || !widget.transitionComplete));
+	    }
+	}
+
+	public function rebuild():void {
+	    for each (var widgetName:String in this.widgetsOrder) {
 		var widget:Widget = widgets[widgetName];
 		widget.update();
+		widget.sprite.visible = true;
 		if (!this.sprite.contains(widget.sprite)) {
 		    this.sprite.addChild(widget.sprite);
 		}

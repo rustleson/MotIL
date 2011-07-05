@@ -46,7 +46,7 @@ package Engine.Dialogs.Widgets {
 	    this.tooltipSprite = new Sprite();
 	    this.tooltipSprite.addChild(this.tooltipText);
 	    //this.sprite.addChild(this.tooltipSprite);
-	    this.tooltipSprite.alpha = 0.6;
+	    this.tooltipSprite.alpha = 0.8;
 	    this.tooltipSprite.visible = false;
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
@@ -93,7 +93,7 @@ package Engine.Dialogs.Widgets {
 	    return this._transitionTo + this._transition * this._transition / this._transitionSteps / this._transitionSteps * (this._transitionFrom - this._transitionTo);
 	}
 
-	protected function get state():String {
+	public function get state():String {
 	    return this._state;
 	}
 
@@ -123,19 +123,21 @@ package Engine.Dialogs.Widgets {
 	}
 
 	public function setTooltip(text:String, dx:Number = 0, dy:Number = 0):void {
-	    var x:Number = this.x + dx;
-	    var y:Number = this.y + dy;
-	    this.tooltipText.text = text;
-	    this.tooltipText.x = x;
-	    this.tooltipText.y = y;
-	    this.tooltipText.setTextFormat(this.tooltipFormat);
-	    this.tooltipText.width = 150;
-	    this.tooltipText.height = this.tooltipText.textHeight + 10;
-	    this.tooltipSprite.graphics.clear();
-	    this.tooltipSprite.graphics.lineStyle(0, 0, 0);
-	    this.tooltipSprite.graphics.beginFill(0x000000, 1);
-	    this.tooltipSprite.graphics.drawRoundRect(x - 3, y, 156, this.tooltipText.textHeight + 4, 10, 10);
-	    this.tooltipSprite.graphics.endFill();
+	    if (text != this.tooltipText.text) {
+		var x:Number = this.x + dx;
+		var y:Number = this.y + dy;
+		this.tooltipText.text = text;
+		this.tooltipText.x = x;
+		this.tooltipText.y = y;
+		this.tooltipText.setTextFormat(this.tooltipFormat);
+		this.tooltipText.width = 150;
+		this.tooltipText.height = this.tooltipText.textHeight + 10;
+		this.tooltipSprite.graphics.clear();
+		this.tooltipSprite.graphics.lineStyle(0, 0, 0);
+		this.tooltipSprite.graphics.beginFill(0x000000, 1);
+		this.tooltipSprite.graphics.drawRoundRect(x - 3, y, 156, this.tooltipText.textHeight + 4, 10, 10);
+		this.tooltipSprite.graphics.endFill();
+	    }
 	}
 	    
 	private function mouseOverHandler(event:MouseEvent):void {

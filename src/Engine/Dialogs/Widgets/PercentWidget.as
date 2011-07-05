@@ -9,9 +9,12 @@ package Engine.Dialogs.Widgets {
 	public var textColor:uint = 0xbbbbbb;
 	public var width:Number;
 	public var height:Number;
+	public var dx:Number;
+	public var dy:Number;
 	public var icon:Function;
 	public var rightAligned:Boolean;
 	public var bottomAligned:Boolean;
+	public var noProgress:Boolean;
 	private var _value:Number = 0;
 	public var valueString:String = '0%  ';
 	public var progressString:String = '';
@@ -20,7 +23,7 @@ package Engine.Dialogs.Widgets {
 	private var valueFormat:TextFormat;
 	private var titleFormat:TextFormat;
 
-	public function PercentWidget(x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0, c:uint = 0, title:String = '', $icon:Function = null, right:Boolean = false, bottom:Boolean = false):void {
+	public function PercentWidget(x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0, c:uint = 0, title:String = '', $icon:Function = null, right:Boolean = false, bottom:Boolean = false, $dx:Number = 0, $dy:Number = 0, $noProgress:Boolean = false):void {
 	    super(x, y, title);
 	    this.width = w;
 	    this.height = h;
@@ -28,6 +31,9 @@ package Engine.Dialogs.Widgets {
 	    this.icon = $icon;
 	    this.rightAligned = right;
 	    this.bottomAligned = bottom;
+	    this.noProgress = $noProgress;
+	    this.dx = $dx;
+	    this.dy = $dy;
 	    // title text
 	    this.titleText = new TextField();
 	    this.titleText.text = title;
@@ -69,18 +75,23 @@ package Engine.Dialogs.Widgets {
 		this.valueText.height = this.valueText.textHeight + 2;
 		this.valueText.x = w;
 		this.valueText.y = h - this.valueText.height + 2;
+		if (this.noProgress) {
+		    this.valueText.width = (33 + w) * (ratio - 1);
+		    this.valueText.x = 0;
+		    w += 33;
+		}
 		this.titleText.width = (this.titleText.textWidth + 13) * (ratio - 1);
 		this.titleText.height = this.titleText.textHeight + 2;
 		this.titleText.x = - this.titleText.width - 4;
 		this.titleText.y = h - this.titleText.height + 2;
 	    }
-	    var tx:Number = this.x;
-	    var ty:Number = this.y;
+	    var tx:Number = this.x + ((ratio >=1 && ratio <=2) ? this.dx * (ratio - 1) : 0);
+	    var ty:Number = this.y + ((ratio >=1 && ratio <=2) ? this.dy * (ratio - 1) : 0);
 	    var wPercent:Number = (ratio >= 1 && ratio <= 2) ? (ratio - 1) * this.valueText.width : 0;
 	    var wIcon:Number = (this.icon != null) ? h * 2 : 0;
 	    var wTitle:Number = (ratio >= 1 && ratio <= 2) ? (ratio - 1) * this.titleText.width : 0;
 	    if (this.rightAligned) {
-		if (ratio >= 1 && ratio <= 2 ) {
+		if (ratio >= 1 && ratio <= 2 && !this.noProgress) {
 		    tx -= w + wPercent;
 		} else {
 		    tx -= w;
@@ -96,16 +107,18 @@ package Engine.Dialogs.Widgets {
 	    this.titleText.x = Math.round(tx + this.titleText.x);
 	    this.titleText.y = Math.round(ty + this.titleText.y);
 	    if (w != 0 || h != 0) {
-		this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.1), 1);
-		this.sprite.graphics.drawRoundRect(tx, ty, w, h, h, h);
-		this.sprite.graphics.endFill();
-		this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.7), 1);
-		this.sprite.graphics.drawRoundRect(tx + 1, ty + 1, w - 2, h - 2, h - 2, h - 2);
-		this.sprite.graphics.endFill();
-		this.sprite.graphics.lineStyle(0, 0, 0);
-		this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.3), 1);
-		this.sprite.graphics.drawRoundRect(tx + 1, ty + 1, (w - 2) * this.value, h - 2, h - 2, h - 2);
-		this.sprite.graphics.endFill();
+		if (!this.noProgress) {
+		    this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.1), 1);
+		    this.sprite.graphics.drawRoundRect(tx, ty, w, h, h, h);
+		    this.sprite.graphics.endFill();
+		    this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.7), 1);
+		    this.sprite.graphics.drawRoundRect(tx + 1, ty + 1, w - 2, h - 2, h - 2, h - 2);
+		    this.sprite.graphics.endFill();
+		    this.sprite.graphics.lineStyle(0, 0, 0);
+		    this.sprite.graphics.beginFill(Utils.colorDark(this.barColor, 0.3), 1);
+		    this.sprite.graphics.drawRoundRect(tx + 1, ty + 1, (w - 2) * this.value, h - 2, h - 2, h - 2);
+		    this.sprite.graphics.endFill();
+		}
 		if (this.icon != null) {
 		    this.titleText.x -= h;
 		    this.icon(this.sprite, tx - h, ty + h/2, h/2, this.barColor, 1);

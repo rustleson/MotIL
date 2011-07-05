@@ -534,7 +534,7 @@ package Engine.Objects {
 	    jd.referenceAngle = Math.PI;
 	    jd.enableLimit = false;
 	    fixtureDef.density = 0.05;
-	    fixtureDef.friction = 0.01;
+	    fixtureDef.friction = 0.03;
 	    var headWidth:Number = headUnit * 0.75 * wideRatio;
 	    var hairWidth:Number = headWidth / 5;
 	    var hairLength:Number = headUnit * stats.hairLength;

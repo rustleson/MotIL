@@ -12,19 +12,23 @@ package Engine.Dialogs.Widgets {
 	public var height:Number;
 	public var rightAligned:Boolean;
 	public var bottomAligned:Boolean;
+	public var dx:Number;
+	public var dy:Number;
 	private var _value:Number = 0;
 	public var icon:Function;
 	private var valueText:TextField;
 	private var titleText:TextField;
 	private var format:TextFormat;
 
-	public function KarmaWidget(x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0, title:String = '', $icon:Function = null, right:Boolean = false, bottom:Boolean = false):void {
+	public function KarmaWidget(x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0, title:String = '', $icon:Function = null, right:Boolean = false, bottom:Boolean = false, $dx:Number = 0, $dy:Number = 0):void {
 	    super(x, y, title);
 	    this.width = w;
 	    this.height = h;
 	    this.rightAligned = right;
 	    this.bottomAligned = bottom;
 	    this.icon = $icon;
+	    this.dx = $dx;
+	    this.dy = $dy;
 	    // title text
 	    this.titleText = new TextField();
 	    this.titleText.text = title;
@@ -72,8 +76,8 @@ package Engine.Dialogs.Widgets {
 		this.titleText.x = - this.titleText.width - 4;
 		this.titleText.y = h - this.titleText.height + 2;
 	    }
-	    var tx:Number = this.x;
-	    var ty:Number = this.y;
+	    var tx:Number = this.x + ((ratio >=1 && ratio <=2) ? this.dx * (ratio - 1) : 0);
+	    var ty:Number = this.y + ((ratio >=1 && ratio <=2) ? this.dy * (ratio - 1) : 0);
 	    var wPercent:Number = (ratio >= 1 && ratio <= 2) ? (ratio - 1) * this.valueText.width : 0;
 	    var wIcon:Number = (this.icon != null) ? h * 2 : 0;
 	    var wTitle:Number = (ratio >= 1 && ratio <= 2) ? (ratio - 1) * this.titleText.width : 0;

@@ -10,11 +10,13 @@ package Engine.Stats {
 	private var _alignment:Number = 0; // [-1, 1] 
 	private var _alignmentTendency: Number = 0; // [-1, 1]
 	private var _tendencyRatio: Number = 1; // must be > 0 
+	private var POINTS_EACH_LEVEL:int = 2;
 
 	// variable stats
 	private var _pain:VariableStat = new VariableStat(); 
 	private var _pleasure:VariableStat = new VariableStat(); 
 	private var _expPool:VariableStat = new VariableStat(); 
+	private var _pointPool:VariableStat = new VariableStat(); 
 
 	// experience stats
 	private var _level:ExpStat = new ExpStat(); 
@@ -40,6 +42,7 @@ package Engine.Stats {
 
 	public function GenericStats(){
 	    this._expPool.max = 20000;
+	    this._pointPool.max = 100;
 	    this.takeExp(0);
 	    this.takePain(0);
 	    this.takePleasure(0);
@@ -176,8 +179,10 @@ package Engine.Stats {
 	}
 
 	public function takeExp(dExp:Number):void {
+	    var l:int = this._level.level;
 	    this._level.exp += dExp;
 	    this._expPool.value += dExp;
+	    this._pointPool.value += (this._level.level - l) * POINTS_EACH_LEVEL;
 	}
 
 	public function takePain(dv:Number):void {
@@ -222,6 +227,18 @@ package Engine.Stats {
 	    return this._maxPleasure;
 	}
 
+	public function get expPool():Number {
+	    return this._expPool.value;
+	}
+
+	public function get pointPool():Number {
+	    return this._pointPool.value;
+	}
+
+	public function set pointPool(v:Number):void {
+	    this._pointPool.value = v;
+	}
+
 	/* POINT STATS */
 
 	public function get constitution():Number {
@@ -238,6 +255,22 @@ package Engine.Stats {
 
 	public function get speed():Number {
 	    return this._speed.value;
+	}
+
+	public function get constitutionLevel():Number {
+	    return this._constitution.level;
+	}
+
+	public function get painResistanceLevel():Number {
+	    return this._painResistance.level;
+	}
+
+	public function get arousalBoostLevel():Number {
+	    return this._arousalBoost.level;
+	}
+
+	public function get speedLevel():Number {
+	    return this._speed.level;
 	}
 
 	public function set constitution(v:Number):void {
