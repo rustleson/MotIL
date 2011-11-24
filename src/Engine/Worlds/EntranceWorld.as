@@ -61,7 +61,7 @@ package Engine.Worlds {
 	    backgrounds.push({ratio: 1, bitmap: bd3});
 
 	    stats.space = 1;
-	    stats.tribe = ProtagonistStats.RAKSHASI_TRIBE;
+	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
 	    //stats.level = 15;
 	    stats.hairColor = 0x005500;
 	    stats.hairLength = 1.5;

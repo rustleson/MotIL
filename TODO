@@ -24,6 +24,7 @@
 [+]         - experience sources
 [ ]         - adjust stats coefficients
 [ ]         - improved experience system
+[ ]         - improved stretching: 1) does not depend on pain/pool? 2) pain calculated on effective diameter/length, which slowly decreases with time
 
 [ ] * protagonist design
 [+]     + curved poly adjustment
@@ -48,7 +49,7 @@
 [+]     + anus slot
 [+]     + vagina slot
 [+]	+ improved hair physics
-[ ]	+ improved breast physics
+[+]	+ improved breast physics
 [ ]	+ face emotions (depending on pain/pleasure)
 
 [ ] * protagonist movement

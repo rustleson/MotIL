@@ -176,30 +176,54 @@ package Engine.Objects {
 	    // Breast
 	    // L
 	    box = new b2PolygonShape();
+	    box.SetAsBox(headUnit * 0.3 * wideRatio / 2, headUnit * 0.3 * wideRatio  / 2);
+	    fixtureDef.shape = box;
+	    this.createOrUpdateBody('breastHelperL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/12 * wideRatio), update);
+	    bodies['breastHelperL'].CreateFixture(fixtureDef);
+	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.75 * wideRatio / 2, headUnit * 0.75 * wideRatio  / 2);
 	    fixtureDef.shape = box;
 	    this.createOrUpdateBody('breastL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6), update);
 	    bodies['breastL'].CreateFixture(fixtureDef);
+	    bodies['breastL'].drawingFunction = this.drawBreastL as Function;
 	    // R
+	    box = new b2PolygonShape();
+	    box.SetAsBox(headUnit * 0.3 * wideRatio / 2, headUnit * 0.3 * wideRatio  / 2);
+	    fixtureDef.shape = box;
+	    this.createOrUpdateBody('breastHelperR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/12 * wideRatio), update);
+	    bodies['breastHelperR'].CreateFixture(fixtureDef);
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.75 * wideRatio / 2, headUnit * wideRatio  * 0.75 / 2);
 	    fixtureDef.shape = box;
 	    this.createOrUpdateBody('breastR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6), update);
 	    bodies['breastR'].CreateFixture(fixtureDef);
+	    bodies['breastR'].drawingFunction = this.drawBreastR as Function;
 	    // Nipple
 	    bd.userData = nippleUserData;
 	    // L
+	    fixtureDef.density = 0.003;
+	    box = new b2PolygonShape();
+	    box.SetAsBox(headUnit * 0.5 * wideRatio / 2, headUnit * 0.5 * wideRatio  / 2);
+	    fixtureDef.shape = box;
+	    this.createOrUpdateBody('nippleHelperL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4)), update);
+	    bodies['nippleHelperL'].CreateFixture(fixtureDef);
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.33 * wideRatio / 2, headUnit * 0.33 * wideRatio  / 2);
 	    fixtureDef.shape = box;
-	    this.createOrUpdateBody('nippleL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6), update);
+	    this.createOrUpdateBody('nippleL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6 * (wideRatio - 0.4)), update);
 	    bodies['nippleL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
+	    box.SetAsBox(headUnit * 0.1 * wideRatio / 2, headUnit * 0.1 * wideRatio  / 2);
+	    fixtureDef.shape = box;
+	    this.createOrUpdateBody('nippleHelperR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4)), update);
+	    bodies['nippleHelperR'].CreateFixture(fixtureDef);
+	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.33 * wideRatio / 2, headUnit * 0.33 * wideRatio  / 2);
 	    fixtureDef.shape = box;
-	    this.createOrUpdateBody('nippleR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6), update);
+	    this.createOrUpdateBody('nippleR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6 * (wideRatio - 0.4)), update);
 	    bodies['nippleR'].CreateFixture(fixtureDef);
+	    fixtureDef.density = 0.1;
 
 	    // Stomach
 	    bd.userData = bodyUserData;
@@ -459,6 +483,7 @@ package Engine.Objects {
 
 	    // Create Joints
 	    var jd:b2RevoluteJointDef = new b2RevoluteJointDef();
+	    var jdh:b2DistanceJointDef = new b2DistanceJointDef();
 	    jd.enableLimit = true;
 	    jd.enableMotor = true;
 	    jd.collideConnected = false;
@@ -536,21 +561,32 @@ package Engine.Objects {
 	    jd.Initialize(bodies['chest'], bodies['stomach'], new b2Vec2(startX, startY + headUnit * (3 + 1/6 - 3/4)));
 	    joints['jointStomach'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // chest/breasts
-	    jd.lowerAngle = -90 / (180/Math.PI);
-	    jd.upperAngle = 90 / (180/Math.PI);
-	    var gp:b2Vec2 = new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
-	    jd.Initialize(bodies['chest'], bodies['breastL'], gp);
-	    joints['jointBreastL'] = world.CreateJoint(jd) as b2RevoluteJoint;
-	    gp = new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
-	    jd.Initialize(bodies['chest'], bodies['breastR'], gp);
-	    joints['jointBreastR'] = world.CreateJoint(jd) as b2RevoluteJoint;
+	    //jd.lowerAngle = -90 / (180/Math.PI);
+	    //jd.upperAngle = 90 / (180/Math.PI);
+	    //var gp:b2Vec2 = new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
+	    jdh.Initialize(bodies['chest'], bodies['breastHelperL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/12 * wideRatio)), new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/24 * wideRatio)));
+	    joints['jointBreastHelperL'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['breastHelperL'], bodies['breastL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/24 * wideRatio)), new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6)));
+	    joints['jointBreastL'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['chest'], bodies['breastHelperR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/12 * wideRatio)), new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/24 * wideRatio)));
+	    joints['jointBreastHelperR'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['breastHelperR'], bodies['breastR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 - 1/24 * wideRatio)), new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6)));
+	    joints['jointBreastR'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    //gp = new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
+	    //jd.Initialize(bodies['chest'], bodies['breastR'], gp);
+	    //joints['jointBreastR'] = world.CreateJoint(jd) as b2RevoluteJoint;
+	    
 	    // breasts/nipples
-	    jd.lowerAngle = 0 / (180/Math.PI);
-	    jd.upperAngle = 0 / (180/Math.PI);
-	    jd.Initialize(bodies['breastL'], bodies['nippleL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * 2));
-	    joints['jointNippleL'] = world.CreateJoint(jd) as b2RevoluteJoint;
-	    jd.Initialize(bodies['breastR'], bodies['nippleR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * 2));
-	    joints['jointNippleR'] = world.CreateJoint(jd) as b2RevoluteJoint;
+	    //jd.lowerAngle = 0 / (180/Math.PI);
+	    //jd.upperAngle = 0 / (180/Math.PI);
+	    jdh.Initialize(bodies['breastL'], bodies['nippleHelperL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6)), new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4))));
+	    joints['jointNippleHelperL'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['nippleHelperL'], bodies['nippleL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4))), new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6 * (wideRatio - 0.4))));
+	    joints['jointNippleL'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['breastR'], bodies['nippleHelperR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6)), new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4))));
+	    joints['jointNippleHelperR'] = world.CreateJoint(jdh) as b2DistanceJoint;
+	    jdh.Initialize(bodies['nippleHelperR'], bodies['nippleR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/12 * (wideRatio - 0.4))), new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6 * (wideRatio - 0.4))));
+	    joints['jointNippleR'] = world.CreateJoint(jdh) as b2DistanceJoint;
 	    // Stomach/hips
 	    jd.Initialize(bodies['stomach'], bodies['hips'], new b2Vec2(startX, startY + headUnit * (4 - 1/2)));
 	    joints['jointHips'] = world.CreateJoint(jd) as b2RevoluteJoint;
@@ -610,7 +646,6 @@ package Engine.Objects {
 	    var headWidth:Number = headUnit * 0.75 * wideRatio;
 	    var hairWidth:Number = headWidth / 5;
 	    var hairLength:Number = headUnit * stats.hairLength;
-	    var jdh:b2DistanceJointDef = new b2DistanceJointDef();
 	    if (stats.hairLength > 0) {
 		for (var i:int = 0; i <= 8; i++) {
 		    for (var j:int = 0; j <= numSegments; j++) {
@@ -1026,29 +1061,35 @@ package Engine.Objects {
 	    var c:uint = 0xAA8800;
             var a:Number = 1;
 	    spr.graphics.lineStyle(0.3, 0x000000, 0.2);
-	    spr.graphics.beginFill(c, a);
-	    spr.graphics.moveTo(diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
+	    //spr.graphics.beginFill(c, a);
+	    var gradientBoxMatrix:Matrix = new Matrix();
+	    gradientBoxMatrix.createGradientBox(diademWidth * drawScale, diademLength * drawScale, 0);
+	    spr.graphics.beginGradientFill(GradientType.LINEAR, [Utils.colorLight(c, 0.5), c, Utils.colorDark(c, 0.5), c, Utils.colorLight(c, 0.5)], [1, 1, 1, 1, 1], [0, 0x20, 0x78, 0xdf, 0xff], gradientBoxMatrix, SpreadMethod.REPEAT);
+	    spr.graphics.moveTo(diademWidth / 2 * drawScale, diademLength * 0.3 * drawScale + dy);
 	    spr.graphics.curveTo(0, diademLength / 4 * drawScale + dy, 0, -diademLength / 2 * drawScale + dy);
-	    spr.graphics.curveTo(0, diademLength / 4 * drawScale + dy, -diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(0, diademLength / 4 * drawScale + dy, -diademWidth * 0.5 * drawScale, diademLength * 0.3 * drawScale + dy);
+	    spr.graphics.lineTo(-diademWidth * 0.5 * drawScale, diademLength * 0.5 * drawScale + dy);
 	    spr.graphics.curveTo(0, (diademLength / 2 + headWidth / 8) * drawScale + dy, diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
+	    spr.graphics.lineTo(diademWidth * 0.5 * drawScale, diademLength * 0.3 * drawScale + dy);
 	    spr.graphics.endFill();
 	    c = Utils.colorDark(0xffffff, (-stats.alignment + 1) / 2);
-	    spr.graphics.lineStyle(0.2, c, 0.5);
-	    spr.graphics.beginFill(0xffffff, 0.4);
-	    spr.graphics.moveTo(0, -diademLength * 0.6 * drawScale + dy);
-	    spr.graphics.curveTo(0, 0 + dy, -diademLength * 0.5 * drawScale, 0 + dy);
-	    spr.graphics.curveTo(0, 0 + dy, 0, diademLength * 0.6 * drawScale + dy);
-	    spr.graphics.curveTo(0, 0 + dy, diademLength * 0.5 * drawScale, 0 + dy);
-	    spr.graphics.curveTo(0, 0 + dy, 0, -diademLength * 0.6 * drawScale + dy);
+	    spr.graphics.lineStyle(0.2, 0x000000, 0.4);
+	    spr.graphics.beginFill(c, 0.3);
+	    var shiftCenter:Number = diademLength * 0.2 * drawScale; 
+	    spr.graphics.moveTo(0, shiftCenter - diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(0, shiftCenter + dy, -diademLength * 0.4 * drawScale, shiftCenter + dy);
+	    spr.graphics.curveTo(0, shiftCenter + dy, 0, shiftCenter + diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(0, shiftCenter + dy, diademLength * 0.4 * drawScale, shiftCenter + dy);
+	    spr.graphics.curveTo(0, shiftCenter + dy, 0, shiftCenter - diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.endFill();
-	    spr.graphics.beginFill(0xffffff, 0.4);
+	    spr.graphics.beginFill(c, 0.3);
 	    spr.graphics.moveTo((-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, -diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale + dy);
 	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (-diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, -diademWidth / 4 * drawScale, (diademLength * 0.4 + diademLength * 1.5 / 5) * drawScale + dy);
 	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.endFill();
-	    spr.graphics.beginFill(0xffffff, 0.4);
+	    spr.graphics.beginFill(c, 0.3);
 	    spr.graphics.moveTo((diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale + dy);
 	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
@@ -1103,6 +1144,33 @@ package Engine.Objects {
 		spr.graphics.drawCircle(0, 0, headUnit * 0.5 * drawScale);
 		spr.graphics.endFill();
 	    }
+	}
+
+	private function drawBreast(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
+	    var breastSize:Number = headUnit * 0.75 * wideRatio;
+	    spr.graphics.clear();
+	    spr.graphics.lineStyle(0, 0, 0);
+	    var gradientBoxMatrix:Matrix = new Matrix();
+	    gradientBoxMatrix.createGradientBox(breastSize * drawScale, breastSize * drawScale, 0, -breastSize / 2 * drawScale, -breastSize / 2 * drawScale);
+	    spr.graphics.beginGradientFill(bodyUserData.gradientType, bodyUserData.gradientColors, bodyUserData.gradientAlphas, bodyUserData.gradientRatios, gradientBoxMatrix);
+	    spr.graphics.drawCircle(0, 0, breastSize / 2 * drawScale);
+	    spr.graphics.endFill();
+	    /*
+	    var nippleSize:Number = breastSize * 0.4;
+	    var nippleVec:b2Vec2 = new b2Vec2(0, breastSize * 0.2 * wideRatio);
+	    gradientBoxMatrix.createGradientBox(nippleSize * drawScale, nippleSize * drawScale, 0, (nippleVec.x - nippleSize / 2) * drawScale, (nippleVec.y - nippleSize / 2) * drawScale);
+	    spr.graphics.beginGradientFill(nippleUserData.gradientType, nippleUserData.gradientColors, nippleUserData.gradientAlphas, nippleUserData.gradientRatios, gradientBoxMatrix);
+	    spr.graphics.drawCircle(nippleVec.x * drawScale, nippleVec.y * drawScale, nippleSize / 2 * drawScale);
+	    spr.graphics.endFill();
+	    */
+	}
+
+	private function drawBreastL(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
+	    drawBreast(shape, xf, c, drawScale, dx, dy, udata, spr);
+	}
+
+	private function drawBreastR(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
+	    drawBreast(shape, xf, c, drawScale, dx, dy, udata, spr);
 	}
 
     }

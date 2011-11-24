@@ -87,7 +87,7 @@ package Engine.Objects {
 		for (var f:b2Fixture = body.GetFixtureList(); f != null; f = f.GetNext()){
 		    if (viewport.TestOverlap(f.GetAABB())) {
 			var bodyPosition:b2Vec2 = body.GetPosition();
-			if (!body.sprite || forceRedraw || udata.hasOwnProperty('slot') && !udata.slot.isFree) {
+			if (!body.sprite || forceRedraw || udata.hasOwnProperty('slot') && !udata.slot.isFree || udata.hasOwnProperty('alwaysUpdate')) {
 			    if (!body.sprite)
 				body.sprite = new Sprite();
 			    var drawingFunction:Function = body.drawingFunction as Function ? body.drawingFunction as Function : this.drawGenericShape;
