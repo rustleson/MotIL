@@ -42,7 +42,7 @@ package Engine.Objects {
 
 	    // linga
 	    box = new b2PolygonShape();
-	    Utils.setBoxAttributes(box, bd, x + width / 2 - thickness / 2, y - length + thickness / 3, thickness, length + thickness);
+	    Utils.setBoxAttributes(box, bd, x + width / 2 - thickness / 2, y - length * 1.5  + thickness, thickness, length + thickness);
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
@@ -54,7 +54,7 @@ package Engine.Objects {
 	    headSlot.localAnchor = new b2Vec2(0, -(length + thickness) / 2);
 	    headSlot.radiuses = new Array();
 	    for (var i:int = 0; i <= 10; i++) {
-		headSlot.radiuses.push(new b2Vec2(length * i / 10 / 2, (i * i / 100 * thickness / 2)));
+		headSlot.radiuses.push(new b2Vec2(length * i / 10 / 2, (Math.sqrt(i) / Math.sqrt(10) * thickness / 2)));
 	    }
 	    bodies['linga'].GetUserData()['slot'] = headSlot;
 	    bodies['linga'].drawingFunction = this.drawLinga as Function;

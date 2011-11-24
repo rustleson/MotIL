@@ -8,8 +8,9 @@ package Engine.Objects {
     import Box2D.Common.*;
     import Box2D.Common.Math.*;
     import General.Input;
+    import flash.display.Graphics;
+    import flash.geom.Point;
     
-	
 	
     public final class Utils {
 
@@ -73,6 +74,55 @@ package Engine.Objects {
             return (r << 16) + (g << 8) + b;
 	}
 
-   }
+	public static function multicurve(g: Graphics, args: Array, closed: Boolean): void {                       
+                var mid: Array = args.slice();  //make dublicate
+                var i: uint;
+                var point: Point;
+                var nextPoint: Point;
+                var numPoints: uint = mid.length;
+
+                if (numPoints == 2) {
+                    g.moveTo(mid[0].x, mid[0].y);
+                    g.lineTo(mid[1].x, mid[1].y);
+                    return;
+                }
+
+                var Xpoint: Array = new Array();
+                var Ypoint: Array = new Array();
+                for (i = 1; i < numPoints - 2; i++) {
+		    point = mid[i];
+		    nextPoint = mid[i+1];
+		    Xpoint[i] = 0.5*(nextPoint.x + point.x);
+		    Ypoint[i] = 0.5*(nextPoint.y + point.y);
+                }
+                if (closed) {
+		    Xpoint[0] = 0.5*(mid[1].x + mid[0].x);
+		    Ypoint[0] = 0.5*(mid[1].y + mid[0].y);
+		    Xpoint[i] = 0.5*(mid[i+1].x + mid[i].x);
+		    Ypoint[i] = 0.5*(mid[i+1].y + mid[i].y);
+		    Xpoint[i+1] = 0.5*(mid[i+1].x + mid[0].x);
+		    Ypoint[i+1] = 0.5*(mid[i+1].y + mid[0].y);
+		    mid.push(new Point(mid[0].x, mid[0].y));
+		    Xpoint[i+2] = Xpoint[0];
+		    Ypoint[i+2] = Ypoint[0];
+                } else {
+		    Xpoint[0] = mid[0].x;
+		    Ypoint[0] = mid[0].y;
+		    Xpoint[i] = mid[i+1].x;
+		    Ypoint[i] = mid[i+1].y;
+		    mid.pop();
+		    numPoints--;
+                }
+                g.moveTo(Xpoint[0], Ypoint[0]);
+                for (i = 1; i < numPoints; i++) {
+		    point = mid[i];
+		    g.curveTo(point.x, point.y, Xpoint[i], Ypoint[i]);
+                }
+                if (closed) {
+		    g.curveTo(mid[0].x, mid[0].y, Xpoint[i], Ypoint[i]);
+                }
+        }
+
+  }
 	
 }

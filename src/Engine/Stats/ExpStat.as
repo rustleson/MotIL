@@ -7,11 +7,12 @@ package Engine.Stats {
 	private var _value:Number; 
 	private var _value2:Number; 
 	private var _valueFrac:Number; 
+	private var _levelFrac:Number; 
 	private var _tnl:Number; 
 	private var _tnlRatio:Number; 
-	public var _fromValue:Number; 
-	public var _toValue:Number; 
-	public var progressRate:Number = 100; 
+	private var _fromValue:Number; 
+	private var _toValue:Number; 
+	private var _progressRate:Number = 100; 
 
 	public function ExpStat(progressRate:Number = 100, fromValue:Number = 1, toValue:Number = 50):void {
 	    this.fromValue = fromValue;
@@ -44,12 +45,12 @@ package Engine.Stats {
 	    return this._level;
 	}
 
-	public function get levelFrac():int {
-	    return this.exp2levF(this._exp);
+	public function get levelFrac():Number {
+	    return this._levelFrac;
 	}
 
 	public function set level(v:int):void {
-	    this.exp = this.lev2exp(v);
+	    this.exp = this.lev2exp(v) + 1;
 	}
 
 	public function get exp():Number {
@@ -79,7 +80,7 @@ package Engine.Stats {
 	    return int(Math.log(exp / this.progressRate + 1) * 4 + 1);
 	}
 	    
-	private function exp2levF(exp:Number):int {
+	private function exp2levF(exp:Number):Number {
 	    return Math.log(exp / this.progressRate + 1) * 4 + 1;
 	}
 	    
@@ -90,6 +91,7 @@ package Engine.Stats {
 	private function buildValue():void {
 	    this._value = this.fromValue + (this.toValue - this.fromValue) * (this.level - 1) / 49;
 	    this._value2 = this.fromValue + (this.toValue - this.fromValue) * (this.level - 1) * (this.level - 1) / 49 / 49;
+	    this._levelFrac = this.exp2levF(this._exp);
 	    this._valueFrac = this.fromValue + (this.toValue - this.fromValue) * (this.levelFrac - 1) / 49;
 	    this._tnl = (this._level == 50) ? 0 : (this.lev2exp(this._level + 1) - this.exp);
 	    this._tnlRatio = (this._level == 50) ? 1 : ((this.exp - this.lev2exp(this._level)) / (this.lev2exp(this._level + 1) - this.lev2exp(this._level)));
@@ -110,6 +112,15 @@ package Engine.Stats {
 
 	public function set toValue(v:Number):void {
 	    this._toValue = v;
+	    this.buildValue();
+	}
+
+	public function get progressRate():Number {
+	    return this._progressRate;
+	}
+
+	public function set progressRate(v:Number):void {
+	    this._progressRate = v;
 	    this.buildValue();
 	}
 

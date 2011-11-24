@@ -14,7 +14,7 @@ package Engine.Dialogs {
 
 	public function MainStatsDialog(w:Number, h:Number):void {
 	    super(w, h);
-	    this.widgets['panel'] = new PanelWidget(w - 5, 5, 124, 96, w - 10, h - 10, 0x444444, 'Main Stats', true);
+	    this.widgets['panel'] = new PanelWidget(w - 5, 5, 124, 96, w - 10, h - 10, 0x444444, '', true);
 	    this.widgets['space'] = new PercentWidget(w - 12, 24, 102, 6, GenericStats.decodeColor(GenericStats.SPACE_COLOR), 'Space', Icons.Space, true, false, 0, 72);
 	    this.widgets['water'] = new PercentWidget(w - 12, 36, 102, 6, GenericStats.decodeColor(GenericStats.WATER_COLOR), 'Water', Icons.Water, true, false, 0, 72);
 	    this.widgets['earth'] = new PercentWidget(w - 12, 48, 102, 6, GenericStats.decodeColor(GenericStats.EARTH_COLOR), 'Earth', Icons.Earth, true, false, 0, 72);
@@ -37,7 +37,16 @@ package Engine.Dialogs {
 	    this.widgets['speedup'] = new LevelUpWidget(w - 12, 34, 10, 10, null, 0xffdd55, 'Level Up', true, false, -33);
 	    this.widgets['pool'] = new PercentWidget(w - 12, 48, 102, 6, 0xffdd55, 'Pool', Icons.Experience, true, false, 0, 0, true);
 	    this.widgets['points'] = new PercentWidget(w - 12, 60, 102, 6, 0xffdd55, 'Points', Icons.Experience, true, false, 0, 0, true);
-	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup'];
+	    this.widgets['mouthpanel'] = new PanelWidget(w - 245, 70, 130, 50, 130, 50, 0x474444, 'Mouth', true);
+	    this.widgets['mouthd'] = new PercentWidget(w - 250, 96, 70, 6, 0x552211, 'D:', null, true);
+	    this.widgets['mouthl'] = new PercentWidget(w - 250, 108, 70, 6, 0x552211, 'L:', null, true);
+	    this.widgets['vaginapanel'] = new PanelWidget(w - 245, 130, 130, 50, 130, 50, 0x474444, 'Vagina', true);
+	    this.widgets['vaginad'] = new PercentWidget(w - 250, 156, 70, 6, 0x552211, 'D:', null, true);
+	    this.widgets['vaginal'] = new PercentWidget(w - 250, 168, 70, 6, 0x552211, 'L:', null, true);
+	    this.widgets['anuspanel'] = new PanelWidget(w - 245, 190, 130, 50, 130, 50, 0x474444, 'anus', true);
+	    this.widgets['anusd'] = new PercentWidget(w - 250, 216, 70, 6, 0x552211, 'D:', null, true);
+	    this.widgets['anusl'] = new PercentWidget(w - 250, 228, 70, 6, 0x552211, 'L:', null, true);
+	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthd', 'mouthl', 'vaginapanel', 'vaginad', 'vaginal', 'anuspanel', 'anusd', 'anusl'];
 	    this.visibleWidgets = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level'];
 	    this.levelupWidgets = ['painresup', 'arouseup', 'constitutionup', 'speedup'];
 	    this.toggleHide();

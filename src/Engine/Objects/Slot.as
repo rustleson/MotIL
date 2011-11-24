@@ -21,7 +21,7 @@ package Engine.Objects {
 	public var body:b2Body;
 	public var isFree:Boolean = true;
 	public var isReady:Boolean = false;
-	public var joint:b2Joint;
+	public var joint:b2PrismaticJoint;
 	public var connectedSlot:Slot;
 	public var localAnchor:b2Vec2;
 	public var depth:Number;

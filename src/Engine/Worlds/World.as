@@ -26,7 +26,7 @@ package Engine.Worlds {
 	public var mouseJoint:b2MouseJoint;
 	public var velocityIterations:int = 10;
 	public var positionIterations:int = 10;
-	public var timeStep:Number = 1.0/30.0;
+	public var timeStep:Number = 1.5/30.0;
 	public var physScale:Number = 30;
 	public var appWidth:int;
 	public var appHeight:int;

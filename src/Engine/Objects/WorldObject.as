@@ -49,15 +49,17 @@ package Engine.Objects {
 	}
 
 	public function toggleMotors(onoff:Boolean):void {
-	    for each (var joint:Object in joints) {
-		joint.EnableMotor(onoff);
+	    for (var joint:Object in joints) {
+		if (targetAngles.hasOwnProperty(joint))
+		    joints[joint].EnableMotor(onoff);
 	    }		    
 	}
 		
 	public function update():void{
 	    if (timeout > 0) {
 		for (var joint:Object in joints) {
-		    joints[joint].SetMotorSpeed(-gain * (joints[joint].GetJointAngle() - targetAngles[joint]));;
+		    if (targetAngles.hasOwnProperty(joint))
+			joints[joint].SetMotorSpeed(-gain * (joints[joint].GetJointAngle() - targetAngles[joint]));
 		}	         
 		timeout--;
 		if (timeout == 0) {

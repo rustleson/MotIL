@@ -1,12 +1,12 @@
 [ ] * main stats:
-[ ]     + slots
-[ ]         - L/R hands
-[ ]         - vagina
-[ ]         - mouth
-[ ]         - anus
-[ ]     + slot stats
-[ ]         - max. diameter [0, limit]
-[ ]         - max. length [0, limit]
+[+]     + slots
+[+]         - L/R hands
+[+]         - vagina
+[+]         - mouth
+[+]         - anus
+[+]     + slot stats
+[+]         - max. diameter [0, limit]
+[+]         - max. length [0, limit]
 [+]     + 5 elemental scales [0, 1]
 [+]         - better formula for changing colors
 [+]         - better formula for mixing colors
@@ -21,8 +21,9 @@
 [+]         - experience stats
 [+]         - secondary stats
 [+]         - CON/DUR/EXC/SPD
-[ ]         - experience sources
+[+]         - experience sources
 [ ]         - adjust stats coefficients
+[ ]         - improved experience system
 
 [ ] * protagonist design
 [+]     + curved poly adjustment
@@ -40,16 +41,19 @@
 [+]         - thin complection / horns (Rakshasi)
 [+]         - normal complection / halo (Dakini)
 [+] 	    - fat complection / diadem (Yakshini)
-[ ]     + update model with sizes/details on the fly
+[+]     + update model with sizes/details on the fly
 [+]     + level/sensitivity dependent sizes
 [+]     + hands slots
 [+]     + mouth slot
 [+]     + anus slot
 [+]     + vagina slot
+[+]	+ improved hair physics
+[ ]	+ improved breast physics
+[ ]	+ face emotions (depending on pain/pleasure)
 
 [ ] * protagonist movement
 [ ]     + poses / impulses
-[ ]     + slots interaction
+[+]     + slots interaction
 [ ]     + front/side/back views and transitions (?is it necessary?)
 
 [ ] * menus
@@ -64,7 +68,7 @@
 [ ]         - customize hair color
 [ ]         - customize hair length
 [ ]         - customize eyes color
-[ ]     + stats/upgrade
+[+]     + stats/upgrade
 [ ]     + dialogs
 
 [ ] * monsters

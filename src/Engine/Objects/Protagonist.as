@@ -11,7 +11,11 @@ package Engine.Objects {
     import flash.events.Event;	
     import flash.display.*;
     import Engine.Stats.ProtagonistStats;
+    import flash.geom.Matrix; 
+    import flash.geom.Point;
 	
+    use namespace b2internal;
+
     public class Protagonist extends WorldObject {
 
 	public var bodyUserData:Object;
@@ -21,34 +25,81 @@ package Engine.Objects {
 	public var nippleUserData:Object;
 	public var hairUserData:Object;
 	private var _hairColor:uint;
+	public var numSegments:int;
 	public var stats:ProtagonistStats;
 	public var headUnit:Number;
+	public var initialHeight:Number;
 	public var wideRatio:Number;
+	public var hairSprite:Sprite;
+	public var startX:Number;
+	public var startY:Number;
+	public var world:b2World;
+	public var bodiesPositions:Object;
+	public var bodiesAngles:Object;
 
 	public function Protagonist(world:b2World, startX:Number, startY:Number, height:Number, st:ProtagonistStats){
 
 	    timeout = defaultTimeout;
-	    this.headUnit = height / 8; // head unit height for use in body proportions
-	    var circ:b2CircleShape; 
-	    var box:b2PolygonShape;
-	    var bd:b2BodyDef = new b2BodyDef();
-	    var jd:b2RevoluteJointDef = new b2RevoluteJointDef();
-	    var fixtureDef:b2FixtureDef = new b2FixtureDef();
-	    fixtureDef.filter.categoryBits = 0x0002;
-	    fixtureDef.filter.maskBits = 0x0004;
+	    this.world = world;
+	    this.startX = startX;
+	    this.startY = startY;
+	    this.stats = st;
+	    this.stats.protagonist = this;
+	    this.initialHeight = height;
+	    this.numSegments = 4;
+	    this.bodiesPositions = new Object();
+	    this.bodiesAngles = new Object();
+	    this.hairSprite = new Sprite(); 
 	    targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
 	                    jointUpperArmL: 0 / (180/Math.PI), jointUpperArmR: 0 / (180/Math.PI), jointLowerArmL: 0 / (180/Math.PI), jointLowerArmR: 0 / (180/Math.PI),
 	                    jointUpperLegL: 0 / (180/Math.PI), jointUpperLegR: 0 / (180/Math.PI), jointLowerLegL: 0 / (180/Math.PI), jointLowerLegR: 0 / (180/Math.PI) };
 			
-	    bodyUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff}
-	    headUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
-	    handLUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
-	    handRUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
-	    nippleUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x33, 0x6b, 0x9b, 0xc1, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
-	    hairUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [1, 1, 1], gradientRatios: [0x00, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
-	    this.stats = st;
+	    this.bodyUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff}
+	    this.headUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
+	    this.handLUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
+	    this.handRUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x23, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1, auraIntencity: 0, auraColor: 0xffffff, slot: null}
+	    this.nippleUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [], gradientRatios: [0x00, 0x33, 0x6b, 0x9b, 0xc1, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
+	    this.hairUserData = {gradientType: GradientType.RADIAL, gradientColors: [], gradientAlphas: [1, 1, 1], gradientRatios: [0x00, 0x78, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1.1}
+
+
+	    this.buildBodies();
+	    this.buildJoints();
+
+	    bodiesOrder = new Array();
+
+	    var mainOrder1: Array = new Array('hipL', 'hipR', 'stomach', 'chest', 'shoulders', 'breastL', 'nippleL', 'breastR', 'nippleR', 'neck', 'head');
+	    for each (var str:String in mainOrder1)
+		bodiesOrder.push(str);
+
+	    var mainOrder2: Array = new Array('anus_sym', 'upperLegL', 'lowerLegL', 'footL', 'upperLegR', 'lowerLegR', 'footR', 'vagina_sym', 'upperArmL', 'lowerArmL', 'fistL', 'upperArmR', 'lowerArmR', 'fistR');
+	    for each (str in mainOrder2)
+		bodiesOrder.push(str);
+
+
+	}
+
+	public function createOrUpdateBody(bodyID:String, bd:b2BodyDef, x:Number, y:Number, update:Boolean):void {
+	    if (update) {
+		this.bodiesPositions[bodyID] = new b2Vec2(this.bodies[bodyID].m_xf.position.x, this.bodies[bodyID].m_xf.position.y);
+		this.bodiesAngles[bodyID] = this.bodies[bodyID].GetAngle();
+		this.bodies[bodyID].DestroyFixture(this.bodies[bodyID].GetFixtureList());
+		this.bodies[bodyID].SetPosition(new b2Vec2(x, y));
+		this.bodies[bodyID].SetAngle(0);
+	    } else {
+		bd.position.Set(x, y);
+		this.bodies[bodyID] = this.world.CreateBody(bd);
+	    }
+	}
+
+	public function buildBodies(update:Boolean = false):void {
+	    var circ:b2CircleShape; 
+	    var box:b2PolygonShape;
+	    var bd:b2BodyDef = new b2BodyDef();
+	    var fixtureDef:b2FixtureDef = new b2FixtureDef();
+	    fixtureDef.filter.categoryBits = 0x0002;
+	    fixtureDef.filter.maskBits = 0x0004;
 	    this.wideRatio = this.stats.wideRatio;
-	    this.headUnit *= this.stats.heightRatio;
+	    this.headUnit = this.initialHeight * this.stats.heightRatio / 8; // head unit height for use in body proportions
 	    this.color = stats.mixedElementsColor;
 	    this.bodyUserData.auraColor = stats.auraColor;
 	    this.headUserData.auraColor = stats.auraColor;
@@ -71,29 +122,32 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.75 * wideRatio / 2, headUnit / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit / 2);
-	    bodies['head'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('head', bd, startX, startY + headUnit / 2, update);
 	    bodies['head'].CreateFixture(fixtureDef);
 	    bodies['head'].drawingFunction = this.drawHead as Function;
-				
+
 	    // Mouth Sensor
 	    box.SetAsBox(headUnit * 0.25 * wideRatio / 2, headUnit * 0.25 / 2);
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
-	    bd.position.Set(startX, startY + headUnit * 0.875);
-	    bodies['mouth'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('mouth', bd, startX, startY + headUnit * 0.875, update);
 	    bodies['mouth'].CreateFixture(fixtureDef);
-	    var mouthSlot:Slot = new Slot(Slot.MOTHER, bodies.head);
-	    mouthSlot.localAnchor = new b2Vec2(0, headUnit * 0.375);
-	    mouthSlot.axis = new b2Vec2(0, -1);
-	    mouthSlot.depth = headUnit;
-	    mouthSlot.sensorFixture = bodies.head.GetFixtureList();
-	    mouthSlot.connectionAngle = 181 * Math.PI / 180;
-	    bodies['mouth'].SetUserData({'slot': mouthSlot});;
-	    bodies['head'].SetUserData(headUserData);
-	    bodies['head'].GetUserData()['slot'] = mouthSlot;
-	    this.stats.mouthSlot = mouthSlot;
+	    if (update) {
+		bodies['mouth'].GetUserData()['slot'].localAnchor = new b2Vec2(0, headUnit * 0.375);
+		bodies['mouth'].GetUserData()['slot'].sensorFixture = bodies.head.GetFixtureList();
+	    } else {
+		var mouthSlot:Slot = new Slot(Slot.MOTHER, bodies.head);
+		mouthSlot.localAnchor = new b2Vec2(0, headUnit * 0.375);
+		mouthSlot.axis = new b2Vec2(0, -1);
+		mouthSlot.depth = headUnit;
+		mouthSlot.sensorFixture = bodies.head.GetFixtureList();
+		mouthSlot.connectionAngle = 181 * Math.PI / 180;
+		bodies['mouth'].SetUserData({'slot': mouthSlot});;
+		bodies['head'].SetUserData(headUserData);
+		bodies['head'].GetUserData()['slot'] = mouthSlot;
+		this.stats.mouthSlot.slot = mouthSlot;
+	    }
 
 	    // Neck
 	    fixtureDef.filter.categoryBits = 0x0002;
@@ -101,22 +155,21 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.4 * wideRatio / 2, headUnit / 3 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * (1 + 1/6));
-	    bodies['neck'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('neck', bd, startX, startY + headUnit * (1 + 1/6), update);
 	    bodies['neck'].CreateFixture(fixtureDef);
 				
 	    // Shoulders
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 1.6 * wideRatio / 2, headUnit * (3/4) / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * (1 + 1/3 + 3/4 / 2));
-	    bodies['shoulders'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('shoulders', bd, startX, startY + headUnit * (1 + 1/3 + 3/4 / 2), update);
 	    bodies['shoulders'].CreateFixture(fixtureDef);
 
 	    // Chest
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 1.2 * wideRatio / 2, headUnit * 1.4 / 2);
 	    fixtureDef.shape = box;
+	    this.createOrUpdateBody('chest', bd, startX, startY + headUnit * (1.5 + 1/3 + 1/2), update);
 	    bd.position.Set(startX, startY + headUnit * (1.5 + 1/3 + 1/2));
 	    bodies['chest'] = world.CreateBody(bd);
 	    bodies['chest'].CreateFixture(fixtureDef);
@@ -125,15 +178,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.75 * wideRatio / 2, headUnit * 0.75 * wideRatio  / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6));
-	    bodies['breastL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('breastL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6), update);
 	    bodies['breastL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.75 * wideRatio / 2, headUnit * wideRatio  * 0.75 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6));
-	    bodies['breastR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('breastR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6), update);
 	    bodies['breastR'].CreateFixture(fixtureDef);
 	    // Nipple
 	    bd.userData = nippleUserData;
@@ -141,15 +192,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.33 * wideRatio / 2, headUnit * 0.33 * wideRatio  / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6));
-	    bodies['nippleL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('nippleL', bd, startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6), update);
 	    bodies['nippleL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.33 * wideRatio / 2, headUnit * 0.33 * wideRatio  / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6));
-	    bodies['nippleR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('nippleR', bd, startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/6 + 1/6), update);
 	    bodies['nippleR'].CreateFixture(fixtureDef);
 
 	    // Stomach
@@ -157,35 +206,30 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 0.9 * wideRatio / 2, headUnit * 1.5 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * (3 + 1/6));
-	    bodies['stomach'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('stomach', bd, startX, startY + headUnit * (3 + 1/6), update);
 	    bodies['stomach'].CreateFixture(fixtureDef);
 
 	    // Hips
 	    // holder
 	    box.SetAsBox(headUnit * 2 * wideRatio / 2, headUnit * 1.1 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * 4);
-	    bodies['hips'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('hips', bd, startX, startY + headUnit * 4, update);
 	    bodies['hips'].CreateFixture(fixtureDef);
 	    // L
 	    box.SetAsBox(headUnit * 1 * wideRatio / 2, headUnit * 1.1 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.33, startY + headUnit * 4);
-	    bodies['hipL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('hipL', bd, startX - headUnit * 0.33, startY + headUnit * 4, update);
 	    bodies['hipL'].CreateFixture(fixtureDef);
 	    // R
 	    box.SetAsBox(headUnit * 1 * wideRatio / 2, headUnit * 1.1 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.33, startY + headUnit * 4);
-	    bodies['hipR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('hipR', bd, startX + headUnit * 0.33, startY + headUnit * 4, update);
 	    bodies['hipR'].CreateFixture(fixtureDef);
 
 	    // Vagina
 	    box.SetAsBox(headUnit * 0.25 * wideRatio / 2, headUnit * 0.25 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * 4.2);
-	    bodies['vagina_sym'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('vagina_sym', bd, startX, startY + headUnit * 4.2, update);
 	    bodies['vagina_sym'].CreateFixture(fixtureDef);
 	    bodies['vagina_sym'].drawingFunction = this.drawVagina as Function;;
 	    // Vagina Sensor
@@ -193,25 +237,28 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
-	    bd.position.Set(startX, startY + headUnit * 4.2);
-	    bodies['vagina'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('vagina', bd, startX, startY + headUnit * 4.2, update);
 	    bodies['vagina'].CreateFixture(fixtureDef);
-	    var vaginaSlot:Slot = new Slot(Slot.MOTHER, bodies.hips);
-	    vaginaSlot.localAnchor = new b2Vec2(0, headUnit * 0.2);
-	    vaginaSlot.axis = new b2Vec2(0, -1);
-	    vaginaSlot.depth = headUnit;
-	    vaginaSlot.sensorFixture = bodies.vagina.GetFixtureList();
-	    bodies['vagina'].SetUserData({'slot': vaginaSlot});
-	    bodies['vagina_sym'].SetUserData({'slot': vaginaSlot});
-	    this.stats.vaginaSlot = vaginaSlot;
+	    if (update) {
+		bodies['vagina_sym'].GetUserData()['slot'].localAnchor = new b2Vec2(0, headUnit * 0.2);
+		bodies['vagina_sym'].GetUserData()['slot'].sensorFixture = bodies.vagina.GetFixtureList();
+	    } else {
+		var vaginaSlot:Slot = new Slot(Slot.MOTHER, bodies.hips);
+		vaginaSlot.localAnchor = new b2Vec2(0, headUnit * 0.2);
+		vaginaSlot.axis = new b2Vec2(0, -1);
+		vaginaSlot.depth = headUnit;
+		vaginaSlot.sensorFixture = bodies.vagina.GetFixtureList();
+		bodies['vagina'].SetUserData({'slot': vaginaSlot});
+		bodies['vagina_sym'].SetUserData({'slot': vaginaSlot});
+		this.stats.vaginaSlot.slot = vaginaSlot;
+	    }
 
 	    // Anus
 	    fixtureDef.filter.categoryBits = 0x0002;
 	    fixtureDef.filter.maskBits = 0x0004;
 	    box.SetAsBox(headUnit * 0.15 * wideRatio / 2, headUnit * 0.15 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX, startY + headUnit * 4.45);
-	    bodies['anus_sym'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('anus_sym', bd, startX, startY + headUnit * 4.45, update);
 	    bodies['anus_sym'].CreateFixture(fixtureDef);
 	    bodies['anus_sym'].drawingFunction = this.drawAnus as Function;;
 	    // Anus Sensor
@@ -219,17 +266,21 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
-	    bd.position.Set(startX, startY + headUnit * 4.45);
-	    bodies['anus'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('anus', bd, startX, startY + headUnit * 4.45, update);
 	    bodies['anus'].CreateFixture(fixtureDef);
-	    var anusSlot:Slot = new Slot(Slot.MOTHER, bodies.hips);
-	    anusSlot.localAnchor = new b2Vec2(0, headUnit * 0.45);
-	    anusSlot.axis = new b2Vec2(0, -1);
-	    anusSlot.depth = headUnit;
-	    anusSlot.sensorFixture = bodies.anus.GetFixtureList();
-	    bodies['anus'].SetUserData({'slot': anusSlot});
-	    bodies['anus_sym'].SetUserData({'slot': anusSlot});
-	    this.stats.anusSlot = anusSlot;
+	    if (update) {
+		bodies['anus_sym'].GetUserData()['slot'].localAnchor = new b2Vec2(0, headUnit * 0.45);
+		bodies['anus_sym'].GetUserData()['slot'].sensorFixture = bodies.anus.GetFixtureList();
+	    } else {
+		var anusSlot:Slot = new Slot(Slot.MOTHER, bodies.hips);
+		anusSlot.localAnchor = new b2Vec2(0, headUnit * 0.45);
+		anusSlot.axis = new b2Vec2(0, -1);
+		anusSlot.depth = headUnit;
+		anusSlot.sensorFixture = bodies.anus.GetFixtureList();
+		bodies['anus'].SetUserData({'slot': anusSlot});
+		bodies['anus_sym'].SetUserData({'slot': anusSlot});
+		this.stats.anusSlot.slot = anusSlot;
+	    }
 
 	    // UpperArm
 	    // L
@@ -239,15 +290,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (1 + 2/3) / 2, headUnit * 0.5 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * (0.75 + (1 + 2/3) / 2), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['upperArmL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('upperArmL', bd, startX - headUnit * (0.75 + (1 + 2/3) / 2), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['upperArmL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (1 + 2/3) / 2, headUnit * 0.5 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * (0.75 + (1 + 2/3) / 2), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['upperArmR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('upperArmR', bd, startX + headUnit * (0.75 + (1 + 2/3) / 2), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['upperArmR'].CreateFixture(fixtureDef);
 				
 	    // LowerArm
@@ -255,15 +304,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (1 + 1/3) / 2, headUnit * 0.4 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * (1.75 + 2/3 + (1 + 1/3) / 2), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['lowerArmL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('lowerArmL', bd, startX - headUnit * (1.75 + 2/3 + (1 + 1/3) / 2), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['lowerArmL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (1 + 1/3) / 2, headUnit * 0.4 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * (1.75 + 2/3 + (1 + 1/3) / 2), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['lowerArmR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('lowerArmR', bd, startX + headUnit * (1.75 + 2/3 + (1 + 1/3) / 2), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['lowerArmR'].CreateFixture(fixtureDef);
 
 	    // Fist
@@ -271,8 +318,7 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 1/2 / 2, headUnit * 1/2 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['fistL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('fistL', bd, startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistL'].CreateFixture(fixtureDef);
 	    bodies['fistL'].drawingFunction = drawFist as Function;
 	    // Left hand Sensor
@@ -280,27 +326,30 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
-	    bd.position.Set(startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['fistLsensor'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('fistLsensor', bd, startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistLsensor'].CreateFixture(fixtureDef);
-	    var handLSlot:Slot = new Slot(Slot.MOTHER, bodies.fistL);
-	    handLSlot.localAnchor = new b2Vec2(0, 0);
-	    handLSlot.axis = new b2Vec2(0, -1);
-	    handLSlot.depth = headUnit / 3;
-	    handLSlot.sensorFixture = bodies.fistLsensor.GetFixtureList();
-	    handLSlot.connectionAngle = 181 * Math.PI / 180;
-	    bodies['fistLsensor'].SetUserData({'slot': handLSlot});
-	    bodies['fistL'].SetUserData(handLUserData);
-	    bodies['fistL'].GetUserData()['slot'] = handLSlot;
-	    this.stats.leftHandSlot = handLSlot;
+	    if (update) {
+		bodies['fistLsensor'].GetUserData()['slot'].localAnchor = new b2Vec2(0, 0);
+		bodies['fistLsensor'].GetUserData()['slot'].sensorFixture = bodies.fistLsensor.GetFixtureList();
+	    } else {
+		var handLSlot:Slot = new Slot(Slot.MOTHER, bodies.fistL);
+		handLSlot.localAnchor = new b2Vec2(0, 0);
+		handLSlot.axis = new b2Vec2(0, -1);
+		handLSlot.depth = headUnit / 3;
+		handLSlot.sensorFixture = bodies.fistLsensor.GetFixtureList();
+		handLSlot.connectionAngle = 181 * Math.PI / 180;
+		bodies['fistLsensor'].SetUserData({'slot': handLSlot});
+		bodies['fistL'].SetUserData(handLUserData);
+		bodies['fistL'].GetUserData()['slot'] = handLSlot;
+		this.stats.leftHandSlot.slot = handLSlot;
+	    }
 	    fixtureDef.filter.categoryBits = 0x0002;
 	    fixtureDef.filter.maskBits = 0x0004;
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 1/2 / 2, headUnit * 1/2 * wideRatio / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['fistR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('fistR', bd, startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistR'].CreateFixture(fixtureDef);
 	    bodies['fistR'].drawingFunction = drawFist as Function;
 	    // Right hand Sensor
@@ -308,19 +357,23 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
-	    bd.position.Set(startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4));
-	    bodies['fistRsensor'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('fistRsensor', bd, startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistRsensor'].CreateFixture(fixtureDef);
-	    var handRSlot:Slot = new Slot(Slot.MOTHER, bodies.fistR);
-	    handRSlot.localAnchor = new b2Vec2(0, 0);
-	    handRSlot.axis = new b2Vec2(0, -1);
-	    handRSlot.depth = headUnit / 3;
-	    handRSlot.sensorFixture = bodies.fistRsensor.GetFixtureList();
-	    handRSlot.connectionAngle = 181 * Math.PI / 180;
-	    bodies['fistRsensor'].SetUserData({'slot': handRSlot});
-	    bodies['fistR'].SetUserData(handRUserData);
-	    bodies['fistR'].GetUserData()['slot'] = handRSlot;
-	    this.stats.rightHandSlot = handRSlot;
+	    if (update) {
+		bodies['fistRsensor'].GetUserData()['slot'].localAnchor = new b2Vec2(0, 0);
+		bodies['fistRsensor'].GetUserData()['slot'].sensorFixture = bodies.fistRsensor.GetFixtureList();
+	    } else {
+		var handRSlot:Slot = new Slot(Slot.MOTHER, bodies.fistR);
+		handRSlot.localAnchor = new b2Vec2(0, 0);
+		handRSlot.axis = new b2Vec2(0, -1);
+		handRSlot.depth = headUnit / 3;
+		handRSlot.sensorFixture = bodies.fistRsensor.GetFixtureList();
+		handRSlot.connectionAngle = 181 * Math.PI / 180;
+		bodies['fistRsensor'].SetUserData({'slot': handRSlot});
+		bodies['fistR'].SetUserData(handRUserData);
+		bodies['fistR'].GetUserData()['slot'] = handRSlot;
+		this.stats.rightHandSlot.slot = handRSlot;
+	    }
 	    fixtureDef.filter.categoryBits = 0x0002;
 	    fixtureDef.filter.maskBits = 0x0004;
 				
@@ -329,15 +382,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 3.1/4 * wideRatio / 2, headUnit * 2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.4, startY + headUnit * (4 + 2 / 2));
-	    bodies['upperLegL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('upperLegL', bd, startX - headUnit * 0.4, startY + headUnit * (4 + 2 / 2), update);
 	    bodies['upperLegL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 3.1/4 * wideRatio / 2, headUnit * 2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.4, startY + headUnit * (4 + 2 / 2));
-	    bodies['upperLegR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('upperLegR', bd, startX + headUnit * 0.4, startY + headUnit * (4 + 2 / 2), update);
 	    bodies['upperLegR'].CreateFixture(fixtureDef);
 				
 	    // LowerLeg
@@ -345,15 +396,13 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (9.2/16) * wideRatio / 2, headUnit * 2.2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.4, startY + headUnit * (6 + 2.2 / 2));
-	    bodies['lowerLegL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('lowerLegL', bd, startX - headUnit * 0.4, startY + headUnit * (6 + 2.2 / 2), update);
 	    bodies['lowerLegL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (9.2/16) * wideRatio / 2, headUnit * 2.2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.4, startY + headUnit * (6 + 2.2 / 2));
-	    bodies['lowerLegR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('lowerLegR', bd, startX + headUnit * 0.4, startY + headUnit * (6 + 2.2 / 2), update);
 	    bodies['lowerLegR'].CreateFixture(fixtureDef);
 				
 	    // Foot
@@ -363,18 +412,53 @@ package Engine.Objects {
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (3/4) * wideRatio / 2, headUnit * 1/2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX - headUnit * 0.33, startY + headUnit * (8.2 + 1/4));
-	    bodies['footL'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('footL', bd, startX - headUnit * 0.33, startY + headUnit * (8.2 + 1/4), update);
 	    bodies['footL'].CreateFixture(fixtureDef);
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * (3/4) * wideRatio / 2, headUnit * 1/2 / 2);
 	    fixtureDef.shape = box;
-	    bd.position.Set(startX + headUnit * 0.33, startY + headUnit * (8.2 + 1/4));
-	    bodies['footR'] = world.CreateBody(bd);
+	    this.createOrUpdateBody('footR', bd, startX + headUnit * 0.33, startY + headUnit * (8.2 + 1/4), update);
 	    bodies['footR'].CreateFixture(fixtureDef);
+	    
+	    this.stats.updateSlotParams();
 
-	    // JOINTS
+	    fixtureDef.density = 0.05;
+	    fixtureDef.friction = 0.03;
+	    var headWidth:Number = headUnit * 0.75 * wideRatio;
+	    var hairWidth:Number = headWidth / 5;
+	    var hairLength:Number = headUnit * stats.hairLength;
+	    // back hair
+	    if (stats.hairLength > 0) {
+		for (var i:int = 0; i <= 8; i++) {
+		    for (var j:int = 0; j <= numSegments; j++) {
+			var rootX:Number = startX + i * headWidth / 8 - headWidth / 2;
+			var rootY:Number = startY - headUnit * 0.25 * (Math.sin(i * Math.PI / 8) - 1) - headUnit * 0.1 + j * hairLength / numSegments;
+			var rootPos:Number = rootY - hairLength / numSegments;
+			if (j == 0) rootPos = rootY;
+			box = new b2PolygonShape();
+			box.SetAsBox(hairWidth / 3 * hairLength / 2, hairWidth / 3 * hairLength / 2);
+			fixtureDef.shape = box;
+			var bodyID:String = 'hair' + i.toString() + j.toString();
+			this.createOrUpdateBody(bodyID, bd, rootX, rootY, update);
+			bodies[bodyID].CreateFixture(fixtureDef);
+			
+		    }
+		}
+	    }
+
+	}
+
+	public function buildJoints(update:Boolean = false):void {
+	    // Clear old joints
+	    if (update) {
+		for each(var joint:b2Joint in this.joints) {
+		    this.world.DestroyJoint(joint);
+		}
+	    }
+
+	    // Create Joints
+	    var jd:b2RevoluteJointDef = new b2RevoluteJointDef();
 	    jd.enableLimit = true;
 	    jd.enableMotor = true;
 	    jd.collideConnected = false;
@@ -389,7 +473,7 @@ package Engine.Objects {
 	    jd.lowerAngle = 0;
 	    jd.upperAngle = 0;
 	    jd.Initialize(bodies['head'], bodies['mouth'], new b2Vec2(startX, startY + headUnit * 0.875));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointMouth'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // Neck to shoulders
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
@@ -424,27 +508,27 @@ package Engine.Objects {
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
 	    jd.Initialize(bodies['lowerArmL'], bodies['fistL'], new b2Vec2(startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFistL'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.lowerAngle = 0;
 	    jd.upperAngle = 0;
 	    jd.Initialize(bodies['fistL'], bodies['fistLsensor'], new b2Vec2(startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFistLsensor'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // R
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
 	    jd.Initialize(bodies['lowerArmR'], bodies['fistR'], new b2Vec2(startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFistR'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.lowerAngle = 0;
 	    jd.upperAngle = 0;
 	    jd.Initialize(bodies['fistR'], bodies['fistRsensor'], new b2Vec2(startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFistRsensor'] = world.CreateJoint(jd) as b2RevoluteJoint;
 				
 	    // shoulders/chest
 	    jd.enableMotor = false;
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
 	    jd.Initialize(bodies['shoulders'], bodies['chest'], new b2Vec2(startX, startY + headUnit * (3 + 1/6 - 3/4)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointShoulders'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // chest/stomach
 	    jd.enableMotor = false;
 	    jd.lowerAngle = -30 / (180/Math.PI);
@@ -456,34 +540,34 @@ package Engine.Objects {
 	    jd.upperAngle = 90 / (180/Math.PI);
 	    var gp:b2Vec2 = new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
 	    jd.Initialize(bodies['chest'], bodies['breastL'], gp);
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointBreastL'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    gp = new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * (2 + 1/12));
 	    jd.Initialize(bodies['chest'], bodies['breastR'], gp);
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointBreastR'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // breasts/nipples
 	    jd.lowerAngle = 0 / (180/Math.PI);
 	    jd.upperAngle = 0 / (180/Math.PI);
 	    jd.Initialize(bodies['breastL'], bodies['nippleL'], new b2Vec2(startX - headUnit * 0.8 / 2, startY + headUnit * 2));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointNippleL'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['breastR'], bodies['nippleR'], new b2Vec2(startX + headUnit * 0.8 / 2, startY + headUnit * 2));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointNippleR'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // Stomach/hips
 	    jd.Initialize(bodies['stomach'], bodies['hips'], new b2Vec2(startX, startY + headUnit * (4 - 1/2)));
 	    joints['jointHips'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.lowerAngle = 0 / (180/Math.PI);
 	    jd.upperAngle = 0 / (180/Math.PI);
 	    jd.Initialize(bodies['hips'], bodies['hipL'], new b2Vec2(startX - headUnit * 0.33, startY + headUnit * (4 - 1/2)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointHipL'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['hips'], bodies['hipR'], new b2Vec2(startX + headUnit * 0.33, startY + headUnit * (4 - 1/2)));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointHipR'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['hips'], bodies['vagina'], new b2Vec2(startX, startY + headUnit * 4.25));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointVagina'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['hips'], bodies['vagina_sym'], new b2Vec2(startX, startY + headUnit * 4.25));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointVaginaSym'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['hips'], bodies['anus'], new b2Vec2(startX, startY + headUnit * 4.45));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointAnus'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    jd.Initialize(bodies['hips'], bodies['anus_sym'], new b2Vec2(startX, startY + headUnit * 4.45));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointAnusSym'] = world.CreateJoint(jd) as b2RevoluteJoint;
 				
 	    // Hips to upper leg
 	    // L
@@ -515,167 +599,52 @@ package Engine.Objects {
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
 	    jd.Initialize(bodies['lowerLegL'], bodies['footL'], new b2Vec2(startX - headUnit * 0.33, startY + headUnit * 8.2));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFootL'] = world.CreateJoint(jd) as b2RevoluteJoint;
 	    // R
 	    jd.lowerAngle = -10 / (180/Math.PI);
 	    jd.upperAngle = 10 / (180/Math.PI);
 	    jd.Initialize(bodies['lowerLegR'], bodies['footR'], new b2Vec2(startX + headUnit * 0.33, startY + headUnit * 8.2));
-	    world.CreateJoint(jd) as b2RevoluteJoint;
+	    joints['jointFootR'] = world.CreateJoint(jd) as b2RevoluteJoint;
 
-	    bodiesOrder = new Array();
-
-	    // Hair & tribe attributes
-	    bd.userData = hairUserData;
-	    //fixtureDef.filter.maskBits = 0;
-	    //fixtureDef.filter.categoryBits = 0;
-	    jd.enableMotor = false;
-	    jd.motorSpeed = 0.1;
-	    jd.maxMotorTorque = 10;
-	    jd.referenceAngle = Math.PI;
-	    jd.enableLimit = false;
-	    fixtureDef.density = 0.05;
-	    fixtureDef.friction = 0.03;
+	    // back hair
 	    var headWidth:Number = headUnit * 0.75 * wideRatio;
 	    var hairWidth:Number = headWidth / 5;
 	    var hairLength:Number = headUnit * stats.hairLength;
-
-	    // Dakini's halo
-	    if (stats.tribe == ProtagonistStats.DAKINI_TRIBE) {
-		var haloRadius:Number = headUnit * (1.1 + stats.level/49) / 2;
-		jd.enableLimit = true;
-		jd.lowerAngle = 0 / (180/Math.PI);
-		jd.upperAngle = 0 / (180/Math.PI);
-		box = new b2PolygonShape();
-		box.SetAsBox(haloRadius, haloRadius);
-		fixtureDef.shape = box;
-		fixtureDef.filter.maskBits = 0;
-		fixtureDef.filter.categoryBits = 0;
-		fixtureDef.density = 0.005;
-		bd.position.Set(startX, startY + headUnit / 2);
-		bodies['halo'] = world.CreateBody(bd);
-		bodies['halo'].CreateFixture(fixtureDef);
-		bodies['halo'].drawingFunction = this.drawHalo as Function;
-		bodiesOrder.push('halo');
-		jd.Initialize(bodies['head'], bodies['halo'], new b2Vec2(startX, startY + headUnit / 2));
-		world.CreateJoint(jd) as b2FrictionJoint;
-		fixtureDef.filter.categoryBits = 0x0002;
-		fixtureDef.filter.maskBits = 0x0005;
-		fixtureDef.density = 0.05;
-		jd.enableLimit = false;
-	    }
-
-	    // back hair
+	    var jdh:b2DistanceJointDef = new b2DistanceJointDef();
 	    if (stats.hairLength > 0) {
-		for (var i:int = 0; i <= 4; i++) {
-		    var rootX:Number = startX + i * headWidth / 4 - headWidth / 2;
-		    var rootY:Number = startY - headUnit * 0.2 * (Math.sin(i * Math.PI / 4) - 1);
-		    jd.lowerAngle = -180 / (180/Math.PI);
-		    jd.upperAngle = 180 / (180/Math.PI);
-		    box = new b2PolygonShape();
-		    box.SetAsBox(hairWidth * 1.5 / 2, hairLength / 2);
-		    fixtureDef.shape = box;
-		    bd.position.Set(rootX, rootY + 0.5 * hairLength);
-		    var bodyID:String = 'hair' + i.toString();
-		    bodies[bodyID] = world.CreateBody(bd);
-		    bodies[bodyID].CreateFixture(fixtureDef);
-		    bodiesOrder.push(bodyID);
-		    jd.Initialize(bodies['head'], bodies[bodyID], new b2Vec2(rootX, rootY));
-		    world.CreateJoint(jd) as b2FrictionJoint;
+		for (var i:int = 0; i <= 8; i++) {
+		    for (var j:int = 0; j <= numSegments; j++) {
+			var rootX:Number = startX + i * headWidth / 8 - headWidth / 2;
+			var rootY:Number = startY - headUnit * 0.25 * (Math.sin(i * Math.PI / 8) - 1) - headUnit * 0.1 + j * hairLength / numSegments;
+			var rootPos:Number = rootY - hairLength / numSegments;
+			var bodyID:String = 'hair' + i.toString() + j.toString();
+			if (j == 0) rootPos = rootY;
+			if (j == 0) {
+			    jd.Initialize(bodies['head'], bodies[bodyID], new b2Vec2(rootX, rootPos));
+			    joints['joint' + bodyID] = world.CreateJoint(jd) as b2RevoluteJoint;
+			} else {
+			    var bodyPrevID:String = 'hair' + i.toString() + (j - 1).toString();
+			    jdh.Initialize(bodies[bodyPrevID], bodies[bodyID], new b2Vec2(rootX, rootPos), new b2Vec2(rootX, rootY));
+			    joints['joint' + bodyID] = world.CreateJoint(jdh) as b2DistanceJoint;
+			}
+			
+		    }
+		}
+	    }
+	    // return bodies back to their places before update
+	    if (update) {
+		for (var bid:Object in this.bodiesPositions) {
+		    this.bodies[bid].SetPosition(this.bodiesPositions[bid]);
+		    this.bodies[bid].SetAngle(this.bodiesAngles[bid]);
 		}
 	    }
 
-	    var mainOrder1: Array = new Array('hipL', 'hipR', 'stomach', 'chest', 'shoulders', 'breastL', 'nippleL', 'breastR', 'nippleR', 'neck', 'head');
-	    for each (var str:String in mainOrder1)
-		bodiesOrder.push(str);
+	}
 
-	    // Rakshasi's horns
-	    if (stats.tribe == ProtagonistStats.RAKSHASI_TRIBE) {
-		var hornsLength:Number = headUnit * (1.1 + stats.level/49) / 3;
-		var hornsWidth:Number = hornsLength * 3/4 * wideRatio;
-		jd.enableLimit = true;
-		jd.lowerAngle = 0 / (180/Math.PI);
-		jd.upperAngle = 0 / (180/Math.PI);
-		fixtureDef.shape = box;
-		fixtureDef.filter.maskBits = 0;
-		fixtureDef.filter.categoryBits = 0;
-		fixtureDef.density = 0.005;
-		// L
-		box = new b2PolygonShape();
-		box.SetAsBox(hornsWidth, hornsLength);
-		bd.position.Set(startX - headWidth / 2, startY + headUnit / 6 - hornsLength / 2);
-		bodies['hornL'] = world.CreateBody(bd);
-		bodies['hornL'].CreateFixture(fixtureDef);
-		bodies['hornL'].drawingFunction = this.drawLHorn as Function;
-		bodiesOrder.push('hornL');
-		jd.Initialize(bodies['head'], bodies['hornL'], new b2Vec2(startX, startY));
-		world.CreateJoint(jd) as b2FrictionJoint;
-		// R
-		box = new b2PolygonShape();
-		box.SetAsBox(hornsWidth, hornsLength);
-		bd.position.Set(startX + headWidth / 2, startY + headUnit / 6 - hornsLength / 2);
-		bodies['hornR'] = world.CreateBody(bd);
-		bodies['hornR'].CreateFixture(fixtureDef);
-		bodies['hornR'].drawingFunction = this.drawRHorn as Function;
-		bodiesOrder.push('hornR');
-		jd.Initialize(bodies['head'], bodies['hornR'], new b2Vec2(startX, startY));
-		world.CreateJoint(jd) as b2FrictionJoint;
-		fixtureDef.filter.categoryBits = 0x0002;
-		fixtureDef.filter.maskBits = 0x0005;
-		fixtureDef.density = 0.05;
-		jd.enableLimit = false;
-	    }
-
-	    // front hair
-	    if (stats.hairLength > 0) {
-		for (i = 0; i <= 4; i++) {
-		    rootX = startX + i * headWidth / 4 - headWidth / 2;
-		    rootY = startY - headUnit * 0.25 * (Math.sin(i * Math.PI / 4) - 1) - headUnit * 0.1;
-		    jd.lowerAngle = -180 / (180/Math.PI);
-		    jd.upperAngle = 180 / (180/Math.PI);
-		    box = new b2PolygonShape();
-		    box.SetAsBox(hairWidth * 1.5 / 2, headUnit * 0.3 / 2);
-		    fixtureDef.shape = box;
-		    bd.position.Set(rootX, rootY);
-		    bodyID = 'hair' + (i + 5).toString();
-		    bodies[bodyID] = world.CreateBody(bd);
-		    bodies[bodyID].CreateFixture(fixtureDef);
-		    bodiesOrder.push(bodyID);
-		    jd.Initialize(bodies['head'], bodies[bodyID], new b2Vec2(rootX, rootY));
-		    world.CreateJoint(jd) as b2RevoluteJoint;
-		}
-	    }
-
-	    // Yakshini's diadem
-	    if (stats.tribe == ProtagonistStats.YAKSHINI_TRIBE) {
-		var diademLength:Number = headUnit * (1.1 + stats.level/49) / 6;
-		var diademWidth:Number = headWidth * 1.1;
-		jd.enableLimit = true;
-		jd.lowerAngle = 0 / (180/Math.PI);
-		jd.upperAngle = 0 / (180/Math.PI);
-		fixtureDef.shape = box;
-		fixtureDef.filter.maskBits = 0;
-		fixtureDef.filter.categoryBits = 0;
-		fixtureDef.density = 0.005;
-		box = new b2PolygonShape();
-		box.SetAsBox(diademWidth, diademLength);
-		bd.position.Set(startX, startY - diademLength / 2);
-		bodies['diadem'] = world.CreateBody(bd);
-		bodies['diadem'].CreateFixture(fixtureDef);
-		bodies['diadem'].drawingFunction = this.drawDiadem as Function;
-		bodiesOrder.push('diadem');
-		jd.Initialize(bodies['head'], bodies['diadem'], new b2Vec2(startX, startY));
-		world.CreateJoint(jd) as b2RevoluteJoint;
-		fixtureDef.filter.categoryBits = 0x0002;
-		fixtureDef.filter.maskBits = 0x0005;
-		fixtureDef.density = 0.05;
-		jd.enableLimit = false;
-	    }
-
-	    var mainOrder2: Array = new Array('anus_sym', 'upperLegL', 'lowerLegL', 'footL', 'upperLegR', 'lowerLegR', 'footR', 'vagina_sym', 'upperArmL', 'lowerArmL', 'fistL', 'upperArmR', 'lowerArmR', 'fistR');
-	    for each (str in mainOrder2)
-		bodiesOrder.push(str);
-
-
+	public function rebuild():void{
+	    this.buildBodies(true);
+	    this.buildJoints(true);
+	    this.wasUpdated = true;
 	}
 
 	public override function update():void{
@@ -713,42 +682,42 @@ package Engine.Objects {
 		bodies.shoulders.ApplyImpulse(new b2Vec2(0, -this.stats.speed), bodies.shoulders.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(77)){ // M
-		if (!this.stats.anusSlot.isFree) {
-		    this.stats.anusSlot.disconnect();
+		if (!this.stats.anusSlot.slot.isFree) {
+		    this.stats.anusSlot.slot.disconnect();
 		} else {
-		    this.stats.anusSlot.isReady = !this.stats.anusSlot.isReady;
+		    this.stats.anusSlot.slot.isReady = !this.stats.anusSlot.slot.isReady;
 		}
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(78)){ // N
-		if (!this.stats.vaginaSlot.isFree) {
-		    this.stats.vaginaSlot.disconnect();
+		if (!this.stats.vaginaSlot.slot.isFree) {
+		    this.stats.vaginaSlot.slot.disconnect();
 		} else {
-		    this.stats.vaginaSlot.isReady = !this.stats.vaginaSlot.isReady;
+		    this.stats.vaginaSlot.slot.isReady = !this.stats.vaginaSlot.slot.isReady;
 		}
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(74)){ // J
-		if (!this.stats.mouthSlot.isFree) {
-		    this.stats.mouthSlot.disconnect();
+		if (!this.stats.mouthSlot.slot.isFree) {
+		    this.stats.mouthSlot.slot.disconnect();
 		} else {
-		    this.stats.mouthSlot.isReady = !this.stats.mouthSlot.isReady;
+		    this.stats.mouthSlot.slot.isReady = !this.stats.mouthSlot.slot.isReady;
 		}
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(72)){ // H
-		if (!this.stats.leftHandSlot.isFree) {
-		    this.stats.leftHandSlot.disconnect();
+		if (!this.stats.leftHandSlot.slot.isFree) {
+		    this.stats.leftHandSlot.slot.disconnect();
 		} else {
-		    this.stats.leftHandSlot.isReady = !this.stats.leftHandSlot.isReady;
+		    this.stats.leftHandSlot.slot.isReady = !this.stats.leftHandSlot.slot.isReady;
 		}
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(75)){ // K
-		if (!this.stats.rightHandSlot.isFree) {
-		    this.stats.rightHandSlot.disconnect();
+		if (!this.stats.rightHandSlot.slot.isFree) {
+		    this.stats.rightHandSlot.slot.disconnect();
 		} else {
-		    this.stats.rightHandSlot.isReady = !this.stats.rightHandSlot.isReady;
+		    this.stats.rightHandSlot.slot.isReady = !this.stats.rightHandSlot.slot.isReady;
 		}
 		this.wasUpdated = true;
 	    }
@@ -807,10 +776,64 @@ package Engine.Objects {
 		this.handRUserData.auraIntencity = stats.auraIntencity;
 		this.wasUpdated = true;
 	    }
+	    if (Input.isKeyPressed(56)){ // 8
+		this.stats.level = this.stats.level + 1;
+		this.rebuild();
+	    }
 	    this.stats.timeStep();
 	    super.update();
 
 	}
+
+	public override function draw(viewport:b2AABB, physScale:Number, forceRedraw:Boolean = false):Sprite{
+	    var spr:Sprite = super.draw(viewport, physScale, forceRedraw);
+	    if (!spr.contains(this.hairSprite)) {
+		spr.addChildAt(this.hairSprite, 0);
+	    }
+	    this.hairSprite.graphics.clear();
+	    var xf:b2Transform = this.bodies['head'].m_xf;
+	    var prevX:Number = (xf.position.x - viewport.lowerBound.x) * physScale;
+	    var prevY:Number = (xf.position.y - viewport.lowerBound.y) * physScale;
+	    // Dakini's halo
+	    if (stats.tribe == ProtagonistStats.DAKINI_TRIBE) {
+		this.hairSprite.graphics.lineStyle(0.3, 0x000000, 0.3);
+		this.hairSprite.graphics.beginFill(Utils.colorDark(0xffffff, (-stats.alignment + 1) / 2), 0.2);
+		this.hairSprite.graphics.drawCircle(prevX, prevY, headUnit * (1.4 + stats.level/49) / 2 * physScale);
+		this.hairSprite.graphics.endFill();
+	    }
+	    this.hairSprite.graphics.lineStyle(3, this.hairColor, 1);
+	    var gradArray:Array = [Utils.colorLight(this.hairColor, 0.1), Utils.colorDark(this.hairColor, 0.1)];
+	    for (var i:int = 0; i <= 8; i++) {
+		var nullBodyID:String = 'hair' + i.toString() + "0";
+		var nullPos:b2Vec2 = this.bodies[nullBodyID].GetPosition();
+		xf = this.bodies[nullBodyID].m_xf;
+		prevX = (xf.position.x - viewport.lowerBound.x) * physScale;
+		prevY = (xf.position.y - viewport.lowerBound.y) * physScale;
+		var points:Array = new Array();
+		points.push(new Point(prevX, prevY));
+		for (var j:int = 1; j <= numSegments; j++) {
+		    var bodyID:String = 'hair' + i.toString() + j.toString();
+		    var pos:b2Vec2 = this.bodies[bodyID].GetPosition();
+		    xf = this.bodies[bodyID].m_xf;
+		    var curX:Number = (xf.position.x - viewport.lowerBound.x) * physScale;
+		    var curY:Number = (xf.position.y - viewport.lowerBound.y) * physScale;
+		    gradArray.reverse();
+		    points.push(new Point(curX, curY));
+		    //prevX = curX;
+		    //prevY = curY;
+		}
+		var gradientBoxMatrix:Matrix = new Matrix();
+		curX = points[3].x;
+		curY = points[3].y;
+		prevX = points[0].x;
+		prevY = points[0].y;
+		gradientBoxMatrix.createGradientBox(curX - prevX, curY - prevY, Math.atan2(curX - prevX, curY - prevY), prevX, prevY);
+		this.hairSprite.graphics.lineGradientStyle(GradientType.LINEAR, gradArray, [1, 1], [0, 255], gradientBoxMatrix, SpreadMethod.REFLECT);
+		Utils.multicurve(this.hairSprite.graphics, points, false);
+	    }
+	    return spr;
+	}
+
 
 	public override function set color(c:uint):void {
 	    super.color = c;
@@ -843,10 +866,10 @@ package Engine.Objects {
 	    // head itself
 	    super.drawGenericShape(shape, xf, c, drawScale, dx, dy, udata, spr);
 	    // eyes
-	    var headWidth:Number = headUnit * 3/4;
-	    var eyeCenterX:Number = headWidth / 5 * (wideRatio + 0.15);
+	    var headWidth:Number = headUnit * 3/4 * wideRatio;
+	    var eyeCenterX:Number = headWidth / 5 * (wideRatio + 0.15) / wideRatio;
 	    var eyeCenterY:Number = 0;
-	    var eyeSize:Number = headWidth / 3;
+	    var eyeSize:Number = headWidth / 3 / wideRatio;
 	    spr.graphics.lineStyle(0.3, 0x000000, 0.3);
 	    spr.graphics.beginFill(0xffffff, 0.90);
 	    spr.graphics.moveTo((eyeCenterX - eyeSize / 2 + eyeSize / 4 - dx) * drawScale, (eyeCenterY - dy) * drawScale);
@@ -886,7 +909,7 @@ package Engine.Objects {
 	    // third eye
 	    if (stats.isEnlightened()) {
 		eyeCenterX = headUnit * 0.3;
-		eyeSize = headWidth / 4;
+		eyeSize = headWidth / 4 / wideRatio;
 		spr.graphics.lineStyle(0.3, 0x000000, 0.3);
 		spr.graphics.beginFill(0xffffff, 0.90);
 		spr.graphics.moveTo((eyeCenterY - dy) * drawScale, (-eyeCenterX + eyeSize / 2 - dx) * drawScale);
@@ -906,9 +929,9 @@ package Engine.Objects {
 
 	    // nose
 	    spr.graphics.lineStyle(0.7, 0x000000, 0.6);
-	    var noseWidth:Number = headWidth / 4 * wideRatio;
+	    var noseWidth:Number = headWidth / 4;
 	    var noseShift:Number = headUnit / 20;
-	    var noseHeight:Number = headWidth / 4;
+	    var noseHeight:Number = headWidth / 4 / wideRatio;
 	    var noseProportion:Number = 0.85; // [0, 1]
 	    var noseCurveRatio:Number = 0.3; // [0, 1]
 	    spr.graphics.moveTo((-dx) * drawScale, (noseShift - dy) * drawScale);
@@ -933,6 +956,26 @@ package Engine.Objects {
 	    spr.graphics.curveTo((-dx) * drawScale, ((mouthShift + mouthCurve - mouthOpen) - dy) * drawScale, (-mouthWidth / 2 - dx) * drawScale, (mouthShift - dy) * drawScale);
 	    spr.graphics.endFill();
 	    
+	    // front hair
+	    if (this.stats.hairLength > 0) {
+		spr.graphics.lineStyle(0, 0, 0);
+		spr.graphics.beginFill(this.hairColor, 1);
+		for (var i:int = 0; i <= 8; i++) {
+		    var rootX:Number = (i - 0.5) * headWidth / 8 - headWidth / 2;
+		    var rootY:Number = - headUnit * 0.25 * (Math.sin(i * Math.PI / 8) - 1) - headUnit * 0.6;
+		    spr.graphics.drawEllipse(rootX * drawScale, rootY * drawScale, headWidth * 0.1 * drawScale, headUnit * 0.2 * drawScale);
+		}
+		spr.graphics.endFill();
+	    }
+	    // Yakshini's diadem
+	    if (stats.tribe == ProtagonistStats.YAKSHINI_TRIBE) {
+		this.drawDiadem(shape, xf, c, drawScale, dx, dy - headUnit * drawScale / 2, udata, spr);
+	    }
+	    // Rakshasi's horns
+	    if (stats.tribe == ProtagonistStats.RAKSHASI_TRIBE) {
+		this.drawLHorn(shape, xf, c, drawScale, dx - headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
+		this.drawRHorn(shape, xf, c, drawScale, dx + headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
+	    }
 	}
 
 	private function drawHalo(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
@@ -944,73 +987,73 @@ package Engine.Objects {
 	}
 
 	private function drawLHorn(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
-	    spr.graphics.clear();
-	    var hornsLength:Number = headUnit * (1.1 + stats.level/49) / 3;
+	    //spr.graphics.clear();
+	    var hornsLength:Number = headUnit * (0.5 + stats.level/49) / 3;
 	    var headWidth:Number = headUnit * 3/4 * wideRatio;
 	    var hornsWidth:Number = hornsLength * 3/4 * wideRatio;
             var c:uint = 0xFFFFFF;
             var a:Number = (-stats.alignment + 1) / 2;
 	    spr.graphics.lineStyle(1, c, a);
 	    spr.graphics.beginFill(c, a);
-	    spr.graphics.moveTo(hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale);
-	    spr.graphics.curveTo(-hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale, -hornsWidth / 2 * drawScale, -hornsLength / 2 * drawScale);
-	    spr.graphics.curveTo(-hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale, 0, hornsLength / 2 * drawScale);
-	    spr.graphics.lineTo(hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale);
+	    spr.graphics.moveTo(hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(-hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy, -hornsWidth / 2 * drawScale + dx, -hornsLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(-hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy, 0 + dx, hornsLength / 2 * drawScale + dy);
+	    spr.graphics.lineTo(hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy);
 	    spr.graphics.endFill();
 	}
 
 	private function drawRHorn(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
-	    spr.graphics.clear();
-	    var hornsLength:Number = headUnit * (1.1 + stats.level/49) / 3;
+	    //spr.graphics.clear();
+	    var hornsLength:Number = headUnit * (0.5 + stats.level/49) / 3;
 	    var headWidth:Number = headUnit * 3/4 * wideRatio;
 	    var hornsWidth:Number = hornsLength * 3/4 * wideRatio;
             var c:uint = 0xFFFFFF;
             var a:Number = (-stats.alignment + 1) / 2;
 	    spr.graphics.lineStyle(1, c, a);
 	    spr.graphics.beginFill(c, a);
-	    spr.graphics.moveTo(-hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale);
-	    spr.graphics.curveTo(hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale, hornsWidth / 2 * drawScale, -hornsLength / 2 * drawScale);
-	    spr.graphics.curveTo(hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale, 0, hornsLength / 2 * drawScale);
-	    spr.graphics.lineTo(-hornsWidth / 2 * drawScale, hornsLength / 2 * drawScale);
+	    spr.graphics.moveTo(-hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy, hornsWidth / 2 * drawScale + dx, -hornsLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy, 0 + dx, hornsLength / 2 * drawScale + dy);
+	    spr.graphics.lineTo(-hornsWidth / 2 * drawScale + dx, hornsLength / 2 * drawScale + dy);
 	    spr.graphics.endFill();
 	}
 
 	private function drawDiadem(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
-	    spr.graphics.clear();
+	    //spr.graphics.clear();
 	    var headWidth:Number = headUnit * 3/4 * wideRatio;
 	    var diademLength:Number = headUnit * (1.1 + stats.level/49) / 4;
-	    var diademWidth:Number = headWidth * 1.1;
+	    var diademWidth:Number = headWidth * 1.2;
 	    var c:uint = 0xAA8800;
             var a:Number = 1;
 	    spr.graphics.lineStyle(0.3, 0x000000, 0.2);
 	    spr.graphics.beginFill(c, a);
-	    spr.graphics.moveTo(diademWidth / 2 * drawScale, diademLength / 2 * drawScale);
-	    spr.graphics.curveTo(0, diademLength / 4 * drawScale, 0, -diademLength / 2 * drawScale);
-	    spr.graphics.curveTo(0, diademLength / 4 * drawScale, -diademWidth / 2 * drawScale, diademLength / 2 * drawScale);
-	    spr.graphics.curveTo(0, (diademLength / 2 + headWidth / 8) * drawScale, diademWidth / 2 * drawScale, diademLength / 2 * drawScale);
+	    spr.graphics.moveTo(diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(0, diademLength / 4 * drawScale + dy, 0, -diademLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(0, diademLength / 4 * drawScale + dy, -diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
+	    spr.graphics.curveTo(0, (diademLength / 2 + headWidth / 8) * drawScale + dy, diademWidth / 2 * drawScale, diademLength / 2 * drawScale + dy);
 	    spr.graphics.endFill();
 	    c = Utils.colorDark(0xffffff, (-stats.alignment + 1) / 2);
 	    spr.graphics.lineStyle(0.2, c, 0.5);
 	    spr.graphics.beginFill(0xffffff, 0.4);
-	    spr.graphics.moveTo(0, -diademLength * 0.6 * drawScale);
-	    spr.graphics.curveTo(0, 0, -diademLength * 0.5 * drawScale, 0);
-	    spr.graphics.curveTo(0, 0, 0, diademLength * 0.6 * drawScale);
-	    spr.graphics.curveTo(0, 0, diademLength * 0.5 * drawScale, 0);
-	    spr.graphics.curveTo(0, 0, 0, -diademLength * 0.6 * drawScale);
+	    spr.graphics.moveTo(0, -diademLength * 0.6 * drawScale + dy);
+	    spr.graphics.curveTo(0, 0 + dy, -diademLength * 0.5 * drawScale, 0 + dy);
+	    spr.graphics.curveTo(0, 0 + dy, 0, diademLength * 0.6 * drawScale + dy);
+	    spr.graphics.curveTo(0, 0 + dy, diademLength * 0.5 * drawScale, 0 + dy);
+	    spr.graphics.curveTo(0, 0 + dy, 0, -diademLength * 0.6 * drawScale + dy);
 	    spr.graphics.endFill();
 	    spr.graphics.beginFill(0xffffff, 0.4);
-	    spr.graphics.moveTo((-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
-	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, -diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale);
-	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, (-diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
-	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, -diademWidth / 4 * drawScale, (diademLength * 0.4 + diademLength * 1.5 / 5) * drawScale);
-	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, (-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
+	    spr.graphics.moveTo((-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, -diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale + dy);
+	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (-diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, -diademWidth / 4 * drawScale, (diademLength * 0.4 + diademLength * 1.5 / 5) * drawScale + dy);
+	    spr.graphics.curveTo(-diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (-diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.endFill();
 	    spr.graphics.beginFill(0xffffff, 0.4);
-	    spr.graphics.moveTo((diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
-	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale);
-	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, (diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
-	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, diademWidth / 4 * drawScale, (diademLength * 0.4 + diademLength * 1.5 / 5) * drawScale);
-	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale, (diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale);
+	    spr.graphics.moveTo((diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, diademWidth / 4 * drawScale, (diademLength * 0.4 - diademLength * 1.5 / 5) * drawScale + dy);
+	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (diademWidth / 4 - diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
+	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, diademWidth / 4 * drawScale, (diademLength * 0.4 + diademLength * 1.5 / 5) * drawScale + dy);
+	    spr.graphics.curveTo(diademWidth / 4 * drawScale, diademLength * 0.4 * drawScale + dy, (diademWidth / 4 + diademLength * 1.5 / 6) * drawScale, diademLength * 0.4 * drawScale + dy);
 	    spr.graphics.endFill();
 	}
 

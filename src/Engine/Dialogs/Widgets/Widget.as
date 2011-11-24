@@ -6,6 +6,9 @@ package Engine.Dialogs.Widgets {
 
     public class Widget {
 
+	[Embed(source="/Assets/GalaxyEB.ttf", fontFamily="Medium", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const MEDIUM_FONT:String;
+
 	[Embed(source="/Assets/Galaxy.ttf", fontFamily="Small", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const SMALL_FONT:String;
 

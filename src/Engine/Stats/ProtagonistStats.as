@@ -21,14 +21,20 @@ package Engine.Stats {
 
 	public var statsDialog:MainStatsDialog;
 
-	public var vaginaSlot:Slot;
-	public var anusSlot:Slot;
-	public var mouthSlot:Slot;
-	public var leftHandSlot:Slot;
-	public var rightHandSlot:Slot;
+	public var vaginaSlot:SlotStat;
+	public var anusSlot:SlotStat;
+	public var mouthSlot:SlotStat;
+	public var leftHandSlot:SlotStat;
+	public var rightHandSlot:SlotStat;
+	public var protagonist:Protagonist;
 
 	public function ProtagonistStats(){
-	    
+	    this.vaginaSlot = new SlotStat();
+	    this.anusSlot = new SlotStat();
+	    this.mouthSlot = new SlotStat();
+	    this.leftHandSlot = new SlotStat();
+	    this.rightHandSlot = new SlotStat();
+	    super();
 	}
 
 	public function get tribe():int {
@@ -76,6 +82,72 @@ package Engine.Stats {
 	    return true; // TODO: dependent of artifacts occured
 	}
 
+	public function updateSlotParams():void {
+	    var headUnit:Number = 5 / 8 * this.heightRatio;
+	    var headWidth:Number = headUnit * 0.75 * this.wideRatio;
+	    this.vaginaSlot.stretchedDiameter.fromValue = headWidth * 0.75 / 7;
+	    this.vaginaSlot.stretchedDiameter.toValue = headWidth * 0.75;
+	    this.anusSlot.stretchedDiameter.fromValue = headWidth * 0.6 / 10;
+	    this.anusSlot.stretchedDiameter.toValue = headWidth * 0.6;
+	    this.mouthSlot.stretchedDiameter.fromValue = headWidth * 0.45 / 3;
+	    this.mouthSlot.stretchedDiameter.toValue = headWidth * 0.45;
+	    this.vaginaSlot.stretchedLength.fromValue = headUnit * 1.6 / 10;
+	    this.vaginaSlot.stretchedLength.toValue = headUnit * 1.6;
+	    this.anusSlot.stretchedLength.fromValue = headUnit * 1.3 / 15;
+	    this.anusSlot.stretchedLength.toValue = headUnit * 1.3;
+	    this.mouthSlot.stretchedLength.fromValue = headUnit * 0.5 / 5;
+	    this.mouthSlot.stretchedLength.toValue = headUnit * 0.5;
+	    if (this.vaginaSlot.slot != null)
+		this.vaginaSlot.slot.depth = this.vaginaSlot.stretchedLength.valueFrac;
+	    if (this.anusSlot.slot != null)
+		this.anusSlot.slot.depth = this.anusSlot.stretchedLength.valueFrac;
+	    if (this.mouthSlot.slot != null)
+		this.mouthSlot.slot.depth = this.mouthSlot.stretchedLength.valueFrac;
+	}
+
+	public override function set level(lev:int):void {
+	    super.level = lev;
+	    this.updateSlotParams();
+	}
+
+	public override function set constitution(v:Number):void {
+	    var needRebuild:Boolean = this.constitution != v;
+	    super.constitution = v;
+	    this.updateSlotParams();
+	    if (needRebuild && protagonist != null) {
+		protagonist.rebuild();
+	    }
+	}
+
+	public override function takeExp(dExp:Number):void {
+	    var l:int = this.level;
+	    super.takeExp(dExp);
+	    this.updateSlotParams();
+	    if (this.level > l) {
+		protagonist.rebuild();
+	    }
+	}
+
+	public override function takePleasure(dv:Number):Boolean {
+	    var isOrgasm:Boolean = super.takePleasure(dv);
+	    if (isOrgasm) {
+		this.takeExp(this.pleasure.max); // ?multiply on level?
+		this.pleasure.value *= 0.2;
+	    }
+	    return isOrgasm;
+	}
+
+	public override function takePain(dv:Number, stat:ExpStat = null):Boolean {
+	    var isDeath:Boolean = super.takePain(dv);
+	    if (stat != null) {
+		stat.exp += this._expPool.leakValue(dv * this.pain.value / this.pain.max);
+	    }
+	    if (isDeath)  {
+		// TODO: process death
+	    }
+	    return isDeath;
+	}
+
 	public function initStats():void {
 	    this.statsDialog.widgets.space.setTooltip("Your affinity with a Space element. 0% means there is no Space in you, 100% means you are made of pure Space.", -150, 10);
 	    this.statsDialog.widgets.water.setTooltip("Your affinity with a Water element. 0% means there is no Water in you, 100% means you are made of pure Water.", -150, 10);
@@ -101,6 +173,18 @@ package Engine.Stats {
 	}
 
 	public function updateStats():void {
+	    this.takePain(this.mouthSlot.painD, this.mouthSlot.stretchedDiameter);
+	    this.takePain(this.mouthSlot.painL, this.mouthSlot.stretchedLength);
+	    this.takePleasure(this.mouthSlot.pleasure);
+	    this.mouthSlot.updatePosition();
+	    this.takePain(this.vaginaSlot.painD, this.vaginaSlot.stretchedDiameter);
+	    this.takePain(this.vaginaSlot.painL, this.vaginaSlot.stretchedLength);
+	    this.takePleasure(this.vaginaSlot.pleasure);
+	    this.vaginaSlot.updatePosition();
+	    this.takePain(this.anusSlot.painD, this.anusSlot.stretchedDiameter);
+	    this.takePain(this.anusSlot.painL, this.anusSlot.stretchedLength);
+	    this.takePleasure(this.anusSlot.pleasure);
+	    this.anusSlot.updatePosition();
 	    this.statsDialog.widgets.space.value = this.space;
 	    this.statsDialog.widgets.water.value = this.water;
 	    this.statsDialog.widgets.earth.value = this.earth;
@@ -131,10 +215,22 @@ package Engine.Stats {
 	    this.statsDialog.widgets.constitution.valueString = this.constitutionLevel.toString() + "L";
 	    this.statsDialog.widgets.speed.value = this.speedLevel / 50;
 	    this.statsDialog.widgets.speed.valueString = this.speedLevel.toString() + "L";
-	    this.statsDialog.widgets.pool.valueString = this.expPool;
+	    this.statsDialog.widgets.pool.value = this.expPool;
 	    this.statsDialog.widgets.pool.valueString = int(this.expPool).toString();
 	    this.statsDialog.widgets.points.value = int(this.pointPool);
 	    this.statsDialog.widgets.points.valueString = int(this.pointPool).toString();
+	    this.statsDialog.widgets.mouthd.value = this.mouthSlot.stretchedDiameter.levelFrac / 50;
+	    this.statsDialog.widgets.mouthd.valueString = (this.mouthSlot.stretchedDiameter.valueFrac*100).toFixed(1);
+	    this.statsDialog.widgets.mouthl.value = this.mouthSlot.stretchedLength.levelFrac / 50;
+	    this.statsDialog.widgets.mouthl.valueString = (this.mouthSlot.stretchedLength.valueFrac*100).toFixed(1);
+	    this.statsDialog.widgets.vaginad.value = this.vaginaSlot.stretchedDiameter.levelFrac / 50;
+	    this.statsDialog.widgets.vaginad.valueString = (this.vaginaSlot.stretchedDiameter.valueFrac*100).toFixed(1);
+	    this.statsDialog.widgets.vaginal.value = this.vaginaSlot.stretchedLength.levelFrac / 50;
+	    this.statsDialog.widgets.vaginal.valueString = (this.vaginaSlot.stretchedLength.valueFrac*100).toFixed(1);
+	    this.statsDialog.widgets.anusd.value = this.anusSlot.stretchedDiameter.levelFrac / 50;
+	    this.statsDialog.widgets.anusd.valueString = (this.anusSlot.stretchedDiameter.valueFrac*100).toFixed(1);
+	    this.statsDialog.widgets.anusl.value = this.anusSlot.stretchedLength.levelFrac / 50;
+	    this.statsDialog.widgets.anusl.valueString = (this.anusSlot.stretchedLength.valueFrac*100).toFixed(1);
 	    this.statsDialog.upgradeAvailable = (this.pointPool > 0);
 	    this.statsDialog.update();
 	}

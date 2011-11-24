@@ -15,7 +15,7 @@ package Engine.Stats {
 	// variable stats
 	private var _pain:VariableStat = new VariableStat(); 
 	private var _pleasure:VariableStat = new VariableStat(); 
-	private var _expPool:VariableStat = new VariableStat(); 
+	protected var _expPool:VariableStat = new VariableStat(); 
 	private var _pointPool:VariableStat = new VariableStat(); 
 
 	// experience stats
@@ -185,16 +185,18 @@ package Engine.Stats {
 	    this._pointPool.value += (this._level.level - l) * POINTS_EACH_LEVEL;
 	}
 
-	public function takePain(dv:Number):void {
+	public function takePain(dv:Number, stat:ExpStat = null):Boolean {
 	    this._pain.value += dv;
-	    this._maxPain.exp += this._expPool.leakValue(this._pain.value);
+	    this._maxPain.exp += this._expPool.leakValue(dv * this._pain.value / this._pain.max);
 	    this._pain.max = this._maxPain.value2 * this.wideRatio;
+	    return (this._pain.value == this.pain.max);
 	}
 
-	public function takePleasure(dv:Number):void {
+	public function takePleasure(dv:Number):Boolean {
 	    this._pleasure.value += dv;
-	    this._maxPleasure.exp += this._expPool.leakValue(this._pleasure.value);
+	    this._maxPleasure.exp += this._expPool.leakValue(dv * this._pleasure.value / this._pleasure.max);
 	    this._pleasure.max = this._maxPleasure.value2 * this.heightRatio;
+	    return (this._pleasure.value == this.pleasure.max);
 	}
 
 	public function timeStep():void {
@@ -300,7 +302,7 @@ package Engine.Stats {
 	}
 
 	public function get sensitivity():Number {
-	    return Math.pow(10, (1 - this.wideRatio) * 4);
+	    return Math.pow(10, (1 - this.wideRatio) * 2);
 	}
 
 	public function get mixedElementsColor():uint {

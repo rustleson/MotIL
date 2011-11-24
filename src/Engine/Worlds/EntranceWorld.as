@@ -13,9 +13,12 @@ package Engine.Worlds {
     import flash.events.Event;
     import flash.display.*;
     import flash.geom.Matrix;
+    import Box2D.Dynamics.Controllers.*;
 	
     public class EntranceWorld extends World {
 		
+	public var bc:b2BuoyancyController = new b2BuoyancyController();
+
 	public function EntranceWorld(){
 			
 	    world.SetGravity(new b2Vec2(0, 2.0));
@@ -58,24 +61,45 @@ package Engine.Worlds {
 	    backgrounds.push({ratio: 1, bitmap: bd3});
 
 	    stats.space = 1;
-	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-	    //stats.level = 5;
-	    stats.takeExp(123);
-	    stats.takePain(23);
-	    stats.takePleasure(13);
-	    stats.constitution = 1;
-	    stats.speed = 1;
-	    //stats.hairLength = 0;
+	    stats.tribe = ProtagonistStats.RAKSHASI_TRIBE;
+	    //stats.level = 15;
+	    stats.hairColor = 0x005500;
+	    stats.hairLength = 1.5;
 
 	    // objects
-	    objects['roomBorder'] = new Room(world, -500 / physScale, -500 / physScale, 1000 / physScale, 1000 / physScale, 95 / physScale, 0xDDCC99);
+	    objects['roomBorder'] = new Room(world, -1000 / physScale, -1000 / physScale, 2000 / physScale, 2000 / physScale, 95 / physScale, 0xDDCC99);
 	    objects['leftStaircase'] = new Staircase(world, 0, 200 / physScale, 300 / physScale, 205 / physScale, 10, true, 0xAA9944);
 	    objects['rightStaircase'] = new Staircase(world, 0, 200 / physScale, 300 / physScale, 205 / physScale, 10, false, 0xAA9944);
-	    objects['altar'] = new Altar(world, -30 / physScale, 130 / physScale, 60 / physScale, 70 / physScale, 10 / physScale, 35 / physScale, 0xEEDD44, 0.7);
+	    objects['altar'] = new Altar(world, -30 / physScale, 130 / physScale, 60 / physScale, 70 / physScale, 15 / physScale, 35 / physScale, 0xEEDD44, 0.7);
+	    for (i = 0; i < 10; i++) {
+		objects['altar' + i.toString()] = new Altar(world, (Math.random() * 1500 - 750)/ physScale, (Math.random() * 1500 - 750) / physScale, 60 / physScale, 70 / physScale, (i + 3) / physScale, (i + 3) * 3 / physScale, 0xEEDD44, 0.7);
+	    }
 	    objects['protagonist'] = new Protagonist(world, -150 / physScale, 0, 150 / physScale, stats);
 
 	    objectsOrder = ['roomBorder', 'leftStaircase', 'rightStaircase', 'protagonist', 'altar'];
-		
+	    for (i = 0; i < 10; i++) {
+		objectsOrder.push('altar' + i.toString());
+	    
+	    }
+	    
+	    for each (var obj:WorldObject in objects) {
+		for each (var body:b2Body in obj.bodies) {
+		    bc.AddBody(body);
+		}
+	    }
+	    bc.normal.Set(0,-1);
+	    bc.offset = 000 / physScale;
+	    bc.density = 0.0001;
+	    bc.linearDrag = 0.005;
+	    bc.angularDrag = 0.005;
+	    world.AddController(bc);
+	}
+
+	public override function update():void {
+	    super.update();
+	    //var ts:b2TimeStep = new b2TimeStep();
+	    //ts.dt = timeStep;
+	    //bc.Step(ts);
 	}
 
     }
