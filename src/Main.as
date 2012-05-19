@@ -12,6 +12,7 @@ package{
     import General.*;
     import Engine.Worlds.*;
     import Engine.Dialogs.*;
+    import Engine.Stats.*;
     import flash.geom.Matrix; 
     import flash.display.MovieClip;
 
@@ -28,6 +29,8 @@ package{
 	    static public var appWidth:int;
 	    static public var appHeight:int;
 	    public var input:Input;
+	    public var stats:ProtagonistStats;
+	    public var seed:uint;
 
 	    public function Main() {
 		addEventListener(Event.ENTER_FRAME, update, false, 0, true);
@@ -41,12 +44,14 @@ package{
 		input = new Input(sprite);
 		appWidth = stage.stageWidth;
 		appHeight = stage.stageHeight;
+		stats = new ProtagonistStats();
+		seed = 2846234873;
 	    }
 		
 	    public function update(e:Event):void{
 		sprite.graphics.clear();
 		if (!currWorld){
-		    currWorld = new EntranceWorld();
+		    currWorld = new MandalaWorld(stats, seed);
 		}
 		currWorld.update();
 		Input.update();

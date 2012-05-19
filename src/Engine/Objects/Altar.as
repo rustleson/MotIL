@@ -64,20 +64,30 @@ package Engine.Objects {
 
 	private function drawLinga(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
 	    super.drawGenericShape(shape, xf, c, drawScale, dx, dy, udata, spr);
-	    if (spr.numChildren == 0) {
-		spr.addChild(new Sprite());
-	    }
-	    var maskSprite:Sprite = spr.getChildAt(0) as Sprite;
-	    maskSprite.graphics.clear();
-	    maskSprite.blendMode = BlendMode.ERASE;
-	    spr.blendMode = BlendMode.LAYER;
+	    /*
 	    if (!udata.slot.isFree && udata.slot.joint) {
-		var depth:Number = udata.slot.joint.GetJointTranslation();
-		maskSprite.graphics.beginFill(0xffffff, 1);
-		maskSprite.graphics.drawRect((-thickness * 1.1 / 2 - dx) * drawScale, (-(length + thickness) / 2 - dy) * drawScale, thickness * 1.1 * drawScale, -depth * drawScale);
-		maskSprite.graphics.endFill();
-		
+		var maskSprite:Sprite;
+		if (spr.numChildren == 0) {
+		    maskSprite = new Sprite();
+		    spr.addChild(maskSprite);
+		} else {
+		    maskSprite = spr.getChildAt(0) as Sprite;
+		}
+		spr.blendMode = BlendMode.LAYER;
+		maskSprite.blendMode = BlendMode.ERASE;
+		if (udata.slot.connectedSlot.body.GetUserData().hasOwnProperty("buildSlotMask")) {
+		    udata.slot.connectedSlot.body.GetUserData().buildSlotMask(maskSprite);
+		} else {
+		    maskSprite.graphics.clear();
+		    var depth:Number = udata.slot.joint.GetJointTranslation();
+		    maskSprite.graphics.beginFill(0xffffff, 1);
+		    maskSprite.graphics.drawRect((-thickness * 1.1 / 2 - dx) * drawScale, (-(length + thickness) / 2 - dy) * drawScale, thickness * 1.1 * drawScale, -depth * drawScale);
+		    maskSprite.graphics.endFill();
+ 
+
+		}
 	    }
+	    */
 	}
 
     }

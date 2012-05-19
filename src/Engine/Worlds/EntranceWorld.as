@@ -19,7 +19,7 @@ package Engine.Worlds {
 		
 	public var bc:b2BuoyancyController = new b2BuoyancyController();
 
-	public function EntranceWorld(){
+	public function EntranceWorld(stats:ProtagonistStats, seed:uint){
 			
 	    world.SetGravity(new b2Vec2(0, 2.0));
 			
@@ -65,6 +65,9 @@ package Engine.Worlds {
 	    //stats.level = 15;
 	    stats.hairColor = 0x005500;
 	    stats.hairLength = 1.5;
+	    stats.vaginaSlot.stretchedLength.level = 50;
+	    stats.anusSlot.stretchedLength.level = 50;
+	    stats.mouthSlot.stretchedLength.level = 50;
 
 	    // objects
 	    objects['roomBorder'] = new Room(world, -1000 / physScale, -1000 / physScale, 2000 / physScale, 2000 / physScale, 95 / physScale, 0xDDCC99);

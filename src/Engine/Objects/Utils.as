@@ -8,9 +8,11 @@ package Engine.Objects {
     import Box2D.Common.*;
     import Box2D.Common.Math.*;
     import General.Input;
-    import flash.display.Graphics;
+    import flash.display.*;
+    import flash.geom.Matrix;
     import flash.geom.Point;
-    
+    import Engine.Worlds.WorldRoom;
+    import Engine.Dialogs.Widgets.Icons;
 	
     public final class Utils {
 
@@ -122,6 +124,39 @@ package Engine.Objects {
 		    g.curveTo(mid[0].x, mid[0].y, Xpoint[i], Ypoint[i]);
                 }
         }
+
+	public static function buildBackgrounds(type:uint, appWidth:int, appHeight:int):Array {
+	    var icons:Object = new Object();
+	    icons[WorldRoom.SPACE_TYPE] = Icons.Space;
+	    icons[WorldRoom.WATER_TYPE] = Icons.Water;
+	    icons[WorldRoom.EARTH_TYPE] = Icons.Earth;
+	    icons[WorldRoom.FIRE_TYPE] = Icons.Fire;
+	    icons[WorldRoom.AIR_TYPE] = Icons.Air;
+	    icons[WorldRoom.CORRUPTION_TYPE] = Icons.Pain;
+	    icons[WorldRoom.BALANCE_TYPE] = Icons.KarmaInversed;
+	    icons[WorldRoom.PURITY_TYPE] = Icons.Pleasure;
+	    var backgrounds:Array = new Array();
+	    var i: int;
+	    var c:Sprite = new Sprite();
+	    c.graphics.clear();
+	    var matrix:Matrix = new Matrix();
+	    matrix.createGradientBox(appWidth, appHeight, -Math.PI/2, 0, 0);
+	    c.graphics.beginGradientFill(GradientType.LINEAR, [colorDark(type, 0.85), colorDark(type, 0.95)], [1, 1], [0x0, 0xff], matrix);
+	    c.graphics.drawRect(0, 0, appWidth, appHeight);
+	    c.graphics.endFill();
+	    backgrounds.push({ratio: 0, bitmap: new BitmapData(appWidth, appHeight, true, 0x00000000)});
+	    backgrounds[0].bitmap.draw(c);
+	    for (var j:int = 1; j <= 3; j++) {
+		c.graphics.clear();
+		var r:Number = 5 + (j - 1) * 2.5;
+		for (i = 0; i < 15; i++) {
+		    icons[type](c, Math.random() * (200 - r * 2) + r, Math.random() * (200 - r * 2) + r, r, colorDark(type, 0.8 - (j - 1) * 0.1), j, 1);
+		}
+		backgrounds.push({ratio: 1./3 * j, bitmap: new BitmapData(200, 200, true, 0x00000000)});
+		backgrounds[j].bitmap.draw(c);
+	    }
+	    return backgrounds;
+	}
 
   }
 	

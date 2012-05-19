@@ -63,6 +63,29 @@ package Engine.Dialogs.Widgets {
 	    
 	}
 
+	public static function KarmaInversed(spr:Sprite, x:Number, y:Number, r:Number, c:uint, t:Number = 1, a:Number = 1):void {
+	    spr.graphics.lineStyle(0, 0, 0);
+	    spr.graphics.beginFill(0x000000, a);
+	    spr.graphics.moveTo(x, y - r);
+	    spr.graphics.curveTo(x + r * 2, y, x, y + r);
+	    spr.graphics.curveTo(x - r * 2 / 2, y + r/2, x, y);
+	    spr.graphics.curveTo(x + r * 2 / 2, y - r/2, x, y - r);
+	    spr.graphics.endFill();
+	    spr.graphics.beginFill(c, a);
+	    spr.graphics.moveTo(x, y + r);
+	    spr.graphics.curveTo(x - r * 2, y, x, y - r);
+	    spr.graphics.curveTo(x + r * 2 / 2, y - r/2, x, y);
+	    spr.graphics.curveTo(x - r * 2 / 2, y + r/2, x, y + r);
+	    spr.graphics.endFill();
+	    spr.graphics.beginFill(c, a);
+	    spr.graphics.drawCircle(x, y + r/2, t/2);
+	    spr.graphics.endFill();
+	    spr.graphics.beginFill(0x000000, a);
+	    spr.graphics.drawCircle(x, y - r/2, t/2);
+	    spr.graphics.endFill();
+	    
+	}
+
 	public static function Pain(spr:Sprite, x:Number, y:Number, r:Number, c:uint, t:Number = 1, a:Number = 1):void {
 	    spr.graphics.lineStyle(0, 0, 0);
 	    spr.graphics.beginFill(c, a);

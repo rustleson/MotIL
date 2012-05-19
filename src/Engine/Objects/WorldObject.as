@@ -87,18 +87,56 @@ package Engine.Objects {
 		for (var f:b2Fixture = body.GetFixtureList(); f != null; f = f.GetNext()){
 		    if (viewport.TestOverlap(f.GetAABB())) {
 			var bodyPosition:b2Vec2 = body.GetPosition();
+			var bodyRotation:Number = body.GetAngle();
+			var matrix:Matrix = new Matrix(); 
 			if (!body.sprite || forceRedraw || udata.hasOwnProperty('slot') && !udata.slot.isFree || udata.hasOwnProperty('alwaysUpdate')) {
 			    if (!body.sprite)
 				body.sprite = new Sprite();
 			    var drawingFunction:Function = body.drawingFunction as Function ? body.drawingFunction as Function : this.drawGenericShape;
-			    drawingFunction(f.GetShape(), xf, color, physScale, bodyPosition.x - xf.position.x, bodyPosition.y - xf.position.y, udata, body.sprite);
+			    if (udata.hasOwnProperty('slot') && udata.slot.type == Slot.FATHER && udata.slot.connectedSlot != null) {
+				body.sprite.graphics.clear();
+			    } else {
+				drawingFunction(f.GetShape(), xf, color, physScale, bodyPosition.x - xf.position.x, bodyPosition.y - xf.position.y, udata, body.sprite);
+				if (udata.hasOwnProperty('slot') && udata.slot.type == Slot.MOTHER && udata.slot.connectedSlot != null) {
+				    var spr:Sprite;
+				    var maskSprite:Sprite;
+				    if (body.sprite.numChildren == 0) {
+					spr = new Sprite();
+					body.sprite.addChild(spr);
+					maskSprite = new Sprite();
+					spr.addChild(maskSprite);
+				    } else {
+					spr = body.sprite.getChildAt(0) as Sprite;
+					maskSprite = spr.getChildAt(0) as Sprite;
+				    }
+				    spr.blendMode = BlendMode.LAYER;
+				    maskSprite.blendMode = BlendMode.ERASE;
+				    drawingFunction = udata.slot.connectedSlot.body.drawingFunction as Function ? udata.slot.connectedSlot.body.drawingFunction as Function : this.drawGenericShape;
+				    
+				    drawingFunction(udata.slot.connectedSlot.body.GetFixtureList().GetShape(), udata.slot.connectedSlot.body.m_xf, color, physScale, udata.slot.connectedSlot.body.GetPosition().x - udata.slot.connectedSlot.body.m_xf.position.x, udata.slot.connectedSlot.body.GetPosition().y - udata.slot.connectedSlot.body.m_xf.position.y, udata.slot.connectedSlot.body.GetUserData(), spr);
+				    matrix.tx = (-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
+				    matrix.ty = (-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
+				    matrix.rotate(-bodyRotation);
+				    spr.transform.matrix = matrix;
+				    var buildSlotMask:Function = udata.slot.body.GetUserData().hasOwnProperty("buildSlotMask") ? udata.slot.body.GetUserData().buildSlotMask : this.buildGenericSlotMask;
+				    buildSlotMask(maskSprite, body, physScale);
+				    matrix = new Matrix();
+				    matrix.rotate(bodyRotation);
+				    matrix.tx = -(-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
+				    matrix.ty = -(-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
+				    maskSprite.transform.matrix = matrix;
+				} else {
+				    while (body.sprite.numChildren > 0) {
+					body.sprite.removeChildAt(0);
+				    }
+				}
+			    }
 			}
 			if (!sprite.contains(body.sprite)) {
 			    sprite.addChild(body.sprite);
 			}
-			var bodyRotation:Number = body.GetAngle();
-			var matrix:Matrix = new Matrix(); 
 			body.sprite.rotation = 0;
+			matrix = new Matrix();
 			matrix.rotate(bodyRotation);
 			matrix.tx = (bodyPosition.x - viewport.lowerBound.x) * physScale;
 			matrix.ty = (bodyPosition.y - viewport.lowerBound.y) * physScale;
@@ -216,6 +254,18 @@ package Engine.Objects {
 
         }
 
+	public function buildGenericSlotMask(maskSprite:Sprite, body:b2Body, drawScale:Number):void {
+	    maskSprite.graphics.clear();
+	    var slot:Slot = body.GetUserData().slot;
+	    var depth:Number = slot.joint.GetJointTranslation();
+	    var thickness:Number = slot.connectedSlot.getDiameter(-depth);
+	    var dx:Number = 0;//slot.localAnchor.x;
+	    var dy:Number = 0;//slot.localAnchor.y;
+	    maskSprite.graphics.beginFill(0xffffff, 1);
+	    maskSprite.graphics.drawRect((-thickness * 2 * 1.1 - dx) * drawScale, (-dy) * drawScale, thickness * 1.1 * 4 * drawScale,  depth * drawScale);
+	    maskSprite.graphics.endFill();
+	}
+
 	public function set color(c:uint):void {
 	    this._color = c;
 	}
@@ -232,6 +282,18 @@ package Engine.Objects {
 	    return this._alpha;
 	}
 
+	public function clearStuff():void {
+	    this.sprite.graphics.clear();
+	    if (this.bodiesOrder.length > 0) {
+		var world:b2World = this.bodies[this.bodiesOrder[0]].GetWorld();
+		for each(var joint:b2Joint in this.joints) {
+		    world.DestroyJoint(joint);
+		}
+		for each(var body:b2Body in this.bodies) {
+		    world.DestroyBody(body);
+		}
+	    }
+	}
 
     }
 	

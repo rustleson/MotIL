@@ -74,9 +74,26 @@
 
 [ ] * monsters
 [ ]     + stats
-[ ]     + tentacled monster
-[ ]         - generation
-[ ]         - design
-[ ]         - transitions
-[ ]         - AI
-[ ]         - slots interaction
+[ ]     + octopus (water realm)
+[ ]     + snake / worm (earth realm)
+[ ]     + flying cock (air realm)
+[ ]     + efreet (fire realm)
+[ ]     + star dust (space realm)
+
+[ ] * world
+[+]     + dynamic map
+[+]     + generic rooms
+[ ]     + backgrounds transition
+[ ]     + terrain generation
+[ ]     + wave spread labirynth generation
+[ ]     + specific rooms
+[ ]         - altar room(s)
+[ ]         - artefact room(s)
+[ ]         - quest room(s)
+[ ]     + room variations
+[ ]         - space (star nexuses)
+[ ]         - water (sea currents, reefs)
+[ ]         - earth (caverns, tunnels)
+[ ]         - fire (lava, steam)
+[ ]         - air (clouds, hurricains)
+

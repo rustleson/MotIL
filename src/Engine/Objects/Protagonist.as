@@ -146,6 +146,7 @@ package Engine.Objects {
 		bodies['mouth'].SetUserData({'slot': mouthSlot});;
 		bodies['head'].SetUserData(headUserData);
 		bodies['head'].GetUserData()['slot'] = mouthSlot;
+		bodies['head'].GetUserData()['buildSlotMask'] = this.buildMouthSlotMask;
 		this.stats.mouthSlot.slot = mouthSlot;
 	    }
 
@@ -1011,6 +1012,24 @@ package Engine.Objects {
 		this.drawLHorn(shape, xf, c, drawScale, dx - headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
 		this.drawRHorn(shape, xf, c, drawScale, dx + headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
 	    }
+	}
+
+	public function buildMouthSlotMask(maskSprite:Sprite, body:b2Body, drawScale:Number):void {
+	    maskSprite.graphics.clear();
+	    var slot:Slot = body.GetUserData().slot;
+	    var depth:Number = slot.joint.GetJointTranslation();
+	    var thickness:Number = slot.connectedSlot.getDiameter(-depth);
+	    var dx:Number = slot.localAnchor.x;
+	    var dy:Number = slot.localAnchor.y;
+	    var angle:Number = Math.acos(b2Math.Dot(slot.body.GetWorldVector(slot.axis), slot.connectedSlot.body.GetWorldVector(slot.connectedSlot.axis)));
+	    var axis:b2Vec2 = slot.body.GetLocalVector(slot.connectedSlot.axis);
+	    //maskSprite.rotation = angle;
+	    maskSprite.graphics.lineStyle(thickness * 3 * drawScale, 0xffffff, 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
+	    maskSprite.graphics.moveTo(dx * drawScale, dy * drawScale);
+	    maskSprite.graphics.lineTo((-depth * axis.x + dx) * drawScale, (-depth * axis.y + dy) * drawScale);
+	    //maskSprite.graphics.lineStyle(depth / 3 * drawScale, 0xffffff, 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
+	    //maskSprite.graphics.moveTo(-(thickness * axis.y + dx) * drawScale, dy * drawScale);
+	    //maskSprite.graphics.curveTo(dx * drawScale, -(thickness * 2 * axis.y + dy) * drawScale, (thickness * axis.y + dx) * drawScale, dy * drawScale);
 	}
 
 	private function drawHalo(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {

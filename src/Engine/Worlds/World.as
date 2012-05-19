@@ -34,6 +34,7 @@ package Engine.Worlds {
 	public var sprite:Sprite;
 	public var backgrounds:Array;
 	public var stats:ProtagonistStats;
+	public var seed:uint;
 
 	public function World(){
 			
@@ -43,12 +44,6 @@ package Engine.Worlds {
 	    objects = new Array();
 	    objectsOrder = new Array();
 	    backgrounds = new Array();
-	    stats = new ProtagonistStats();
-	    stats.statsDialog = new MainStatsDialog(appWidth, appHeight);
-	    stats.statsDialog.sprite = Main.statsSprite;
-	    stats.initStats();
-	    stats.updateStats();
-	    stats.statsDialog.rebuild();
 	    var worldAABB:b2AABB = new b2AABB();
 	    worldAABB.lowerBound.Set(-1000.0, -1000.0);
 	    worldAABB.upperBound.Set(1000.0, 1000.0);
@@ -118,20 +113,6 @@ package Engine.Worlds {
 		}
 	    }
 	    stats.updateStats();
-	    
-	    // joints
-	    /*for (var jj:b2Joint = world.GetJointList(); jj; jj = jj.GetNext()){
-		//DrawJoint(jj);
-	    }
-	    // bodies
-	    for (var bb:b2Body = world.GetBodyList(); bb; bb = bb.GetNext()){
-		for (var s:b2Fixture = bb.GetFixtureList(); s != null; s = s.GetNext()){
-		    DrawShape(s.GetShape());
-		}
-	    }
-	    */	
-	    //DrawPairs();
-	    //DrawBounds();
 			
 	}
 		

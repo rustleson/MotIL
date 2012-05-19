@@ -19,6 +19,8 @@ package Engine.Worlds {
 	
     public class MandalaWorld extends World {
 		
+	public var primaryBgSprite:Sprite;
+	public var secondaryBgSprite:Sprite;
 	public var bc:b2BuoyancyController = new b2BuoyancyController();
 	public var map:Array = new Array();
 	public var mapWidth:int = 20;
@@ -27,9 +29,15 @@ package Engine.Worlds {
 	public var roomHeight:Number;
 	public var curRoomX:int = -1;
 	public var curRoomY:int = -1;
+	private var backgroundsCache:Object = new Object();
+	private var roomTypes:Array = [WorldRoom.SPACE_TYPE, WorldRoom.WATER_TYPE, WorldRoom.EARTH_TYPE, WorldRoom.FIRE_TYPE, WorldRoom.AIR_TYPE, WorldRoom.CORRUPTION_TYPE, WorldRoom.BALANCE_TYPE, WorldRoom.PURITY_TYPE ];
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
 			
+	    secondaryBgSprite = new Sprite();
+	    sprite.addChild(secondaryBgSprite);
+	    primaryBgSprite = new Sprite();
+	    sprite.addChild(primaryBgSprite);
 	    this.roomWidth = 1000 / this.physScale;
 	    this.roomHeight = 1000 / this.physScale;
 	    this.stats = stats;
@@ -45,41 +53,10 @@ package Engine.Worlds {
 	    world.SetGravity(new b2Vec2(0, 2.0));
 			
 	    // backgrounds
-	    var c:Sprite = new Sprite();
-	    c.graphics.clear();
-	    var matrix:Matrix = new Matrix();
-	    matrix.createGradientBox(appWidth, appHeight, -Math.PI/2, 0, 0)
-	    c.graphics.beginGradientFill(GradientType.LINEAR, [0x333300, 0x111100], [1, 1], [0x0, 0xff], matrix);
-	    c.graphics.drawRect(0, 0, appWidth, appHeight);
-	    c.graphics.endFill();
-	    var bd:BitmapData = new BitmapData(appWidth, appHeight, true, 0x00000000);
-	    bd.draw(c);
-	    backgrounds.push({ratio: 0, bitmap: bd});
-	    c.graphics.clear();
-	    c.graphics.lineStyle(1, 0xAAAA00, 0.1); // transparency is our enemy! rid off as soon as possible! (slows severely the whole app)
-	    var i:int;
-	    for (i = 0; i < 15; i++) {
-		c.graphics.drawRect(Math.random() * 188, Math.random() * 188, 10, 10);
+	    for each (var type:uint in this.roomTypes) {
+		this.backgroundsCache[type] = Utils.buildBackgrounds(type, appWidth, appHeight);
 	    }
-	    var bd1:BitmapData = new BitmapData(200, 200, true, 0x00000000);
-	    bd1.draw(c);
-	    backgrounds.push({ratio: 0.33, bitmap: bd1});
-	    c.graphics.clear();
-	    c.graphics.lineStyle(2, 0xAAAA00, 0.2);
-	    for (i = 0; i < 10; i++) {
-		c.graphics.drawRect(Math.random() * 182, Math.random() * 182, 15, 15);
-	    }
-	    var bd2:BitmapData = new BitmapData(200, 200, true, 0x00000000);
-	    bd2.draw(c);
-	    backgrounds.push({ratio: 0.66, bitmap: bd2});
-	    c.graphics.clear();
-	    c.graphics.lineStyle(3, 0xAAAA00, 0.3);
-	    for (i = 0; i < 5; i++) {
-		c.graphics.drawRect(Math.random() * 176, Math.random() * 176, 20, 20);
-	    }
-	    var bd3:BitmapData = new BitmapData(200, 200, true, 0x00000000);
-	    bd3.draw(c);
-	    backgrounds.push({ratio: 1, bitmap: bd3});
+
 	    stats.space = 1;
 	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
 	    //stats.level = 15;
@@ -144,6 +121,13 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.map.needUpdate = true;
 		this.stats.statsDialog.widgets.map.curX = this.curRoomX;
 		this.stats.statsDialog.widgets.map.curY = this.curRoomY;
+		//for (i = 0; i < backgrounds.length; i++) {
+		//    backgrounds.splice(i, 1);
+		//}
+		//var type:uint = this.map[this.curRoomY][this.curRoomX].type;
+		//for (i = 0; i < backgroundsCache[type].length; i++) {
+		//    this.backgrounds.push(backgroundsCache[type][i]);
+		//}
 	    }
 	    super.update();
 	    //var ts:b2TimeStep = new b2TimeStep();
@@ -156,9 +140,8 @@ package Engine.Worlds {
 	    for (var j:int = 0; j < this.mapHeight; j++) {
 		this.map[j] = new Array();
 		for (var i:int = 0; i < this.mapWidth; i++) {
-		    var types:Array = [WorldRoom.SPACE_TYPE, WorldRoom.WATER_TYPE, WorldRoom.EARTH_TYPE, WorldRoom.FIRE_TYPE, WorldRoom.AIR_TYPE, WorldRoom.CORRUPTION_TYPE, WorldRoom.BALANCE_TYPE, WorldRoom.PURITY_TYPE, ];
 		    var prefix:String = "room" + i.toString() + "_" + j.toString() + "_";
-		    var room:WorldRoom = new EmptyRoom(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, types[Rndm.integer(0, 7)], prefix, Rndm.integer(1, 10000000));
+		    var room:WorldRoom = new EmptyRoom(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, roomTypes[Rndm.integer(0, 8)], prefix, Rndm.integer(1, 10000000));
 		    this.map[j].push(room);
 		}
 	    }
@@ -187,6 +170,66 @@ package Engine.Worlds {
 			this.map[j][i+1].freedomLeft = rSeed;
 		    }
 		}
+	    }
+	}
+
+	public override function renderBackgrounds():void {
+	    this.primaryBgSprite.graphics.clear();
+	    this.secondaryBgSprite.graphics.clear();
+	    var type:uint = this.map[this.curRoomY][this.curRoomX].type;
+	    for each (var bg:Object in this.backgroundsCache[type]) {
+		var matrix:Matrix = new Matrix();
+		matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
+		this.primaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
+		this.primaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+		this.primaryBgSprite.graphics.endFill();
+	    }
+	    var nearestWall:Number = this.roomWidth;
+	    var nearestType:uint = 0;
+	    var dist:Number;
+	    var proX:Number = this.objects.protagonist.bodies.chest.GetPosition().x;
+	    var proY:Number = this.objects.protagonist.bodies.chest.GetPosition().y;
+	    if (this.curRoomX > 0 && this.map[this.curRoomY][this.curRoomX - 1].type != type) {
+		dist = Math.abs(proX - this.curRoomX * this.roomWidth);
+		if (dist < nearestWall) {
+		    nearestWall = dist;
+		    nearestType = this.map[this.curRoomY][this.curRoomX - 1].type;
+		}
+	    }
+	    if (this.curRoomX < this.mapWidth - 1 && this.map[this.curRoomY][this.curRoomX + 1].type != type) {
+		dist = Math.abs((this.curRoomX + 1) * this.roomWidth - proX);
+		if (dist < nearestWall) {
+		    nearestWall = dist;
+		    nearestType = this.map[this.curRoomY][this.curRoomX + 1].type;
+		}
+	    }
+	    if (this.curRoomY > 0 && this.map[this.curRoomY - 1][this.curRoomX].type != type) {
+		dist = Math.abs(proY - this.curRoomY * this.roomHeight);
+		if (dist < nearestWall) {
+		    nearestWall = dist;
+		    nearestType = this.map[this.curRoomY - 1][this.curRoomX].type;
+		}
+	    }
+	    if (this.curRoomY < this.mapHeight && this.map[this.curRoomY + 1][this.curRoomX].type != type) {
+		dist = Math.abs((this.curRoomY + 1) * this.roomHeight - proY);
+		if (dist < nearestWall) {
+		    nearestWall = dist;
+		    nearestType = this.map[this.curRoomY + 1][this.curRoomX].type;
+		}
+	    }
+	    if (nearestWall <= this.roomWidth * 0.4) {
+		for each (bg in this.backgroundsCache[nearestType]) {
+		    matrix = new Matrix();
+		    matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
+		    this.secondaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
+		    this.secondaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+		    this.secondaryBgSprite.graphics.endFill();
+		}
+		this.primaryBgSprite.alpha = nearestWall / this.roomWidth / 0.8 + 0.5;
+		this.secondaryBgSprite.alpha = 1 - this.primaryBgSprite.alpha + 0.5;
+	    } else {
+		this.primaryBgSprite.alpha = 1;
+		this.secondaryBgSprite.alpha = 0;
 	    }
 	}
 

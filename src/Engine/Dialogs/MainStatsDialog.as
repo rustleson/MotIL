@@ -43,11 +43,13 @@ package Engine.Dialogs {
 	    this.widgets['vaginapanel'] = new PanelWidget(w - 245, 130, 130, 50, 130, 50, 0x474444, 'Vagina', true);
 	    this.widgets['vaginad'] = new PercentWidget(w - 250, 156, 70, 6, 0x552211, 'D:', null, true);
 	    this.widgets['vaginal'] = new PercentWidget(w - 250, 168, 70, 6, 0x552211, 'L:', null, true);
-	    this.widgets['anuspanel'] = new PanelWidget(w - 245, 190, 130, 50, 130, 50, 0x474444, 'anus', true);
+	    this.widgets['anuspanel'] = new PanelWidget(w - 245, 190, 130, 50, 130, 50, 0x474444, 'Anus', true);
 	    this.widgets['anusd'] = new PercentWidget(w - 250, 216, 70, 6, 0x552211, 'D:', null, true);
 	    this.widgets['anusl'] = new PercentWidget(w - 250, 228, 70, 6, 0x552211, 'L:', null, true);
-	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthd', 'mouthl', 'vaginapanel', 'vaginad', 'vaginal', 'anuspanel', 'anusd', 'anusl'];
-	    this.visibleWidgets = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level'];
+	    this.widgets['mappanel'] = new PanelWidget(w - 10, h - 10, 60, 60, 160, 160, 0x474444, 'Map', true, true);
+	    this.widgets['map'] = new MapWidget(w - 15, h - 15, 50, 50, 150, 150, true, true);
+	    this.widgetsOrder = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthd', 'mouthl', 'vaginapanel', 'vaginad', 'vaginal', 'anuspanel', 'anusd', 'anusl', 'mappanel', 'map'];
+	    this.visibleWidgets = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'mappanel', 'map'];
 	    this.levelupWidgets = ['painresup', 'arouseup', 'constitutionup', 'speedup'];
 	    this.toggleHide();
 	}

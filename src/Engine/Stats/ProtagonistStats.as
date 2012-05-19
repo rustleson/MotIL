@@ -91,12 +91,12 @@ package Engine.Stats {
 	    this.anusSlot.stretchedDiameter.toValue = headWidth * 0.6;
 	    this.mouthSlot.stretchedDiameter.fromValue = headWidth * 0.45 / 3;
 	    this.mouthSlot.stretchedDiameter.toValue = headWidth * 0.45;
-	    this.vaginaSlot.stretchedLength.fromValue = headUnit * 1.6 / 10;
+	    this.vaginaSlot.stretchedLength.fromValue = headUnit * 1.6 / 7;
 	    this.vaginaSlot.stretchedLength.toValue = headUnit * 1.6;
-	    this.anusSlot.stretchedLength.fromValue = headUnit * 1.3 / 15;
+	    this.anusSlot.stretchedLength.fromValue = headUnit * 1.3 / 13;
 	    this.anusSlot.stretchedLength.toValue = headUnit * 1.3;
-	    this.mouthSlot.stretchedLength.fromValue = headUnit * 0.5 / 5;
-	    this.mouthSlot.stretchedLength.toValue = headUnit * 0.5;
+	    this.mouthSlot.stretchedLength.fromValue = headUnit * 0.7 / 5;
+	    this.mouthSlot.stretchedLength.toValue = headUnit * 0.7;
 	    if (this.vaginaSlot.slot != null)
 		this.vaginaSlot.slot.depth = this.vaginaSlot.stretchedLength.valueFrac;
 	    if (this.anusSlot.slot != null)
@@ -140,7 +140,7 @@ package Engine.Stats {
 	public override function takePain(dv:Number, stat:ExpStat = null):Boolean {
 	    var isDeath:Boolean = super.takePain(dv);
 	    if (stat != null) {
-		stat.exp += this._expPool.leakValue(dv * this.pain.value / this.pain.max);
+		stat.exp += dv * stat.level * stat.level / 4; //this._expPool.leakValue(dv * this.pain.value / this.pain.max);
 	    }
 	    if (isDeath)  {
 		// TODO: process death
@@ -164,7 +164,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.arouse.setTooltip("Asousal boost. Higher this stat is, faster bliss is increasing.", -150, 10);
 	    this.statsDialog.widgets.constitution.setTooltip("Constitution. Higher this stat is, more fat and less sensitive you are. Sensitivity means you are sensitive to both pain and bliss, so use this stat wise. If you are thin you must increase it, if you are fat you must avoid increasing.", -150, 10);
 	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ", -150, 10);
-	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improvint, etc.", -150, 10);
+	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.", -150, 10);
 	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.", -150, 10);
 	    this.statsDialog.widgets.constitutionup.callback = this.constitutionUpClickHandler;
 	    this.statsDialog.widgets.painresup.callback = this.painResistanceUpClickHandler;
