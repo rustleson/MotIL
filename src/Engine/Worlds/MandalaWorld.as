@@ -141,7 +141,8 @@ package Engine.Worlds {
 		this.map[j] = new Array();
 		for (var i:int = 0; i < this.mapWidth; i++) {
 		    var prefix:String = "room" + i.toString() + "_" + j.toString() + "_";
-		    var room:WorldRoom = new EmptyRoom(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, roomTypes[Rndm.integer(0, 8)], prefix, Rndm.integer(1, 10000000));
+		    var roomType:Class = Rndm.bit(0.3) ? AltarRoom : EmptyRoom;
+		    var room:WorldRoom = new roomType(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, roomTypes[Rndm.integer(0, 8)], prefix, Rndm.integer(1, 10000000));
 		    this.map[j].push(room);
 		}
 	    }
@@ -210,7 +211,7 @@ package Engine.Worlds {
 		    nearestType = this.map[this.curRoomY - 1][this.curRoomX].type;
 		}
 	    }
-	    if (this.curRoomY < this.mapHeight && this.map[this.curRoomY + 1][this.curRoomX].type != type) {
+	    if (this.curRoomY < this.mapHeight - 1 && this.map[this.curRoomY + 1][this.curRoomX].type != type) {
 		dist = Math.abs((this.curRoomY + 1) * this.roomHeight - proY);
 		if (dist < nearestWall) {
 		    nearestWall = dist;

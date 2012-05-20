@@ -50,13 +50,6 @@ package General {
 			instance.seed = value;
 		}
 		
-		public static function get pointer():uint {
-			return instance.pointer;
-		}
-		public static function set pointer(value:uint):void {
-			instance.pointer = value;
-		}
-		
 		public static function random():Number {
 			return instance.random();
 		}
@@ -81,24 +74,15 @@ package General {
 			return instance.integer(min,max);
 		}
 		
-		public static function reset():void {
-			instance.reset();
-		}
-		
-		
 	// constants:
 	// private properties:
 		protected var _seed:uint=0;
-		protected var _pointer:uint=0;
-		protected var bmpd:BitmapData;
-		protected var seedInvalid:Boolean=true;
 	
 	// public properties:
 		
 	// constructor:
 		public function Rndm(seed:uint=0) {
 			_seed = seed;
-			bmpd = new BitmapData(1000,200);
 		}
 		
 	// public getter/setters:
@@ -109,29 +93,16 @@ package General {
 			return _seed;
 		}
 		public function set seed(value:uint):void {
-			if (value != _seed) { seedInvalid = true; _pointer=0; }
 			_seed = value;
 		}
 		
-		// trace(Rndm.pointer); // traces the current position in the number series
-		// Rndm.pointer = 50; // moves the pointer to the 50th number in the series
-		public function get pointer():uint {
-			return _pointer;
-		}
-		public function set pointer(value:uint):void {
-			_pointer = value;
-		}
 	
 	// public methods:
 		// random(); // returns a number between 0-1 exclusive.
 		public function random():Number {
-			if (seedInvalid) {
-				bmpd.noise(_seed,0,255,1|2|4|8);
-				seedInvalid = false;
-			}
-			_pointer = (_pointer+1)%200000;
-			// Flash's numeric precision appears to run to 0.9999999999999999, but we'll drop one digit to be safe:
-			return (bmpd.getPixel32(_pointer%1000,_pointer/1000>>0)*0.999999999999998+0.000000000000001)/0xFFFFFFFF;
+		    // UPDATED: added something MUCH faster and effective than this f@#king bitmap generation
+		    _seed = (_seed*9301+49297) % 233280;
+		    return _seed/(233280.0);
 		}
 		
 		// float(50); // returns a number between 0-50 exclusive
@@ -165,11 +136,6 @@ package General {
 			if (isNaN(max)) { max = min; min=0; }
 			// Need to use floor instead of bit shift to work properly with negative values:
 			return Math.floor(float(min,max));
-		}
-		
-		// reset(); // resets the number series, retaining the same seed
-		public function reset():void {
-			_pointer = 0;
 		}
 		
 	// private methods:

@@ -83,7 +83,8 @@
 [ ] * world
 [+]     + dynamic map
 [+]     + generic rooms
-[ ]     + backgrounds transition
+[+]     + backgrounds transition
+[ ]     + room smooth transition (???glitches because of noise-based Rndm???)
 [ ]     + terrain generation
 [ ]     + wave spread labirynth generation
 [ ]     + specific rooms
