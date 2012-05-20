@@ -31,6 +31,7 @@ package Engine.Worlds {
 	public var curRoomY:int = -1;
 	private var backgroundsCache:Object = new Object();
 	private var roomTypes:Array = [WorldRoom.SPACE_TYPE, WorldRoom.WATER_TYPE, WorldRoom.EARTH_TYPE, WorldRoom.FIRE_TYPE, WorldRoom.AIR_TYPE, WorldRoom.CORRUPTION_TYPE, WorldRoom.BALANCE_TYPE, WorldRoom.PURITY_TYPE ];
+	private var terrHeights:Array = new Array();
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
 			
@@ -66,23 +67,6 @@ package Engine.Worlds {
 	    //stats.anusSlot.stretchedLength.level = 50;
 	    //stats.mouthSlot.stretchedLength.level = 50;
 
-	    // objects
-	    /*
-	    objects['roomBorder'] = new Room(world, -1000 / physScale, -1000 / physScale, 2000 / physScale, 2000 / physScale, 95 / physScale, 0xDDCC99);
-	    objects['leftStaircase'] = new Staircase(world, 0, 200 / physScale, 300 / physScale, 205 / physScale, 10, true, 0xAA9944);
-	    objects['rightStaircase'] = new Staircase(world, 0, 200 / physScale, 300 / physScale, 205 / physScale, 10, false, 0xAA9944);
-	    objects['altar'] = new Altar(world, -30 / physScale, 130 / physScale, 60 / physScale, 70 / physScale, 15 / physScale, 35 / physScale, 0xEEDD44, 0.7);
-	    for (i = 0; i < 10; i++) {
-		objects['altar' + i.toString()] = new Altar(world, (Math.random() * 1500 - 750)/ physScale, (Math.random() * 1500 - 750) / physScale, 60 / physScale, 70 / physScale, (i + 3) / physScale, (i + 3) * 3 / physScale, 0xEEDD44, 0.7);
-	    }
-	    objects['protagonist'] = new Protagonist(world, 150 / physScale, 150 / physScale, 150 / physScale, stats);
-
-	    objectsOrder = ['roomBorder', 'leftStaircase', 'rightStaircase', 'protagonist', 'altar'];
-	    for (i = 0; i < 10; i++) {
-		objectsOrder.push('altar' + i.toString());
-	    
-	    }
-	    */
 	    var startX:int = Rndm.integer(0, this.mapWidth - 1);
 	    var startY:int = Rndm.integer(0, this.mapHeight - 1);
 	    objects['protagonist'] = new Protagonist(world, startX * this.roomWidth + 250 / physScale, startY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
@@ -121,31 +105,42 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.map.needUpdate = true;
 		this.stats.statsDialog.widgets.map.curX = this.curRoomX;
 		this.stats.statsDialog.widgets.map.curY = this.curRoomY;
-		//for (i = 0; i < backgrounds.length; i++) {
-		//    backgrounds.splice(i, 1);
-		//}
-		//var type:uint = this.map[this.curRoomY][this.curRoomX].type;
-		//for (i = 0; i < backgroundsCache[type].length; i++) {
-		//    this.backgrounds.push(backgroundsCache[type][i]);
-		//}
 	    }
 	    super.update();
-	    //var ts:b2TimeStep = new b2TimeStep();
-	    //ts.dt = timeStep;
-	    //bc.Step(ts);
 	}
 
 	public function buildMap():void {
-	    // build room types
+	    // build terrain heigths
+	    this.terrHeights = new Array();
+	    var meruPos:int = Rndm.integer(Math.floor(this.mapWidth * 0.2), Math.floor(this.mapWidth * 0.8));
+	    var meruHeight:int = Rndm.integer(Math.floor(this.mapHeight * 0.3), Math.floor(this.mapHeight * 0.4));
+	    var seaDepth:int = Rndm.integer(Math.floor(this.mapHeight * 0.7), Math.floor(this.mapHeight * 0.9));
+	    this.buildFractalTerrain(0, Math.floor(meruPos / 2), Rndm.integer(Math.floor(this.mapHeight * 0.5), Math.floor(this.mapHeight * 0.7)), seaDepth);
+	    this.buildFractalTerrain(Math.floor(meruPos / 2), meruPos, seaDepth, meruHeight);
+	    this.buildFractalTerrain(meruPos, Math.floor((this.mapWidth + meruPos) / 2), meruHeight, seaDepth);
+	    this.buildFractalTerrain(Math.floor((this.mapWidth + meruPos) / 2), this.mapWidth, seaDepth, Rndm.integer(Math.floor(this.mapHeight * 0.5), Math.floor(this.mapHeight * 0.7)));
+	    // build terrain with water, air and space
 	    for (var j:int = 0; j < this.mapHeight; j++) {
 		this.map[j] = new Array();
 		for (var i:int = 0; i < this.mapWidth; i++) {
 		    var prefix:String = "room" + i.toString() + "_" + j.toString() + "_";
-		    var roomType:Class = Rndm.bit(0.3) ? AltarRoom : EmptyRoom;
-		    var room:WorldRoom = new roomType(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, roomTypes[Rndm.integer(0, 8)], prefix, Rndm.integer(1, 10000000));
+		    var roomType:uint;
+		    if (j >= this.terrHeights[i] * 1.7 || j > this.terrHeights[i]+1 && j >= this.mapHeight * 0.8 || i == meruPos && j >= this.terrHeights[meruPos]) {
+			roomType = WorldRoom.FIRE_TYPE;
+		    } else if (j >= this.terrHeights[i]) {
+			roomType = WorldRoom.EARTH_TYPE;
+		    } else if (j >= this.mapHeight * 0.5) {
+			roomType = WorldRoom.WATER_TYPE;
+		    } else if (j >= this.mapHeight * 0.25) {
+			roomType = WorldRoom.AIR_TYPE;
+		    } else {
+			roomType = WorldRoom.SPACE_TYPE;
+		    }
+		    var room:WorldRoom = new EmptyRoom(this, i * this.roomWidth, j * this.roomHeight, this.roomWidth, this.roomHeight, roomType, prefix, Rndm.integer(1, 10000000));
 		    this.map[j].push(room);
 		}
 	    }
+	    
 	    // build room transitions
 	    for (j = 0; j < this.mapHeight; j++) {
 		for (i = 0; i < this.mapWidth; i++) {
@@ -231,6 +226,18 @@ package Engine.Worlds {
 	    } else {
 		this.primaryBgSprite.alpha = 1;
 		this.secondaryBgSprite.alpha = 0;
+	    }
+	}
+
+	private function buildFractalTerrain(p1:int, p2:int, h1:int, h2:int):void {
+	    this.terrHeights[p1] = h1;
+	    this.terrHeights[p2] = h2;
+	    if (p2 - p1 > 1) {
+		var pm:int = Math.floor((p2 + p1) / 2);
+		var d:int = Math.floor(Math.abs((h2 - h1) / 3));
+		var hm:int = Math.min(Math.floor((h2 + h1) / 2) + Rndm.integer(-d, d+1), Math.floor(this.mapHeight * 0.9));
+		this.buildFractalTerrain(p1, pm, h1, hm);
+		this.buildFractalTerrain(pm, p2, hm, h2);
 	    }
 	}
 
