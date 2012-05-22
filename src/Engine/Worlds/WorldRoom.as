@@ -13,6 +13,7 @@ package Engine.Worlds {
 	public var seed:uint;
 	public var constructed:Boolean = false;
 	public var explored:Boolean = false;
+	public var visited:Boolean = false;
 	public var prefix:String = "";
 	public var type:uint = 0;
 	public var freedomTop:uint = 0;
@@ -30,7 +31,7 @@ package Engine.Worlds {
 	public static const FIRE_TYPE:uint = GenericStats.decodeColor(GenericStats.FIRE_COLOR);
 	public static const AIR_TYPE:uint = GenericStats.decodeColor(GenericStats.AIR_COLOR);
 	public static const CORRUPTION_TYPE:uint = 0xA022D0;
-	public static const BALANCE_TYPE:uint = 0xA0B090;
+	public static const BALANCE_TYPE:uint = 0xA0D070;
 	public static const PURITY_TYPE:uint = 0x77D0BB;
 
 	public function WorldRoom(world:World, posX:Number, posY:Number, width:Number, height:Number, type:uint, prefix:String, seed:uint){
@@ -75,7 +76,7 @@ package Engine.Worlds {
 			this.world.objectsOrder.splice(i, 1);
 		    }
 		}
-		this.constructed = false
+		this.constructed = false;
 	    }
 	}
 

@@ -757,6 +757,7 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
+	    var i:int;
 	    if (Input.isKeyPressed(73)){ // I
 		this.stats.statsDialog.toggleLarge();
 	    }
@@ -764,27 +765,32 @@ package Engine.Objects {
 		this.stats.statsDialog.toggleHide();
 	    }
 	    if (Input.isKeyPressed(49)){ // 1
-		this.stats.space += 0.05;
+		for (i = 0; i< 100; i++)
+		    this.stats.space += 0.0005;
 		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(50)){ // 2
-		this.stats.water += 0.05;
+		for (i = 0; i< 100; i++)
+		    this.stats.water += 0.0005;
 		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(51)){ // 3
-		this.stats.earth += 0.05;
+		for (i = 0; i< 100; i++)
+		    this.stats.earth += 0.0005;
 		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(52)){ // 4
-		this.stats.fire += 0.05;
+		for (i = 0; i< 100; i++)
+		    this.stats.fire += 0.0005;
 		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }
 	    if (Input.isKeyPressed(53)){ // 5
-		this.stats.air += 0.05;
+		for (i = 0; i< 100; i++)
+		    this.stats.air += 0.0005;
 		this.color = stats.mixedElementsColor;
 		this.wasUpdated = true;
 	    }

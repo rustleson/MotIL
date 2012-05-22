@@ -45,7 +45,7 @@ package{
 		appWidth = stage.stageWidth;
 		appHeight = stage.stageHeight;
 		stats = new ProtagonistStats();
-		seed = 2546235893;
+		seed = 2547235893;
 	    }
 		
 	    public function update(e:Event):void{

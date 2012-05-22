@@ -137,6 +137,20 @@ package Engine.Stats {
 	    return isOrgasm;
 	}
 
+	public function takeAffinity(slot:SlotStat):void {
+	    if (slot.pleasure) {
+		var stats:GenericStats = slot.slot.connectedSlot.owner['stats'];
+		this.space += stats.space * slot.pleasure / 10000;
+		this.water += stats.water * slot.pleasure / 10000;
+		this.earth += stats.earth * slot.pleasure / 10000;
+		this.fire += stats.fire * slot.pleasure / 10000;
+		this.air += stats.air * slot.pleasure / 10000;
+		this.alignment += stats.alignment * slot.pleasure / 10000;
+		protagonist.color = this.mixedElementsColor;
+		protagonist.wasUpdated = true;
+	    }
+	}
+
 	public override function takePain(dv:Number, stat:ExpStat = null):Boolean {
 	    var isDeath:Boolean = super.takePain(dv);
 	    if (stat != null) {
@@ -176,14 +190,17 @@ package Engine.Stats {
 	    this.takePain(this.mouthSlot.painD, this.mouthSlot.stretchedDiameter);
 	    this.takePain(this.mouthSlot.painL, this.mouthSlot.stretchedLength);
 	    this.takePleasure(this.mouthSlot.pleasure);
+	    this.takeAffinity(this.mouthSlot);
 	    this.mouthSlot.updatePosition();
 	    this.takePain(this.vaginaSlot.painD, this.vaginaSlot.stretchedDiameter);
 	    this.takePain(this.vaginaSlot.painL, this.vaginaSlot.stretchedLength);
 	    this.takePleasure(this.vaginaSlot.pleasure);
+	    this.takeAffinity(this.vaginaSlot);
 	    this.vaginaSlot.updatePosition();
 	    this.takePain(this.anusSlot.painD, this.anusSlot.stretchedDiameter);
 	    this.takePain(this.anusSlot.painL, this.anusSlot.stretchedLength);
 	    this.takePleasure(this.anusSlot.pleasure);
+	    this.takeAffinity(this.anusSlot);
 	    this.anusSlot.updatePosition();
 	    this.statsDialog.widgets.space.value = this.space;
 	    this.statsDialog.widgets.water.value = this.water;

@@ -9,11 +9,13 @@ package Engine.Objects {
     import Box2D.Common.Math.*;
     import General.Input;
     import flash.display.*;
+    import Engine.Stats.GenericStats;
 	
     public class Altar extends WorldObject {
 
 	public var thickness:Number;
 	public var length:Number;
+	public var stats:GenericStats = new GenericStats();
 
 	public function Altar(world:b2World, x:Number, y:Number, width:Number, height:Number, $thickness:Number, $length:Number, c:uint = 0xEEDD44, a:Number = 0.8){
 	    
@@ -53,6 +55,7 @@ package Engine.Objects {
 	    headSlot.axis = new b2Vec2(0, -1);
 	    headSlot.localAnchor = new b2Vec2(0, -(length + thickness) / 2);
 	    headSlot.radiuses = new Array();
+	    headSlot.owner = this;
 	    for (var i:int = 0; i <= 10; i++) {
 		headSlot.radiuses.push(new b2Vec2(length * i / 10 / 2, (Math.sqrt(i) / Math.sqrt(10) * thickness / 2)));
 	    }

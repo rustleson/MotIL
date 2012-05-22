@@ -5,6 +5,7 @@ package Engine.Objects {
     import Box2D.Common.Math.*;
     import Box2D.Dynamics.*;
     import Box2D.Dynamics.Joints.*;
+    import Engine.Objects.WorldObject;
 
     use namespace b2internal;
 
@@ -28,6 +29,7 @@ package Engine.Objects {
 	public var axis:b2Vec2;
 	public var sensorFixture:b2Fixture;
 	public var radiuses:Array;
+	public var owner:WorldObject;
 
 	public function Slot($type:int = MOTHER, $body:b2Body = null):void {
 	    this.type = $type;

@@ -68,14 +68,14 @@ package Engine.Dialogs.Widgets {
 		this.sprite.y = ty;
 		for (var j:int = 0; j < mapHeight; j++) {
 		    for (var i:int = 0; i < mapWidth; i++) {
-			if (this.map[j][i].explored) {
+			if (true || this.map[j][i].explored) {
 			    // draw room
 			    this.sprite.graphics.lineStyle(0, 0, 0);
-			    this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.4), 0.7);
+			    this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.4), 1);
 			    this.sprite.graphics.drawRect(tx + i * cellWidth, ty + j * cellHeight, cellWidth, cellHeight);
 			    this.sprite.graphics.endFill();
 			    // draw borders
-			    this.sprite.graphics.lineStyle(1, Utils.colorLight(this.map[j][i].type, 0.3), 0.7);
+			    this.sprite.graphics.lineStyle(1, Utils.colorLight(this.map[j][i].type, 0.3), 1);
 			    if (!this.map[j][i].freedomTop) {
 				this.sprite.graphics.moveTo(tx + i * cellWidth, ty + j * cellHeight);
 				this.sprite.graphics.lineTo(tx + (i + 1) * cellWidth, ty + j * cellHeight);
@@ -97,7 +97,7 @@ package Engine.Dialogs.Widgets {
 		}
 		// draw current position
 		this.sprite.graphics.lineStyle(0, 0, 0);
-		this.sprite.graphics.beginFill(0xffffff, 0.9);
+		this.sprite.graphics.beginFill(0xEEEEEE, 1);
 		this.sprite.graphics.drawCircle(tx + (this.curX + 0.5) * cellWidth, ty + (this.curY + 0.5) * cellHeight, cellWidth / 5);
 		this.sprite.graphics.endFill();
 	    }
