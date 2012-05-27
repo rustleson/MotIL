@@ -57,12 +57,11 @@ package Engine.Stats {
 	public function set space(v:Number):void {
 	    v = Math.max(0, Math.min(1, v));
 	    if (v > this._space) {
-		//var ratio:Number = 1 - v * v * v * v;
-		var ratio:Number = 1 - (v - this._space);
-		this._water *= ratio*ratio;
-		this._earth *= ratio*ratio;
-		this._fire *= ratio*ratio;
-		this._air *= ratio*ratio;
+		var ratio:Number = (1 - v) / (this._air + this._fire + this._water + this._earth + 0.0001);
+		this._water *= ratio;
+		this._earth *= ratio;
+		this._fire *= ratio;
+		this._air *= ratio;
 	    }
 	    this._space = v;
 	}
@@ -74,12 +73,11 @@ package Engine.Stats {
 	public function set water(v:Number):void {
 	    v = Math.max(0, Math.min(1, v));
 	    if (v > this._water) {
-		//var ratio:Number = 1 - v * v * v * v;
-		var ratio:Number = 1 - (v - this._water);
-		this._space *= ratio*ratio;
-		this._earth *= ratio*ratio;
-		this._fire *= ratio*ratio;
-		this._air *= ratio*ratio;
+		var ratio:Number = (1 - v) / (this._air + this._fire + this._space + this._earth + 0.0001);
+		this._space *= ratio;
+		this._earth *= ratio;
+		this._fire *= ratio;
+		this._air *= ratio;
 	    }
 	    this._water = v;
 	}
@@ -91,12 +89,11 @@ package Engine.Stats {
 	public function set earth(v:Number):void {
 	    v = Math.max(0, Math.min(1, v));
 	    if (v > this._earth) {
-		//var ratio:Number = 1 - v * v * v * v;
-		var ratio:Number = 1 - (v - this._earth);
-		this._water *= ratio*ratio;
-		this._space *= ratio*ratio;
-		this._fire *= ratio*ratio;
-		this._air *= ratio*ratio;
+		var ratio:Number = (1 - v) / (this._water + this._fire + this._space + this._air + 0.0001);
+		this._water *= ratio;
+		this._space *= ratio;
+		this._fire *= ratio;
+		this._air *= ratio;
 	    }
 	    this._earth = v;
 	}
@@ -108,11 +105,11 @@ package Engine.Stats {
 	public function set fire(v:Number):void {
 	    v = Math.max(0, Math.min(1, v));
 	    if (v > this._fire) {
-		var ratio:Number = 1 - (v - this._fire);
-		this._water *= ratio*ratio;
-		this._earth *= ratio*ratio;
-		this._space *= ratio*ratio;
-		this._air *= ratio*ratio;
+		var ratio:Number = (1 - v) / (this._water + this._earth + this._space + this._air + 0.0001);
+		this._water *= ratio;
+		this._earth *= ratio;
+		this._space *= ratio;
+		this._air *= ratio;
 	    }
 	    this._fire = v;
 	}
@@ -124,12 +121,11 @@ package Engine.Stats {
 	public function set air(v:Number):void {
 	    v = Math.max(0, Math.min(1, v));
 	    if (v > this._air) {
-		//var ratio:Number = 1 - v * v;
-		var ratio:Number = 1 - (v - this._air);
-		this._water *= ratio*ratio;
-		this._earth *= ratio*ratio;
-		this._fire *= ratio*ratio;
-		this._space *= ratio*ratio;
+		var ratio:Number = (1 - v) / (this._water + this._fire + this._space + this._earth + 0.0001);
+		this._water *= ratio;
+		this._earth *= ratio;
+		this._fire *= ratio;
+		this._space *= ratio;
 	    }
 	    this._air = v;
 	}

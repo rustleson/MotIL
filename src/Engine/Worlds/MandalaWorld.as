@@ -62,7 +62,7 @@ package Engine.Worlds {
 
 	    stats.space = 1;
 	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-	    //stats.level = 15;
+	    //stats.level = 50;
 	    stats.hairColor = 0x005500;
 	    stats.hairLength = 1.5;
 	    //stats.vaginaSlot.stretchedLength.level = 50;

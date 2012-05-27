@@ -1,7 +1,9 @@
 package Engine.Dialogs.Widgets {
 	
     import flash.text.*;
+    import flash.display.*;
     import flash.geom.Rectangle;
+    import flash.geom.Matrix;
     import Engine.Objects.Utils;
     import Math;
 
@@ -54,7 +56,7 @@ package Engine.Dialogs.Widgets {
 		ty -= this.height;
 	    }
 	    this.sprite.graphics.clear();
-	    if (this.width != 0 || this.height != 0) {
+	    if (Math.floor(this.width) > 0 && Math.floor(this.height) > 0) {
 		var mapHeight:int = this.map.length;
 		var cellHeight:Number = this.heightLarge / mapHeight;
 		if (mapHeight > 0) {
@@ -68,7 +70,7 @@ package Engine.Dialogs.Widgets {
 		this.sprite.y = ty;
 		for (var j:int = 0; j < mapHeight; j++) {
 		    for (var i:int = 0; i < mapWidth; i++) {
-			if (true || this.map[j][i].explored) {
+			if (this.map[j][i].explored) {
 			    // draw room
 			    this.sprite.graphics.lineStyle(0, 0, 0);
 			    this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.4), 1);
@@ -99,6 +101,16 @@ package Engine.Dialogs.Widgets {
 		this.sprite.graphics.lineStyle(0, 0, 0);
 		this.sprite.graphics.beginFill(0xEEEEEE, 1);
 		this.sprite.graphics.drawCircle(tx + (this.curX + 0.5) * cellWidth, ty + (this.curY + 0.5) * cellHeight, cellWidth / 5);
+		this.sprite.graphics.endFill();
+		// cache to bitmap (performance issue)
+		var b:BitmapData = new BitmapData(this.width, this.height, true, 0x0);
+		b.draw(this.sprite);
+		this.sprite.graphics.clear();
+		this.sprite.scrollRect = new Rectangle(tx, ty, this.width, this.height);;
+		var matrix:Matrix = new Matrix();
+		matrix.translate(tx, ty);
+		this.sprite.graphics.beginBitmapFill(b, matrix.clone(), true);
+		this.sprite.graphics.drawRect(tx, ty, this.width, this.height);
 		this.sprite.graphics.endFill();
 	    }
 	}

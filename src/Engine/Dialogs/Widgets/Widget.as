@@ -51,6 +51,8 @@ package Engine.Dialogs.Widgets {
 	    //this.sprite.addChild(this.tooltipSprite);
 	    this.tooltipSprite.alpha = 0.8;
 	    this.tooltipSprite.visible = false;
+	    this.tooltipSprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
+	    this.tooltipSprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
 	}
