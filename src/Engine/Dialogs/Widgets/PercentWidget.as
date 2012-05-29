@@ -27,7 +27,7 @@ package Engine.Dialogs.Widgets {
 	    super(x, y, title);
 	    this.width = w;
 	    this.height = h;
-	    this.barColor = c;
+	    this.barColor = Utils.colorLight(c, 0.3);
 	    this.icon = $icon;
 	    this.rightAligned = right;
 	    this.bottomAligned = bottom;

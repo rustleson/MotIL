@@ -26,9 +26,9 @@ package Engine.Dialogs.Widgets {
 	private var _transitionSteps:int = 0; 
 	private var _transitionFrom:Number = 0; 
 	private var _transitionTo:Number = 0; 
-	private var tooltipText:TextField;
+	public var tooltipText:TextField;
 	public var tooltipSprite:Sprite;
-	private var tooltipFormat:TextFormat;
+	public var tooltipFormat:TextFormat;
 
 	public function Widget($x:Number = 0, $y:Number = 0, $title:String = ''):void {
 	    this.sprite = new Sprite();
@@ -51,8 +51,6 @@ package Engine.Dialogs.Widgets {
 	    //this.sprite.addChild(this.tooltipSprite);
 	    this.tooltipSprite.alpha = 0.8;
 	    this.tooltipSprite.visible = false;
-	    this.tooltipSprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
-	    this.tooltipSprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
 	    this.sprite.addEventListener(MouseEvent.MOUSE_OUT, this.mouseOutHandler);
 	}
@@ -127,27 +125,36 @@ package Engine.Dialogs.Widgets {
 	    return (this._transition == 0 && this._timeout == 0);
 	}
 
-	public function setTooltip(text:String, dx:Number = 0, dy:Number = 0):void {
+	public function setTooltip(text:String):void {
 	    if (text != this.tooltipText.text) {
-		var x:Number = this.x + dx;
-		var y:Number = this.y + dy;
 		this.tooltipText.text = text;
-		this.tooltipText.x = x;
-		this.tooltipText.y = y;
+		this.tooltipText.x = 0;
+		this.tooltipText.y = 0;
 		this.tooltipText.setTextFormat(this.tooltipFormat);
 		this.tooltipText.width = 150;
 		this.tooltipText.height = this.tooltipText.textHeight + 10;
 		this.tooltipSprite.graphics.clear();
 		this.tooltipSprite.graphics.lineStyle(0, 0, 0);
 		this.tooltipSprite.graphics.beginFill(0x000000, 1);
-		this.tooltipSprite.graphics.drawRoundRect(x - 3, y, 156, this.tooltipText.textHeight + 4, 10, 10);
+		this.tooltipSprite.graphics.drawRoundRect(-3, 0, 156, this.tooltipText.textHeight + 4, 10, 10);
 		this.tooltipSprite.graphics.endFill();
 	    }
 	}
 	    
 	private function mouseOverHandler(event:MouseEvent):void {
-	    if (this.tooltipText.text)
+	    if (this.tooltipText.text) {
+		var x:Number = event.stageX - this.tooltipSprite.width - 1;
+		var y:Number = event.stageY - this.tooltipSprite.height - 1;
+		if (x < 0)
+		    x += this.tooltipSprite.width + 20;
+		if (y < 0)
+		    y += this.tooltipSprite.height + 20;
+		this.tooltipSprite.x = x;
+		this.tooltipSprite.y = y;
+		//this.tooltipText.text = "x: " + event.stageX.toString() + ", y: " + event.stageY.toString();
+		//this.tooltipText.setTextFormat(this.tooltipFormat);
 		this.tooltipSprite.visible = true;
+	    }
 	}
 
 	private function mouseOutHandler(event:MouseEvent):void {

@@ -73,11 +73,11 @@ package Engine.Dialogs.Widgets {
 			if (this.map[j][i].explored) {
 			    // draw room
 			    this.sprite.graphics.lineStyle(0, 0, 0);
-			    this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.4), 1);
+			    this.sprite.graphics.beginFill(Utils.colorDark(Utils.colorLight(this.map[j][i].type, 0.2), 0.4), 1);
 			    this.sprite.graphics.drawRect(tx + i * cellWidth, ty + j * cellHeight, cellWidth, cellHeight);
 			    this.sprite.graphics.endFill();
 			    // draw borders
-			    this.sprite.graphics.lineStyle(1, Utils.colorLight(this.map[j][i].type, 0.3), 1);
+			    this.sprite.graphics.lineStyle(1, Utils.colorLight(Utils.colorLight(this.map[j][i].type, 0.2), 0.3), 1);
 			    if (!this.map[j][i].freedomTop) {
 				this.sprite.graphics.moveTo(tx + i * cellWidth, ty + j * cellHeight);
 				this.sprite.graphics.lineTo(tx + (i + 1) * cellWidth, ty + j * cellHeight);

@@ -1,10 +1,8 @@
 package Engine.Dialogs.Widgets {
 	
     import flash.text.*;
-    import flash.geom.Matrix;
-    import flash.display.GradientType;
 
-    public class PanelWidget extends Widget{
+    public class MessageWidget extends Widget{
 
 	public var panelColor:uint;
 	public var textColor:uint = 0xeeeeee;
@@ -17,12 +15,13 @@ package Engine.Dialogs.Widgets {
 	public var rightAligned:Boolean;
 	public var bottomAligned:Boolean;
 	public var cornerRadius:Number = 10;
-	public var rBlend:Number = 0;
 	private var titleText:TextField;
+	private var messageText:TextField;
 	private var titleFormat:TextFormat;
+	private var messageFormat:TextFormat;
 
 	public function PanelWidget(x:Number = 0, y:Number = 0, ws:Number = 0, hs:Number = 0, wl:Number = 0, hl:Number = 0, 
-				    c:uint = 0, t:String = '', right:Boolean = false, bottom:Boolean = false):void {
+				    c:uint = 0, right:Boolean = false, bottom:Boolean = false):void {
 	    super(x, y, title);
 	    this.widthSmall = ws;
 	    this.heightSmall = hs;
@@ -35,7 +34,7 @@ package Engine.Dialogs.Widgets {
 	    this.bottomAligned = bottom;
 	    // title text
 	    this.titleText = new TextField();
-	    this.titleText.text = t;
+	    this.titleText.text = title;
 	    this.titleText.selectable = false;
 	    this.titleText.embedFonts = true;
 	    this.titleFormat = new TextFormat("Medium", 8, this.textColor);
@@ -68,32 +67,24 @@ package Engine.Dialogs.Widgets {
 		ty -= this.height;
 	    }
 	    this.titleText.x = Math.round(tx + this.titleText.x);
-	    this.titleText.y = Math.round(ty + this.titleText.y - 2);
+	    this.titleText.y = Math.round(ty + this.titleText.y);
 	    this.sprite.graphics.clear();
 	    if (this.width != 0 || this.height != 0) {
-		this.sprite.graphics.lineStyle(2, this.textColor, 1);
-		if (this.rBlend > 0 && this.width > this.widthSmall) {
-		    var rB:Number = this.rBlend * (ratio - 1);
-		    var gradMatrix:Matrix = new Matrix();
-		    gradMatrix.createGradientBox(rB, rB, 0, this.x + (this.rightAligned ? -1 : 1) * this.widthLarge / 2 - rB / 2, (this.bottomAligned ? -1 : 1) * this.heightLarge / 2 - rB / 2);
-		    this.sprite.graphics.beginGradientFill(GradientType.RADIAL, [this.panelColor, this.panelColor], [0, 1], [0, 0xff], gradMatrix);
-		} else {
-		    this.sprite.graphics.beginFill(this.panelColor, 1);
-		}
+		this.sprite.graphics.lineStyle(2, this.textColor, 0.5);
+		this.sprite.graphics.beginFill(this.panelColor, 0.7);
 		this.sprite.graphics.drawRoundRect(tx, ty, this.width, this.height, this.cornerRadius, this.cornerRadius);
 		this.sprite.graphics.endFill();
 		this.sprite.graphics.lineStyle(0, 0, 0);
 		this.sprite.graphics.beginFill(this.panelColor, 1);
-		this.sprite.graphics.drawRoundRect(this.titleText.x, this.titleText.y + 2, this.titleText.width, this.titleText.height, 5, 5);
+		this.sprite.graphics.drawRoundRect(this.titleText.x, this.titleText.y + 1, this.titleText.width, this.titleText.height, 5, 5);
 		this.sprite.graphics.endFill();
 	    }
 	}
 
-	public function set titleString(t:String):void {
-	    this.titleText.text = t;
+	public function set title(title:String):void {
+	    this.titleText.text = title;
 	    this.needUpdate = true;
 	}
-
     }
 	
 }

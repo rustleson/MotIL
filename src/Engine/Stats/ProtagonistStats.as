@@ -2,7 +2,9 @@ package Engine.Stats {
 	
     import flash.display.*;
     import Engine.Objects.*;
+    import Engine.Worlds.WorldRoom;
     import Engine.Dialogs.MainStatsDialog;
+    import Engine.Dialogs.Widgets.Icons;
     import flash.geom.Matrix;
     import mx.utils.StringUtil;
     import flash.events.MouseEvent;
@@ -27,6 +29,7 @@ package Engine.Stats {
 	public var leftHandSlot:SlotStat;
 	public var rightHandSlot:SlotStat;
 	public var protagonist:Protagonist;
+	public var artefacts:Object = new Object();
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -34,6 +37,18 @@ package Engine.Stats {
 	    this.mouthSlot = new SlotStat();
 	    this.leftHandSlot = new SlotStat();
 	    this.rightHandSlot = new SlotStat();
+	    this.artefacts['wheel'] = new ArtefactStat("Wheel", Icons.Wheel, WorldRoom.SPACE_TYPE, "Wheel is the artefact of the Realm of Space. It gives you ability to teleport instantly to another place. Although, because spell is very complex, you unable to control exact destination place.");
+	    this.artefacts['vajra'] = new ArtefactStat("Vajra", Icons.Vajra, WorldRoom.WATER_TYPE, "Vajra is the artefact of the Realm of Water. It gives you ability to stun your enemies. Although, it will not work distantly, but only if you will touch enemy with the Vajra.");
+	    this.artefacts['jewel'] = new ArtefactStat("Jewel", Icons.Jewel, WorldRoom.EARTH_TYPE, "Jewel is the artefact of the Realm of Earth. It gives you ability to pass through walls made of rocks. You should touch a wall with the Jewel to make it temporarily transparent.");
+	    this.artefacts['lotus'] = new ArtefactStat("Lotus", Icons.Lotus, WorldRoom.FIRE_TYPE, "Lotus is the artefact of the Realm of Fire. It gives you ability to arouse monsters which are not interested in you. You should touch a monster with the Lotus to arouse it.");
+	    this.artefacts['sword'] = new ArtefactStat("Sword", Icons.Sword, WorldRoom.AIR_TYPE, "Sword is the artefact of the Realm of Air. It gives you ability to cut through bondages and will set you free if you've been constricted by a monster. You should touch a monster with the Lotus to free of it.");
+	    this.artefacts['chastityBelt'] = new ArtefactStat("Chastity Belt", Icons.ChastityBelt, WorldRoom.PURITY_TYPE, "Chastity Belt is the artefact of the Realm of Purity. It gives you ability to purify monsters who are trying to rape you, and also helps to keep vaginal chastity to Heruka. You should attach it to vagina slot to take effect.");
+	    this.artefacts['pacifier'] = new ArtefactStat("Pacifier", Icons.Pacifier, WorldRoom.BALANCE_TYPE, "Pacifier is the artefact of the Realm of Balance. It gives you ability to pacify monsters who are trying to rape you. You should attach it to mouth slot to take effect.");
+	    this.artefacts['analTentacle'] = new ArtefactStat("Anal Tentacle", Icons.AnalTentacle, WorldRoom.CORRUPTION_TYPE, "Anal Tentacle is the artefact of the Realm of Corruption. It gives you ability to corrupt other monsters by raping them. You should attach it to anus slot to take effect. As a side effect, you're constantly raping youself with this artefact attached.");
+	    for each (var artefact:ArtefactStat in this.artefacts) {
+		artefact.obtained = true;
+	    }
+	    this.artefacts.chastityBelt.obtained = false;
 	    super();
 	}
 
@@ -79,7 +94,7 @@ package Engine.Stats {
 	}
 
 	public function isEnlightened():Boolean {
-	    return true; // TODO: dependent of artifacts occured
+	    return this.artefacts.wheel.obtained && this.artefacts.vajra.obtained && this.artefacts.jewel.obtained && this.artefacts.lotus.obtained && this.artefacts.sword.obtained; 
 	}
 
 	public function updateSlotParams():void {
@@ -163,28 +178,49 @@ package Engine.Stats {
 	}
 
 	public function initStats():void {
-	    this.statsDialog.widgets.space.setTooltip("Your affinity with a Space element. 0% means there is no Space in you, 100% means you are made of pure Space.", -150, 10);
-	    this.statsDialog.widgets.water.setTooltip("Your affinity with a Water element. 0% means there is no Water in you, 100% means you are made of pure Water.", -150, 10);
-	    this.statsDialog.widgets.earth.setTooltip("Your affinity with an Earth element. 0% means there is no Earth in you, 100% means you are made of pure Earth.", -150, 10);
-	    this.statsDialog.widgets.fire.setTooltip("Your affinity with a Fire element. 0% means there is no Fire in you, 100% means you are made of pure Fire.", -150, 10);
-	    this.statsDialog.widgets.air.setTooltip("Your affinity with an Air element. 0% means there is no Air in you, 100% means you are made of pure Air.", -150, 10);
-	    this.statsDialog.widgets.karma.setTooltip("Your Karma. -100 means you are totally corrupted, +100 means you are totally pure, 0 means pefect balance.", -150, 10);
-	    this.statsDialog.widgets.levelup.setTooltip("You've  reached new level and have upgrade points available.", -150, 10);
-	    this.statsDialog.widgets.constitutionup.setTooltip("Press to upgrade your constitution.", -150, 10);
-	    this.statsDialog.widgets.painresup.setTooltip("Press to upgrade your pain resistance.", -150, 10);
-	    this.statsDialog.widgets.arouseup.setTooltip("Press to upgrade your arousal boost.", -150, 10);
-	    this.statsDialog.widgets.speedup.setTooltip("Press to upgrade your speed.", -150, 10);
-	    this.statsDialog.widgets.painres.setTooltip("Pain resistance. Higher this stat is, slower pain is increasing.", -150, 10);
-	    this.statsDialog.widgets.arouse.setTooltip("Asousal boost. Higher this stat is, faster bliss is increasing.", -150, 10);
-	    this.statsDialog.widgets.constitution.setTooltip("Constitution. Higher this stat is, more fat and less sensitive you are. Sensitivity means you are sensitive to both pain and bliss, so use this stat wise. If you are thin you must increase it, if you are fat you must avoid increasing.", -150, 10);
-	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ", -150, 10);
-	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.", -150, 10);
-	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.", -150, 10);
-	    this.statsDialog.widgets.map.setTooltip("This is a world map. Only explored areas are shown there. Your current position is displaying as a white dot.", -150, -100);
+	    this.statsDialog.widgets.space.setTooltip("Your affinity with a Space element. 0% means there is no Space in you, 100% means you are made of pure Space.");
+	    this.statsDialog.widgets.water.setTooltip("Your affinity with a Water element. 0% means there is no Water in you, 100% means you are made of pure Water.");
+	    this.statsDialog.widgets.earth.setTooltip("Your affinity with an Earth element. 0% means there is no Earth in you, 100% means you are made of pure Earth.");
+	    this.statsDialog.widgets.fire.setTooltip("Your affinity with a Fire element. 0% means there is no Fire in you, 100% means you are made of pure Fire.");
+	    this.statsDialog.widgets.air.setTooltip("Your affinity with an Air element. 0% means there is no Air in you, 100% means you are made of pure Air.");
+	    this.statsDialog.widgets.karma.setTooltip("Your Karma. -100 means you are totally corrupted, +100 means you are totally pure, 0 means pefect balance.");
+	    this.statsDialog.widgets.levelup.setTooltip("You've  reached new level and have upgrade points available.");
+	    this.statsDialog.widgets.constitutionup.setTooltip("Press to upgrade your constitution.");
+	    this.statsDialog.widgets.painresup.setTooltip("Press to upgrade your pain resistance.");
+	    this.statsDialog.widgets.arouseup.setTooltip("Press to upgrade your arousal boost.");
+	    this.statsDialog.widgets.speedup.setTooltip("Press to upgrade your speed.");
+	    this.statsDialog.widgets.painres.setTooltip("Pain resistance. Higher this stat is, slower pain is increasing.");
+	    this.statsDialog.widgets.arouse.setTooltip("Asousal boost. Higher this stat is, faster bliss is increasing.");
+	    this.statsDialog.widgets.constitution.setTooltip("Constitution. Higher this stat is, more fat and less sensitive you are. Sensitivity means you are sensitive to both pain and bliss, so use this stat wise. If you are thin you must increase it, if you are fat you must avoid increasing.");
+	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ");
+	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.");
+	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.");
+	    this.statsDialog.widgets.map.setTooltip("This is a world map. Only explored areas are shown there. Your current position is displaying as a white dot.");
 	    this.statsDialog.widgets.constitutionup.callback = this.constitutionUpClickHandler;
 	    this.statsDialog.widgets.painresup.callback = this.painResistanceUpClickHandler;
 	    this.statsDialog.widgets.arouseup.callback = this.arousalBoostUpClickHandler;
 	    this.statsDialog.widgets.speedup.callback = this.speedUpClickHandler;
+	    this.statsDialog.widgets.vaginaslot.slot = this.vaginaSlot;
+	    this.statsDialog.widgets.mouthslot.slot = this.mouthSlot;
+	    this.statsDialog.widgets.anusslot.slot = this.anusSlot;
+	    this.statsDialog.widgets.rhandslot.slot = this.rightHandSlot;
+	    this.statsDialog.widgets.lhandslot.slot = this.leftHandSlot;
+	    this.statsDialog.widgets.wheel.artefact = this.artefacts.wheel;
+	    this.statsDialog.widgets.vajra.artefact = this.artefacts.vajra;
+	    this.statsDialog.widgets.jewel.artefact = this.artefacts.jewel;
+	    this.statsDialog.widgets.lotus.artefact = this.artefacts.lotus;
+	    this.statsDialog.widgets.sword.artefact = this.artefacts.sword;
+	    this.statsDialog.widgets.chastityBelt.artefact = this.artefacts.chastityBelt;
+	    this.statsDialog.widgets.pacifier.artefact = this.artefacts.pacifier;
+	    this.statsDialog.widgets.analTentacle.artefact = this.artefacts.analTentacle;
+	    this.statsDialog.widgets.wheel.stats = this;
+	    this.statsDialog.widgets.vajra.stats = this;
+	    this.statsDialog.widgets.jewel.stats = this;
+	    this.statsDialog.widgets.lotus.stats = this;
+	    this.statsDialog.widgets.sword.stats = this;
+	    this.statsDialog.widgets.chastityBelt.stats = this;
+	    this.statsDialog.widgets.pacifier.stats = this;
+	    this.statsDialog.widgets.analTentacle.stats = this;
 	}
 
 	public function updateStats():void {
@@ -211,22 +247,22 @@ package Engine.Stats {
 	    this.statsDialog.widgets.karma.value = this.alignment;
 	    this.statsDialog.widgets.pain.value = this.pain.value / this.pain.max;
 	    this.statsDialog.widgets.pain.valueString = int(this.pain.value).toString();
-	    this.statsDialog.widgets.pain.setTooltip("A pain you are struggle. Reaching your pain treshold value makes you dead, so keep an eye on this stat well.\nPain treshold: " + Math.ceil(this.pain.max).toString(), -150, 10);
+	    this.statsDialog.widgets.pain.setTooltip("A pain you are struggle. Reaching your pain treshold value makes you dead, so keep an eye on this stat well.\nPain treshold: " + Math.ceil(this.pain.max).toString());
 	    this.statsDialog.widgets.pleasure.value = this.pleasure.value / this.pleasure.max;
 	    this.statsDialog.widgets.pleasure.valueString = int(this.pleasure.value).toString();
-	    this.statsDialog.widgets.pleasure.setTooltip("A bliss you are enjoing. Reaching your orgasm point value cause you to overflow with a bliss ang get experience. More bliss you've accumulated, more experience you get.\nOrgasm point: " + Math.ceil(this.pleasure.max).toString(), -150, 10);
+	    this.statsDialog.widgets.pleasure.setTooltip("A bliss you are enjoing. Reaching your orgasm point value cause you to overflow with a bliss ang get experience. More bliss you've accumulated, more experience you get.\nOrgasm point: " + Math.ceil(this.pleasure.max).toString());
 	    this.statsDialog.widgets.level.value = this.exp.tnlRatio;
 	    this.statsDialog.widgets.level.valueString = this.exp.level.toString() + "L";
 	    var expString:String = "Progress bar shows an experience needed to reach next level (TNL).\nCurrent level: {0}\nTotal experience: {1}\nTNL: {2}";
-	    this.statsDialog.widgets.level.setTooltip("Your character experience. With each experience level you will get points to improve yourself.\n" + StringUtil.substitute(expString, this.exp.level.toString(), Math.ceil(this.exp.exp).toString(), Math.ceil(this.exp.tnl).toString()), -150, 10);
+	    this.statsDialog.widgets.level.setTooltip("Your character experience. With each experience level you will get points to improve yourself.\n" + StringUtil.substitute(expString, this.exp.level.toString(), Math.ceil(this.exp.exp).toString(), Math.ceil(this.exp.tnl).toString()));
 	    this.statsDialog.widgets.maxpain.value = this.maxPain.tnlRatio;
 	    this.statsDialog.widgets.maxpain.valueString = this.maxPain.level.toString() + "L";
-	    this.statsDialog.widgets.maxpain.setTooltip("Pain treshold. Higher this stat is, more pain you can stand before you die.\n" + StringUtil.substitute(expString, this.maxPain.level.toString(), Math.ceil(this.maxPain.exp).toString(), Math.ceil(this.maxPain.tnl).toString()), -150, 10);
+	    this.statsDialog.widgets.maxpain.setTooltip("Pain treshold. Higher this stat is, more pain you can stand before you die.\n" + StringUtil.substitute(expString, this.maxPain.level.toString(), Math.ceil(this.maxPain.exp).toString(), Math.ceil(this.maxPain.tnl).toString()));
 	    this.statsDialog.widgets.painres.value = this.painResistanceLevel / 50;
 	    this.statsDialog.widgets.painres.valueString = this.painResistanceLevel.toString() + "L";
 	    this.statsDialog.widgets.maxpleasure.value = this.maxPleasure.tnlRatio;
 	    this.statsDialog.widgets.maxpleasure.valueString = this.maxPleasure.level.toString() + "L";
-	    this.statsDialog.widgets.maxpleasure.setTooltip("Orgasm point. Higher this stat is, more bliss you can stand without reaching orgasm.\n" + StringUtil.substitute(expString, this.maxPleasure.level.toString(), Math.ceil(this.maxPleasure.exp).toString(), Math.ceil(this.maxPleasure.tnl).toString()), -150, 10);
+	    this.statsDialog.widgets.maxpleasure.setTooltip("Orgasm point. Higher this stat is, more bliss you can stand without reaching orgasm.\n" + StringUtil.substitute(expString, this.maxPleasure.level.toString(), Math.ceil(this.maxPleasure.exp).toString(), Math.ceil(this.maxPleasure.tnl).toString()));
 	    this.statsDialog.widgets.arouse.value = this.arousalBoostLevel / 50;
 	    this.statsDialog.widgets.arouse.valueString = this.arousalBoostLevel.toString() + "L";
 	    this.statsDialog.widgets.constitution.value = this.constitutionLevel / 50;

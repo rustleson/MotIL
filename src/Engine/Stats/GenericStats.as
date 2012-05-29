@@ -324,7 +324,7 @@ package Engine.Stats {
 	public function get auraIntencity():Number {
 	    if (this._alignment > 0)
 		return Math.abs(this._alignment);
-	    return Math.abs(this._alignment) * 1.5;
+	    return Math.sqrt(Math.abs(this._alignment)) * 3;
 	}
 
 	public static function decodeColor(c:Array):uint {

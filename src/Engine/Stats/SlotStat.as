@@ -8,11 +8,14 @@ package Engine.Stats {
 	public var slot:Slot; 
 	public var stretchedDiameter:ExpStat; 
 	public var stretchedLength:ExpStat;
+	public var artefactAttached:ArtefactStat;
+	public var name:String = "slot";
 	private var previousPosition:Number = 0;
 
 	public function SlotStat():void {
-	    stretchedDiameter = new ExpStat();
-	    stretchedLength = new ExpStat();
+	    this.stretchedDiameter = new ExpStat();
+	    this.stretchedLength = new ExpStat();
+	    this.artefactAttached = new ArtefactStat()
 	}
 
 	public function get painD():Number {

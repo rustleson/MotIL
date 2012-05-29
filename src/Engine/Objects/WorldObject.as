@@ -200,13 +200,13 @@ package Engine.Objects {
 			if (vertices[i].y > localBounds.upperBound.y) localBounds.upperBound.y = vertices[i].y;
 		    }
 		    if (udata.hasOwnProperty('auraIntencity') && udata.auraIntencity) {
-			auraBounds.lowerBound.x = localBounds.lowerBound.x - drawScale * udata.auraIntencity * 0.01;
-			auraBounds.lowerBound.y = localBounds.lowerBound.y - drawScale * udata.auraIntencity * 0.01;
-			auraBounds.upperBound.x = localBounds.upperBound.x + drawScale * udata.auraIntencity * 0.01;
-			auraBounds.upperBound.y = localBounds.upperBound.y + drawScale * udata.auraIntencity * 0.01;
+			auraBounds.lowerBound.x = localBounds.lowerBound.x - drawScale * 0.01;
+			auraBounds.lowerBound.y = localBounds.lowerBound.y - drawScale * 0.01;
+			auraBounds.upperBound.x = localBounds.upperBound.x + drawScale * 0.01;
+			auraBounds.upperBound.y = localBounds.upperBound.y + drawScale * 0.01;
 			spr.graphics.lineStyle(1, c, 0);
 			gradMatrix.createGradientBox((auraBounds.upperBound.x - auraBounds.lowerBound.x) * drawScale, (auraBounds.upperBound.y - auraBounds.lowerBound.y) * drawScale, 0, (auraBounds.lowerBound.x - dx) * drawScale, (auraBounds.lowerBound.y - dy) * drawScale);
-			spr.graphics.beginGradientFill(GradientType.RADIAL, [udata.auraColor, udata.auraColor], [0.9, 0], [0x00, 0xff], gradMatrix);
+			spr.graphics.beginGradientFill(GradientType.RADIAL, [0, udata.auraColor, udata.auraColor, udata.auraColor], [0, udata.auraIntencity/10, udata.auraIntencity/7, 0], [0x00, 0xbb, 0xdd, 0xff], gradMatrix);
 			spr.graphics.drawRect((auraBounds.lowerBound.x - dx) * drawScale, (auraBounds.lowerBound.y - dy) * drawScale, (auraBounds.upperBound.x - auraBounds.lowerBound.x) * drawScale, (auraBounds.upperBound.y - auraBounds.lowerBound.y) * drawScale);
 			spr.graphics.endFill();
 		    }
