@@ -1,4 +1,4 @@
-﻿//===========================================================
+//===========================================================
 //=========================================================//
 //						-=ANTHEM=-
 //	file: .as
@@ -47,7 +47,7 @@ package General{
 			}
 			
 			// buffer
-			bufferSize = 5;
+			bufferSize = 7;
 			keyBuffer = new Array(bufferSize);
 			for (var j:int = 0; j < bufferSize; j++){
 				keyBuffer[j] = new Array(0,0);
@@ -257,6 +257,17 @@ package General{
 		}
 		
 		
+	    
+	        static public function getKeyStroke(t:int):String {
+		    var s:String = "";
+		    for (var i:int = 0; i < bufferSize; i++){
+			var key:Object = keyBuffer[i];
+			if (key[1] < t)
+			    s += getKeyString(key[0]);
+		    }
+		    return s;
+		}
+
 		//======================
 		// set up ascii text
 		//======================

@@ -35,10 +35,13 @@ package Engine.Worlds {
 	public var backgrounds:Array;
 	public var stats:ProtagonistStats;
 	public var seed:uint;
+	public var blitSprite:Sprite;
 
 	public function World(){
 			
 	    sprite = Main.sprite;
+	    blitSprite = new Sprite();
+	    sprite.addChild(blitSprite);
 	    appWidth = Main.appWidth;
 	    appHeight = Main.appHeight;
 	    objects = new Array();
@@ -113,10 +116,30 @@ package Engine.Worlds {
 		}
 	    }
 	    stats.updateStats();
-			
+	    var painPercent:Number = this.stats.pleasure.value / this.stats.pleasure.max;
+	    var pleasurePercent:Number = this.stats.pain.value / this.stats.pain.max;
+	    if (painPercent > 0.5 || pleasurePercent > 0.5) {
+		this.blitSprite.graphics.clear();
+		this.blitSprite.visible = true;
+		this.sprite.setChildIndex(this.blitSprite, (this.sprite.numChildren - 1));
+		if (painPercent > 0.5) {
+		    blitSprite.graphics.beginFill(0xffffff, (painPercent - 0.5) * 1.2 * (painPercent - 0.5) * 1.2);
+		    blitSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+		    blitSprite.graphics.endFill();
+		}
+		if (pleasurePercent > 0.5) {
+		    blitSprite.graphics.beginFill(0x000000, (pleasurePercent - 0.5) * 2 * (pleasurePercent - 0.5) * 2 * (pleasurePercent - 0.5) * 2);
+		    blitSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+		    blitSprite.graphics.endFill();
+		}
+	    } else {
+		this.blitSprite.visible = false;
+	    }
 	}
 		
-		
+	public function deconstruct():void {
+
+	}		
 		
     }
 	

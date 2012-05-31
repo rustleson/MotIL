@@ -284,6 +284,9 @@ package Engine.Objects {
 
 	public function clearStuff():void {
 	    this.sprite.graphics.clear();
+	    while(sprite.numChildren > 0) {   
+		sprite.removeChildAt(0); 
+	    }
 	    if (this.bodiesOrder.length > 0) {
 		var world:b2World = this.bodies[this.bodiesOrder[0]].GetWorld();
 		for each(var joint:b2Joint in this.joints) {

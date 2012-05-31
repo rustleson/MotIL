@@ -13,6 +13,7 @@ package Engine.Worlds {
     import Engine.Objects.*;
     import Engine.Stats.*;
     import Engine.Dialogs.MainStatsDialog;
+    import Engine.Dialogs.Widgets.*;
     import flash.events.Event;
     import flash.display.*;
     import flash.geom.Matrix;
@@ -68,6 +69,7 @@ package Engine.Worlds {
 	    //stats.vaginaSlot.stretchedLength.level = 50;
 	    //stats.anusSlot.stretchedLength.level = 50;
 	    //stats.mouthSlot.stretchedLength.level = 50;
+	    this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights, newcomer!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Question));
 
 	    var startX:int = Rndm.integer(0, this.mapWidth - 1);
 	    var startY:int = Rndm.integer(0, this.mapHeight - 1);
@@ -90,13 +92,15 @@ package Engine.Worlds {
 
 	public override function update():void {
 	    var proX:Number = Math.floor(this.objects.protagonist.bodies.chest.GetPosition().x / this.roomWidth);
-	    var proY:Number = Math.floor(this.objects.protagonist.bodies.chest.GetPosition().y / this.roomHeight) ;
+	    var proY:Number = Math.floor(this.objects.protagonist.bodies.chest.GetPosition().y / this.roomHeight);
+	    var i:int;
+	    var j:int;
 	    if (proX != this.curRoomX || proY != this.curRoomY) {
 		// room is changed, re-building surrounding rooms
 		this.curRoomX = proX;
 		this.curRoomY = proY;
-		for (var j:int = 0; j < this.mapHeight; j++) {
-		    for (var i:int = 0; i < this.mapWidth; i++) {
+		for (j = 0; j < this.mapHeight; j++) {
+		    for (i = 0; i < this.mapWidth; i++) {
 			if (Math.abs(i - this.curRoomX) <= 1 && Math.abs(j - this.curRoomY) <= 1) {
 			    this.map[j][i].construct();
 			} else {
@@ -109,6 +113,27 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.map.curY = this.curRoomY;
 	    }
 	    super.update();
+	    if (!this.stats.buddhaMode && Input.getKeyStroke(30) == "ARAHCEK") {
+		this.stats.statsDialog.widgets.message.show(new Message("Buddha mode is activated! Since you are immortal and know all the things now, there is no need for you to save your progress anymore. Deal with it.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Question));
+		this.stats.buddhaMode = true;
+		for (j = 0; j < this.mapHeight; j++) {
+		    for (i = 0; i < this.mapWidth; i++) {
+			this.map[j][i].explored = true;
+		    }
+		}
+		for each (var artefact:ArtefactStat in this.stats.artefacts) {
+		    artefact.obtained = true;
+		}
+		this.stats.statsDialog.widgets.map.needUpdate = true;
+		this.stats.statsDialog.widgets.wheel.needUpdate = true;
+		this.stats.statsDialog.widgets.vajra.needUpdate = true;
+		this.stats.statsDialog.widgets.jewel.needUpdate = true;
+		this.stats.statsDialog.widgets.lotus.needUpdate = true;
+		this.stats.statsDialog.widgets.sword.needUpdate = true;
+		this.stats.statsDialog.widgets.chastityBelt.needUpdate = true;
+		this.stats.statsDialog.widgets.pacifier.needUpdate = true;
+		this.stats.statsDialog.widgets.analTentacle.needUpdate = true;
+	    }
 	}
 
 	public function buildMap():void {
@@ -337,6 +362,25 @@ package Engine.Worlds {
 	    if (this.map[y][x].visited)
 		return true;
 	    return false;
+	}
+
+	public override function deconstruct():void {
+	    for (var j:int = 0; j < this.mapHeight; j++) {
+		for (var i:int = 0; i < this.mapWidth; i++) {
+		    this.map[j][i].deconstruct();
+		}
+	    }	    
+	    for each (var objName:String in this.objectsOrder) {
+		this.objects[objName].clearStuff();
+		delete this.objects[objName];
+	    }
+	    this.primaryBgSprite.graphics.clear();
+	    this.secondaryBgSprite.graphics.clear();
+	    this.sprite.graphics.clear();
+	    while(this.sprite.numChildren > 0) {   
+		this.sprite.removeChildAt(0); 
+	    }
+	    this.stats.statsDialog.destroy();
 	}
 
     }

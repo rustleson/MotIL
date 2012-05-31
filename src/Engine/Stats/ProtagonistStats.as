@@ -30,6 +30,8 @@ package Engine.Stats {
 	public var rightHandSlot:SlotStat;
 	public var protagonist:Protagonist;
 	public var artefacts:Object = new Object();
+	public var death:Boolean = false;
+	public var buddhaMode:Boolean = false;
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -45,10 +47,6 @@ package Engine.Stats {
 	    this.artefacts['chastityBelt'] = new ArtefactStat("Chastity Belt", Icons.ChastityBelt, WorldRoom.PURITY_TYPE, "Chastity Belt is the artefact of the Realm of Purity. It gives you ability to purify monsters who are trying to rape you, and also helps to keep vaginal chastity to Heruka. You should attach it to vagina slot to take effect.");
 	    this.artefacts['pacifier'] = new ArtefactStat("Pacifier", Icons.Pacifier, WorldRoom.BALANCE_TYPE, "Pacifier is the artefact of the Realm of Balance. It gives you ability to pacify monsters who are trying to rape you. You should attach it to mouth slot to take effect.");
 	    this.artefacts['analTentacle'] = new ArtefactStat("Anal Tentacle", Icons.AnalTentacle, WorldRoom.CORRUPTION_TYPE, "Anal Tentacle is the artefact of the Realm of Corruption. It gives you ability to corrupt other monsters by raping them. You should attach it to anus slot to take effect. As a side effect, you're constantly raping youself with this artefact attached.");
-	    for each (var artefact:ArtefactStat in this.artefacts) {
-		artefact.obtained = true;
-	    }
-	    this.artefacts.chastityBelt.obtained = false;
 	    super();
 	}
 
@@ -171,8 +169,8 @@ package Engine.Stats {
 	    if (stat != null) {
 		stat.exp += dv * stat.level * stat.level / 4; //this._expPool.leakValue(dv * this.pain.value / this.pain.max);
 	    }
-	    if (isDeath)  {
-		// TODO: process death
+	    if (isDeath && !this.buddhaMode)  {
+		this.death = true; // that's all baby, we'll meet in the AfterWorld
 	    }
 	    return isDeath;
 	}

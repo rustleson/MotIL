@@ -684,8 +684,8 @@ package Engine.Objects {
 	}
 
 	public override function update():void{
-	    
-	    if (Input.isKeyPressed(65)){ // A
+	    var repeatRate:int = 4;
+	    if (Input.isKeyPressed(65) || Input.isKeyDown(65) && Input.getKeyHold(65) % repeatRate == 0){ // A
 		targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
 	                        jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: 120 / (180/Math.PI),
 	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: 10 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 30 / (180/Math.PI) };
@@ -693,7 +693,7 @@ package Engine.Objects {
 		toggleMotors(true);
 		bodies.stomach.ApplyImpulse(new b2Vec2(-this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
-	    if (Input.isKeyPressed(83)){ // S
+	    if (Input.isKeyPressed(83) || Input.isKeyDown(83) && Input.getKeyHold(83) % repeatRate == 0){ // S
 		targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
 	                        jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
 	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
@@ -701,7 +701,7 @@ package Engine.Objects {
 		toggleMotors(true);
 		bodies.hips.ApplyImpulse(new b2Vec2(0, this.stats.speed), bodies.hips.GetWorldCenter());
 	    }
-	    if (Input.isKeyPressed(68)){ // D
+	    if (Input.isKeyPressed(68) || Input.isKeyDown(68) && Input.getKeyHold(68) % repeatRate == 0){ // D
 		targetAngles = {jointHead: 10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
 	                        jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: -120 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
 	                        jointUpperLegL: -10 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -30 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
@@ -709,7 +709,7 @@ package Engine.Objects {
 		toggleMotors(true);
 		bodies.stomach.ApplyImpulse(new b2Vec2(this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
-	    if (Input.isKeyPressed(87)){ // W
+	    if (Input.isKeyPressed(87) || Input.isKeyDown(87) && Input.getKeyHold(87) % repeatRate == 0){ // W
 		targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
 	                        jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: -25 / (180/Math.PI), jointLowerArmR: 25 / (180/Math.PI),
 	                        jointUpperLegL: 10 / (180/Math.PI), jointUpperLegR: -10 / (180/Math.PI), jointLowerLegL: -10 / (180/Math.PI), jointLowerLegR: 10 / (180/Math.PI) };
@@ -764,63 +764,65 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(8)){ // Backspace
 		this.stats.statsDialog.toggleHide();
 	    }
-	    if (Input.isKeyPressed(49)){ // 1
-		for (i = 0; i< 100; i++)
-		    this.stats.space += 0.0005;
-		this.color = stats.mixedElementsColor;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(50)){ // 2
-		for (i = 0; i< 100; i++)
-		    this.stats.water += 0.0005;
-		this.color = stats.mixedElementsColor;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(51)){ // 3
-		for (i = 0; i< 100; i++)
-		    this.stats.earth += 0.0005;
-		this.color = stats.mixedElementsColor;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(52)){ // 4
-		for (i = 0; i< 100; i++)
-		    this.stats.fire += 0.0005;
-		this.color = stats.mixedElementsColor;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(53)){ // 5
-		for (i = 0; i< 100; i++)
-		    this.stats.air += 0.0005;
-		this.color = stats.mixedElementsColor;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(54)){ // 6
-		this.stats.alignment -= 0.05;
-		this.bodyUserData.auraColor = stats.auraColor;
-		this.bodyUserData.auraIntencity = stats.auraIntencity;
-		this.headUserData.auraColor = stats.auraColor;
-		this.headUserData.auraIntencity = stats.auraIntencity;
-		this.handLUserData.auraColor = stats.auraColor;
-		this.handLUserData.auraIntencity = stats.auraIntencity;
-		this.handRUserData.auraColor = stats.auraColor;
-		this.handRUserData.auraIntencity = stats.auraIntencity;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(55)){ // 7
-		this.stats.alignment += 0.05;
-		this.bodyUserData.auraColor = stats.auraColor;
-		this.bodyUserData.auraIntencity = stats.auraIntencity;
-		this.headUserData.auraColor = stats.auraColor;
-		this.headUserData.auraIntencity = stats.auraIntencity;
-		this.handLUserData.auraColor = stats.auraColor;
-		this.handLUserData.auraIntencity = stats.auraIntencity;
-		this.handRUserData.auraColor = stats.auraColor;
-		this.handRUserData.auraIntencity = stats.auraIntencity;
-		this.wasUpdated = true;
-	    }
-	    if (Input.isKeyPressed(56)){ // 8
-		this.stats.level = this.stats.level + 1;
-		this.rebuild();
+	    if (this.stats.buddhaMode) {
+		if (Input.isKeyPressed(49)){ // 1
+		    for (i = 0; i< 100; i++)
+			this.stats.space += 0.0005;
+		    this.color = stats.mixedElementsColor;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(50)){ // 2
+		    for (i = 0; i< 100; i++)
+			this.stats.water += 0.0005;
+		    this.color = stats.mixedElementsColor;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(51)){ // 3
+		    for (i = 0; i< 100; i++)
+			this.stats.earth += 0.0005;
+		    this.color = stats.mixedElementsColor;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(52)){ // 4
+		    for (i = 0; i< 100; i++)
+			this.stats.fire += 0.0005;
+		    this.color = stats.mixedElementsColor;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(53)){ // 5
+		    for (i = 0; i< 100; i++)
+			this.stats.air += 0.0005;
+		    this.color = stats.mixedElementsColor;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(54)){ // 6
+		    this.stats.alignment -= 0.05;
+		    this.bodyUserData.auraColor = stats.auraColor;
+		    this.bodyUserData.auraIntencity = stats.auraIntencity;
+		    this.headUserData.auraColor = stats.auraColor;
+		    this.headUserData.auraIntencity = stats.auraIntencity;
+		    this.handLUserData.auraColor = stats.auraColor;
+		    this.handLUserData.auraIntencity = stats.auraIntencity;
+		    this.handRUserData.auraColor = stats.auraColor;
+		    this.handRUserData.auraIntencity = stats.auraIntencity;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(55)){ // 7
+		    this.stats.alignment += 0.05;
+		    this.bodyUserData.auraColor = stats.auraColor;
+		    this.bodyUserData.auraIntencity = stats.auraIntencity;
+		    this.headUserData.auraColor = stats.auraColor;
+		    this.headUserData.auraIntencity = stats.auraIntencity;
+		    this.handLUserData.auraColor = stats.auraColor;
+		    this.handLUserData.auraIntencity = stats.auraIntencity;
+		    this.handRUserData.auraColor = stats.auraColor;
+		    this.handRUserData.auraIntencity = stats.auraIntencity;
+		    this.wasUpdated = true;
+		}
+		if (Input.isKeyPressed(56)){ // 8
+		    this.stats.level = this.stats.level + 1;
+		    this.rebuild();
+		}
 	    }
 	    this.stats.timeStep();
 	    super.update();

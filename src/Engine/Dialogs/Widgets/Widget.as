@@ -105,6 +105,8 @@ package Engine.Dialogs.Widgets {
 		this.transition('hidden', 30, 2, 0, timeout);
 	    if (this.state == 'small')
 		this.transition('hidden', 15, 1, 0, timeout);
+	    if (this.state == '')
+		this._state = 'hidden';
 	}
 
 	public function small(timeout:int = 0):void {
@@ -159,6 +161,17 @@ package Engine.Dialogs.Widgets {
 
 	private function mouseOutHandler(event:MouseEvent):void {
 	    this.tooltipSprite.visible = false;
+	}
+	
+	public function destroy():void {
+	    this.sprite.graphics.clear();
+	    while(this.sprite.numChildren > 0) {   
+		this.sprite.removeChildAt(0); 
+	    }
+	    this.tooltipSprite.graphics.clear();
+	    while(this.tooltipSprite.numChildren > 0) {   
+		this.tooltipSprite.removeChildAt(0); 
+	    }
 	}
 
     }

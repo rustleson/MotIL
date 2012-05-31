@@ -44,6 +44,17 @@ package Engine.Dialogs {
 	    }
 	}
 
+	public function destroy():void {
+	    this.sprite.graphics.clear();
+	    for each (var widgetName:String in this.widgetsOrder) {
+		this.widgets[widgetName].destroy();
+		delete this.widgets[widgetName];
+	    }
+	    while(this.sprite.numChildren > 0) {   
+		this.sprite.removeChildAt(0); 
+	    }
+	}
+
     }
 	
 }
