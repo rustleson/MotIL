@@ -56,6 +56,10 @@ package Engine.Stats {
 
 	public function updatePosition():void {
 	    this.previousPosition = this.currentPosition;
+	    // TODO: mother slot disconnecting freely when father slot is popping out
+	    //if (this.slot != null && !this.slot.isFree && this.currentPosition <= 0) {
+	    //this.slot.disconnect();
+	    //}
 	}
 
 	private function get currentPosition():Number {

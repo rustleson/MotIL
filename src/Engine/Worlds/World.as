@@ -41,6 +41,7 @@ package Engine.Worlds {
 			
 	    sprite = Main.sprite;
 	    blitSprite = new Sprite();
+	    this.blitSprite.visible = false;
 	    sprite.addChild(blitSprite);
 	    appWidth = Main.appWidth;
 	    appHeight = Main.appHeight;

@@ -93,6 +93,8 @@ package Engine.Dialogs.Widgets {
 	protected function get transValue2():Number {
 	    if (this._transitionSteps == 0)
 		return this._transitionTo;
+	    if (this._transitionTo < this._transitionFrom)
+		return this._transitionTo + this._transition / this._transitionSteps * (this._transitionFrom - this._transitionTo);
 	    return this._transitionTo + this._transition * this._transition / this._transitionSteps / this._transitionSteps * (this._transitionFrom - this._transitionTo);
 	}
 

@@ -22,8 +22,8 @@ package Engine.Dialogs {
 	    this.widgets['fire'] = new PercentWidget(w - 12, 60, 102, 6, GenericStats.decodeColor(GenericStats.FIRE_COLOR), 'Fire', Icons.Fire, true, false, 0, 172);
 	    this.widgets['air'] = new PercentWidget(w - 12, 72, 102, 6, GenericStats.decodeColor(GenericStats.AIR_COLOR), 'Air', Icons.Air, true, false, 0, 172);
 	    this.widgets['karma'] = new KarmaWidget(w - 12, 84, 102, 6, 'Karma', Icons.Karma, true, false, 0, 172);
-	    this.widgets['pain'] = new PercentWidget(w - 155, 12, 102, 6, 0x8855ff, 'Pain', Icons.Pain, true, false, -55);
-	    this.widgets['pleasure'] = new PercentWidget(w - 290, 12, 102, 6, 0xff55dd, 'Bliss', Icons.Pleasure, true, false, -130);
+	    this.widgets['pain'] = new PercentWidget(w - 150, 12, 102, 6, 0x8855ff, 'Pain', Icons.Pain, true, false, -60);
+	    this.widgets['pleasure'] = new PercentWidget(w - 280, 12, 102, 6, 0xff55dd, 'Bliss', Icons.Pleasure, true, false, -140);
 	    this.widgets['level'] = new PercentWidget(w - 12, 12, 102, 6, 0xffdd55, 'Exp', Icons.Experience, true, false, 0);
 	    this.widgets['levelup'] = new LevelUpWidget(w - 12, 10, 10, 10, levelupHandler, 0xffdd55, 'Level Up', true, false, -33);
 	    this.widgets['maxpain'] = new PercentWidget(w - 210, 24, 102, 6, 0x8855ff, 'Treshold', Icons.Pain, true);
@@ -68,11 +68,13 @@ package Engine.Dialogs {
 	    this.widgets['pacifier'] = new ArtefactWidget(25, 405, 175, 24);
 	    this.widgets['analTentacle'] = new ArtefactWidget(25, 435, 175, 24);
 	    this.widgets['message'] = new MessageWidget(10, h - 10, 540, 70, 540, 70, 0x111111, false, true);
-	    this.widgetsOrder = ['message', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthslot', 'mouthd', 'mouthl', 'vaginapanel', 'vaginaslot', 'vaginad', 'vaginal', 'anuspanel', 'anusslot', 'anusd', 'anusl', 'mappanel', 'map', 'rhandpanel', 'rhandslot', 'lhandpanel', 'lhandslot', 'artpanel', 'wheel', 'vajra', 'jewel', 'lotus', 'sword', 'chastityBelt', 'pacifier', 'analTentacle'];
-	    this.visibleWidgets = ['panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'mappanel', 'map'];
+	    this.widgets['log'] = new LogWidget(5, 5, 225, 95, 500, 380, 0x888888);
+	    this.widgetsOrder = ['message', 'log', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthslot', 'mouthd', 'mouthl', 'vaginapanel', 'vaginaslot', 'vaginad', 'vaginal', 'anuspanel', 'anusslot', 'anusd', 'anusl', 'mappanel', 'map', 'rhandpanel', 'rhandslot', 'lhandpanel', 'lhandslot', 'artpanel', 'wheel', 'vajra', 'jewel', 'lotus', 'sword', 'chastityBelt', 'pacifier', 'analTentacle'];
+	    this.visibleWidgets = ['log', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'mappanel', 'map'];
 	    this.levelupWidgets = ['painresup', 'arouseup', 'constitutionup', 'speedup'];
 	    this.toggleHide();
 	    this.widgets.message.hidden();
+	    this.widgets.log.small();
 	}
 
 	public function toggleHide():void {
@@ -83,7 +85,7 @@ package Engine.Dialogs {
 	    if (this._mode == 'hide') {
 		this._mode = 'visible';
 		for each (widgetName in this.widgetsOrder) {
-		    if (widgetName == 'message')
+		    if (widgetName == 'message' || widgetName == 'log')
 			continue;
 		    widget = widgets[widgetName];
 		    if (this._state == 'small') {
@@ -104,7 +106,7 @@ package Engine.Dialogs {
 	    } else {
 		this._mode = 'hide';
 		for each (widgetName in this.widgetsOrder) {
-		    if (widgetName == 'message')
+		    if (widgetName == 'message' || widgetName == 'log')
 			continue;
 		    widget = widgets[widgetName];
 		    if (widgetName == 'panel')
@@ -123,7 +125,7 @@ package Engine.Dialogs {
 	    if (this._state == 'large') {
 		this._state = 'small';
 		for each (widgetName in this.widgetsOrder) {
-		    if (widgetName == 'message')
+		    if (widgetName == 'message' || widgetName == 'log')
 			continue;
 		    widget = widgets[widgetName];
 		    if (this._mode == 'hide') {
@@ -147,7 +149,7 @@ package Engine.Dialogs {
 	    } else {
 		this._state = 'large';
 		for each (widgetName in this.widgetsOrder) {
-		    if (widgetName == 'message')
+		    if (widgetName == 'message' || widgetName == 'log')
 			continue;
 		    widget = widgets[widgetName];
 		    if (widgetName == 'levelup')

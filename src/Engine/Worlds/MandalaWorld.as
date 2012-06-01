@@ -39,8 +39,10 @@ package Engine.Worlds {
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
 			
 	    secondaryBgSprite = new Sprite();
+	    secondaryBgSprite.cacheAsBitmap = true;
 	    sprite.addChild(secondaryBgSprite);
 	    primaryBgSprite = new Sprite();
+	    primaryBgSprite.cacheAsBitmap = true;
 	    sprite.addChild(primaryBgSprite);
 	    this.roomWidth = 1000 / this.physScale;
 	    this.roomHeight = 1000 / this.physScale;
@@ -61,22 +63,30 @@ package Engine.Worlds {
 		this.backgroundsCache[type] = Utils.buildBackgrounds(type, appWidth, appHeight);
 	    }
 
-	    stats.space = 1;
-	    stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-	    //stats.level = 50;
-	    stats.hairColor = 0x005500;
-	    stats.hairLength = 1.5;
-	    //stats.vaginaSlot.stretchedLength.level = 50;
-	    //stats.anusSlot.stretchedLength.level = 50;
-	    //stats.mouthSlot.stretchedLength.level = 50;
-	    this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights, newcomer!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Question));
-
-	    var startX:int = Rndm.integer(0, this.mapWidth - 1);
-	    var startY:int = Rndm.integer(0, this.mapHeight - 1);
+	    var startType:uint;
+	    if (this.stats.space == 1) {
+		startType = WorldRoom.SPACE_TYPE;
+	    }
+	    if (this.stats.water == 1) {
+		startType = WorldRoom.WATER_TYPE;
+	    }
+	    if (this.stats.earth == 1) {
+		startType = WorldRoom.EARTH_TYPE;
+	    }
+	    if (this.stats.fire == 1) {
+		startType = WorldRoom.FIRE_TYPE;
+	    }
+	    if (this.stats.air == 1) {
+		startType = WorldRoom.AIR_TYPE;
+	    }
+	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[startType] + " Realm.";
+	    do {
+		var startX:int = Rndm.integer(0, this.mapWidth - 1);
+		var startY:int = Rndm.integer(0, this.mapHeight - 1);
+	    } while (this.map[startY][startX].type != startType);
 	    objects['protagonist'] = new Protagonist(world, startX * this.roomWidth + 250 / physScale, startY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
 	    objectsOrder = ['protagonist'];
-
-	    
+	    this.stats.statsDialog.widgets.log.show(startMessage);
 	    for each (var obj:WorldObject in objects) {
 		for each (var body:b2Body in obj.bodies) {
 		    bc.AddBody(body);
@@ -97,6 +107,9 @@ package Engine.Worlds {
 	    var j:int;
 	    if (proX != this.curRoomX || proY != this.curRoomY) {
 		// room is changed, re-building surrounding rooms
+		if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
+		    this.stats.statsDialog.widgets.log.show("Entered Realm of " + this.stats.ElementalStrings[this.map[proY][proX].type]);
+		}
 		this.curRoomX = proX;
 		this.curRoomY = proY;
 		for (j = 0; j < this.mapHeight; j++) {
@@ -114,7 +127,8 @@ package Engine.Worlds {
 	    }
 	    super.update();
 	    if (!this.stats.buddhaMode && Input.getKeyStroke(30) == "ARAHCEK") {
-		this.stats.statsDialog.widgets.message.show(new Message("Buddha mode is activated! Since you are immortal and know all the things now, there is no need for you to save your progress anymore. Deal with it.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Question));
+		this.stats.statsDialog.widgets.message.show(new Message("Buddha mode is activated! Since you are immortal and know all the things now, there is no need for you to save your progress anymore. Deal with it.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+		this.stats.statsDialog.widgets.log.show("Buddha mode activated.");
 		this.stats.buddhaMode = true;
 		for (j = 0; j < this.mapHeight; j++) {
 		    for (i = 0; i < this.mapWidth; i++) {

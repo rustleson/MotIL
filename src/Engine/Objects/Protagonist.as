@@ -764,6 +764,13 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(8)){ // Backspace
 		this.stats.statsDialog.toggleHide();
 	    }
+	    if (Input.isKeyPressed(192)){ // ~
+		if (this.stats.statsDialog.widgets.log.state == 'small') {
+		    this.stats.statsDialog.widgets.log.large();
+		} else {
+		    this.stats.statsDialog.widgets.log.small();
+		}
+	    }
 	    if (this.stats.buddhaMode) {
 		if (Input.isKeyPressed(49)){ // 1
 		    for (i = 0; i< 100; i++)

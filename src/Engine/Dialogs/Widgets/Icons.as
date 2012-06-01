@@ -2,6 +2,7 @@ package Engine.Dialogs.Widgets {
 	
     import flash.display.*;
     import Engine.Objects.Utils;
+    import General.Rndm;
 
     public final class Icons {
 
@@ -309,6 +310,26 @@ package Engine.Dialogs.Widgets {
 	    spr.graphics.curveTo(x, y, x + ri/2, y + ro*0.7);
 	}
 
+	public static function Insubstantial(spr:Sprite, x:Number, y:Number, r:Number, c:uint, t:Number = 1, a:Number = 1):void {
+	    var ri:Number = 0.18 * r;
+	    var ro:Number = 0.6 * r;
+	    var x1:int = 0;
+	    Rndm.seed = 232353;
+	    for (var i:int = 0; i < 10; i++) {
+		var yn:int = -ro + i * ro*2/10; 
+		var maxX:int = Math.sqrt(ro * ro - yn * yn);
+		x1 += Math.min(Math.round(maxX) - ro/2, Math.max(Math.round(-maxX), Rndm.integer(-Math.ceil(ro/4), Math.ceil(ro/4) + 1)));
+		var x2:int = Math.round(x1 + ro/2);
+		spr.graphics.lineStyle(t/2, Utils.colorDark(c, 0.7 - 0.4 * i / 15), a);
+		spr.graphics.moveTo(x + x1, y + yn);
+		spr.graphics.lineTo(x + x2, y + yn);
+	    }
+	    spr.graphics.lineStyle(t/2, c, a);
+	    spr.graphics.moveTo(x - ro, y - ro/2.2);
+	    spr.graphics.curveTo(x - (ro + ri) / 2, y - ro/5, x - ri, y - ro/2.1);
+	    spr.graphics.moveTo(x + ro, y - ro/2.2);
+	    spr.graphics.curveTo(x + (ro + ri) / 2, y - ro/5, x + ri, y - ro/2.1);
+	}
    }
 	
 }

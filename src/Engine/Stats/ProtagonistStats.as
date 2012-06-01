@@ -14,6 +14,8 @@ package Engine.Stats {
 	public static const DAKINI_TRIBE:int = 1; 
 	public static const YAKSHINI_TRIBE:int = 2; 
 	public static const RAKSHASI_TRIBE:int = 3; 
+	public var TribesStrings:Object = new Object(); 
+	public var ElementalStrings:Object = new Object(); 
 
 	public var hairColor:uint = 0xdd44dd;
 	public var eyesColor:uint = 0x22CC22;
@@ -47,6 +49,14 @@ package Engine.Stats {
 	    this.artefacts['chastityBelt'] = new ArtefactStat("Chastity Belt", Icons.ChastityBelt, WorldRoom.PURITY_TYPE, "Chastity Belt is the artefact of the Realm of Purity. It gives you ability to purify monsters who are trying to rape you, and also helps to keep vaginal chastity to Heruka. You should attach it to vagina slot to take effect.");
 	    this.artefacts['pacifier'] = new ArtefactStat("Pacifier", Icons.Pacifier, WorldRoom.BALANCE_TYPE, "Pacifier is the artefact of the Realm of Balance. It gives you ability to pacify monsters who are trying to rape you. You should attach it to mouth slot to take effect.");
 	    this.artefacts['analTentacle'] = new ArtefactStat("Anal Tentacle", Icons.AnalTentacle, WorldRoom.CORRUPTION_TYPE, "Anal Tentacle is the artefact of the Realm of Corruption. It gives you ability to corrupt other monsters by raping them. You should attach it to anus slot to take effect. As a side effect, you're constantly raping youself with this artefact attached.");
+	    TribesStrings[ProtagonistStats.DAKINI_TRIBE] = 'Dakini';
+	    TribesStrings[ProtagonistStats.YAKSHINI_TRIBE] = 'Yakshini';
+	    TribesStrings[ProtagonistStats.RAKSHASI_TRIBE] = 'Rakshasi'; 
+	    ElementalStrings[WorldRoom.SPACE_TYPE] = 'Space';
+	    ElementalStrings[WorldRoom.WATER_TYPE] = 'Water';
+	    ElementalStrings[WorldRoom.EARTH_TYPE] = 'Earth';
+	    ElementalStrings[WorldRoom.FIRE_TYPE] = 'Fire';
+	    ElementalStrings[WorldRoom.AIR_TYPE] = 'Air'; 
 	    super();
 	}
 
@@ -138,14 +148,20 @@ package Engine.Stats {
 	    this.updateSlotParams();
 	    if (this.level > l) {
 		protagonist.rebuild();
+		this.statsDialog.widgets.log.show("Level Up! You are growing to level " + this.level.toString() + ".");
 	    }
 	}
 
 	public override function takePleasure(dv:Number):Boolean {
+	    var l:int = this.maxPleasure.level;
 	    var isOrgasm:Boolean = super.takePleasure(dv);
 	    if (isOrgasm) {
 		this.takeExp(this.pleasure.max); // ?multiply on level?
 		this.pleasure.value *= 0.2;
+		this.statsDialog.widgets.log.show("Orgasm experience!");
+	    }
+	    if (this.maxPleasure.level > l) {
+		this.statsDialog.widgets.log.show("Your orgasm point is improving to level " + this.maxPleasure.level.toString() + ".");
 	    }
 	    return isOrgasm;
 	}
@@ -165,9 +181,19 @@ package Engine.Stats {
 	}
 
 	public override function takePain(dv:Number, stat:ExpStat = null):Boolean {
+	    var painBefore:Number = this.pain.value / this.pain.max;
+	    var l:int = this.maxPain.level;
 	    var isDeath:Boolean = super.takePain(dv);
+	    var painAfter:Number = this.pain.value / this.pain.max;
 	    if (stat != null) {
 		stat.exp += dv * stat.level * stat.level / 4; //this._expPool.leakValue(dv * this.pain.value / this.pain.max);
+	    }
+	    if (painBefore < 0.95 && painAfter >= 0.95) {
+		this.takeExp(this.pain.value * this.level);
+		this.statsDialog.widgets.log.show("Near-death experience!");
+	    }
+	    if (this.maxPain.level > l) {
+		this.statsDialog.widgets.log.show("Your pain treshold is improving to level " + this.maxPain.level.toString() + ".");
 	    }
 	    if (isDeath && !this.buddhaMode)  {
 		this.death = true; // that's all baby, we'll meet in the AfterWorld
@@ -182,7 +208,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.fire.setTooltip("Your affinity with a Fire element. 0% means there is no Fire in you, 100% means you are made of pure Fire.");
 	    this.statsDialog.widgets.air.setTooltip("Your affinity with an Air element. 0% means there is no Air in you, 100% means you are made of pure Air.");
 	    this.statsDialog.widgets.karma.setTooltip("Your Karma. -100 means you are totally corrupted, +100 means you are totally pure, 0 means pefect balance.");
-	    this.statsDialog.widgets.levelup.setTooltip("You've  reached new level and have upgrade points available.");
+	    this.statsDialog.widgets.levelup.setTooltip("You've reached new level and have upgrade points available.");
 	    this.statsDialog.widgets.constitutionup.setTooltip("Press to upgrade your constitution.");
 	    this.statsDialog.widgets.painresup.setTooltip("Press to upgrade your pain resistance.");
 	    this.statsDialog.widgets.arouseup.setTooltip("Press to upgrade your arousal boost.");
@@ -193,7 +219,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ");
 	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.");
 	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.");
-	    this.statsDialog.widgets.map.setTooltip("This is a world map. Only explored areas are shown there. Your current position is displaying as a white dot.");
+	    this.statsDialog.widgets.map.setTooltip("The world map. Only previously explored areas are shown there. Your current position is displaying as a white dot. Different colors means different Realms.");
 	    this.statsDialog.widgets.constitutionup.callback = this.constitutionUpClickHandler;
 	    this.statsDialog.widgets.painresup.callback = this.painResistanceUpClickHandler;
 	    this.statsDialog.widgets.arouseup.callback = this.arousalBoostUpClickHandler;
@@ -315,6 +341,40 @@ package Engine.Stats {
 	    }
 	}
 
+	public override function set space(v:Number):void {
+	    var valBefore:Number = this.space;
+	    super.space = v;
+	    if (this.space == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are made of pure Space now.");
+	}
+
+	public override function set water(v:Number):void {
+	    var valBefore:Number = this.water;
+	    super.water = v;
+	    if (this.water == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are made of pure Water now.");
+	}
+
+	public override function set earth(v:Number):void {
+	    var valBefore:Number = this.earth;
+	    super.earth = v;
+	    if (this.earth == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are made of pure Earth now.");
+	}
+
+	public override function set fire(v:Number):void {
+	    var valBefore:Number = this.fire;
+	    super.fire = v;
+	    if (this.fire == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are made of pure Fire now.");
+	}
+
+	public override function set air(v:Number):void {
+	    var valBefore:Number = this.air;
+	    super.air = v;
+	    if (this.air == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are made of pure Air now.");
+	}
 
     }
 	

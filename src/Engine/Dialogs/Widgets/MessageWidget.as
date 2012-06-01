@@ -127,7 +127,7 @@ package Engine.Dialogs.Widgets {
 		this.sprite.graphics.drawRoundRect(this.titleText.x, this.titleText.y + 1, this.titleText.width, this.titleText.height, 5, 5);
 		this.sprite.graphics.endFill();
 		this.sprite.graphics.lineStyle(2, this.textColor, 0.7);
-		this.sprite.graphics.beginFill(Utils.colorDark(this.textColor, 0.5), 0.7);
+		this.sprite.graphics.beginFill(Utils.colorDark(this.textColor, 0.7), 0.7);
 		this.sprite.graphics.drawCircle(tx + this.height/4 + 10, ty + this.height/4 + 15, this.height/4);
 		this.sprite.graphics.endFill();
 		this.icon(this.sprite, tx + this.height/4 + 10, ty + this.height/4 + 15, this.height/4, this.textColor, 2, 0.7);
