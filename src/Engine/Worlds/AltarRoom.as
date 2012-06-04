@@ -8,11 +8,10 @@ package Engine.Worlds {
 	
     public class AltarRoom extends EmptyRoom {
 	
-	public var power:int;
-
-	public function AltarRoom(world:World, posX:Number, posY:Number, width:Number, height:Number, type:uint, prefix:String, seed:uint, power:int){
+	public function AltarRoom(world:World, posX:Number, posY:Number, width:Number, height:Number, type:uint, prefix:String, seed:uint, power:int, art:Boolean = false){
 	    super(world, posX, posY, width, height, type, prefix, seed);
 	    this.power = power;
+	    this.isArtefact = art;
 	}
 
 	public override function build():void {

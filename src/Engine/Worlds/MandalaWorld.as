@@ -33,16 +33,19 @@ package Engine.Worlds {
 	public var curRoomY:int = -1;
 	private var backgroundsCache:Object = new Object();
 	private var roomTypes:Array = [WorldRoom.SPACE_TYPE, WorldRoom.WATER_TYPE, WorldRoom.EARTH_TYPE, WorldRoom.FIRE_TYPE, WorldRoom.AIR_TYPE, WorldRoom.CORRUPTION_TYPE, WorldRoom.BALANCE_TYPE, WorldRoom.PURITY_TYPE ];
+	private var roomSongTendenciesValues:Array = [21, 6, 2, 10, 14, 8, 17, 23];
+	private var roomSongTendencies:Object = new Object();
+	private var startingPositions:Object = new Object();
 	private var terrHeights:Array = new Array();
 	private var interRealmTransitions:Object = new Object();
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
 			
 	    secondaryBgSprite = new Sprite();
-	    secondaryBgSprite.cacheAsBitmap = true;
+	    secondaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
 	    sprite.addChild(secondaryBgSprite);
 	    primaryBgSprite = new Sprite();
-	    primaryBgSprite.cacheAsBitmap = true;
+	    primaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
 	    sprite.addChild(primaryBgSprite);
 	    this.roomWidth = 1000 / this.physScale;
 	    this.roomHeight = 1000 / this.physScale;
@@ -80,11 +83,7 @@ package Engine.Worlds {
 		startType = WorldRoom.AIR_TYPE;
 	    }
 	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[startType] + " Realm.";
-	    do {
-		var startX:int = Rndm.integer(0, this.mapWidth - 1);
-		var startY:int = Rndm.integer(0, this.mapHeight - 1);
-	    } while (this.map[startY][startX].type != startType);
-	    objects['protagonist'] = new Protagonist(world, startX * this.roomWidth + 250 / physScale, startY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+	    objects['protagonist'] = new Protagonist(world, this.startingPositions[startType].x * this.roomWidth + 250 / physScale, this.startingPositions[startType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
 	    objectsOrder = ['protagonist'];
 	    this.stats.statsDialog.widgets.log.show(startMessage);
 	    for each (var obj:WorldObject in objects) {
@@ -98,6 +97,11 @@ package Engine.Worlds {
 	    bc.linearDrag = 0.005;
 	    bc.angularDrag = 0.005;
 	    world.AddController(bc);
+
+	    for (var i:int = 0; i < this.roomTypes.length; i++) {
+		this.roomSongTendencies[this.roomTypes[i]] = roomSongTendenciesValues[i];
+	    }
+	    
 	}
 
 	public override function update():void {
@@ -109,6 +113,13 @@ package Engine.Worlds {
 		// room is changed, re-building surrounding rooms
 		if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
 		    this.stats.statsDialog.widgets.log.show("Entered Realm of " + this.stats.ElementalStrings[this.map[proY][proX].type]);
+		}
+		if (this.tenorion != null) {
+		    this.tenorion.matrixPad.tendence = this.roomSongTendencies[this.map[proY][proX].type];
+		    this.tenorion.needRebuild = true;
+		    if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
+			this.tenorion.matrixPad.generateUniversalSong();
+		    }
 		}
 		this.curRoomX = proX;
 		this.curRoomY = proY;
@@ -147,6 +158,13 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.chastityBelt.needUpdate = true;
 		this.stats.statsDialog.widgets.pacifier.needUpdate = true;
 		this.stats.statsDialog.widgets.analTentacle.needUpdate = true;
+	    }
+	    if (this.tenorion != null && Input.isKeyReleased(220)) {
+		this.tenorion.muteSound = !this.tenorion.muteSound;
+		if (this.tenorion.muteSound)
+		    this.tenorion.driver.stop();
+		else
+		    this.tenorion.driver.play();
 	    }
 	}
 
@@ -228,18 +246,58 @@ package Engine.Worlds {
 		    }
 		}
 	    }
+	    // build starting positions for each realm
+	    for each(t in this.roomTypes) {
+		do {
+		    var startX:int = Rndm.integer(0, this.mapWidth - 1);
+		    var startY:int = Rndm.integer(0, this.mapHeight - 1);
+		} while (this.map[startY][startX].type != t);
+		this.startingPositions[t] = {'x': startX, 'y': startY};
+	    }
+	    // build specific rooms
+	    for each(t in this.roomTypes) {
+		var maxPower:int = this.buildRoomPowers(this.startingPositions[t].x, this.startingPositions[t].y, t);
+		var isAltar:Boolean = false;
+		for (j = this.mapHeight - 1; j >= 0 ; j--) {
+		    for (i = this.mapWidth - 1; i >= 0 ; i--) {
+			if (this.map[j][i].type == t) {
+			    var isArtefact:Boolean = false;
+			    if (this.map[j][i].power == maxPower && !isAltar) {
+				isArtefact = true;
+				isAltar = true;
+			    }
+			    // build altar/artefact room
+			    if (isArtefact || this.map[j][i].power % 4 == 0) {
+				var r:AltarRoom = new AltarRoom(this, this.map[j][i].posX, this.map[j][i].posY, this.map[j][i].width, this.map[j][i].height, this.map[j][i].type, this.map[j][i].prefix, this.map[j][i].seed, Math.floor(23 * this.map[j][i].power / maxPower) + 20, isArtefact);
+				r.freedomTop = this.map[j][i].freedomTop;
+				r.freedomBottom = this.map[j][i].freedomBottom;
+				r.freedomLeft = this.map[j][i].freedomLeft;
+				r.freedomRight = this.map[j][i].freedomRight;
+				r.visited = true;
+				delete this.map[j][i];
+				this.map[j][i] = r;
+			    }
+			}
+		    }
+		}
+	    }
+
 	}
 
 	public override function renderBackgrounds():void {
 	    this.primaryBgSprite.graphics.clear();
 	    this.secondaryBgSprite.graphics.clear();
 	    var type:uint = this.map[this.curRoomY][this.curRoomX].type;
+	    var i:int = 0;
 	    for each (var bg:Object in this.backgroundsCache[type]) {
-		var matrix:Matrix = new Matrix();
-		matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
-		this.primaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
-		this.primaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
-		this.primaryBgSprite.graphics.endFill();
+		if (i > 0 || i >= this.stats.backgroundDetails) {
+		    var matrix:Matrix = new Matrix();
+		    matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
+		    this.primaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
+		    this.primaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+		    this.primaryBgSprite.graphics.endFill();
+		}
+		i++;
 	    }
 	    var nearestWall:Number = this.roomWidth;
 	    var nearestType:uint = 0;
@@ -275,15 +333,19 @@ package Engine.Worlds {
 		}
 	    }
 	    if (nearestWall <= this.roomWidth * 0.4) {
+		i = 0;
 		for each (bg in this.backgroundsCache[nearestType]) {
-		    matrix = new Matrix();
-		    matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
-		    this.secondaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
-		    this.secondaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
-		    this.secondaryBgSprite.graphics.endFill();
+		    if (i > 0 || i >= this.stats.backgroundDetails) {
+			matrix = new Matrix();
+			matrix.translate(-viewport.lowerBound.x * physScale * bg.ratio, -viewport.lowerBound.y * physScale * bg.ratio);
+			this.secondaryBgSprite.graphics.beginBitmapFill(bg.bitmap, matrix.clone(), true);
+			this.secondaryBgSprite.graphics.drawRect(0, 0, appWidth, appHeight);
+			this.secondaryBgSprite.graphics.endFill();
+		    }
+		    i++;
 		}
 		this.primaryBgSprite.alpha = nearestWall / this.roomWidth / 0.8 + 0.5;
-		this.secondaryBgSprite.alpha = 1 - this.primaryBgSprite.alpha + 0.5;
+		this.secondaryBgSprite.alpha = 1 - this.primaryBgSprite.alpha;
 	    } else {
 		this.primaryBgSprite.alpha = 1;
 		this.secondaryBgSprite.alpha = 0;
@@ -308,7 +370,6 @@ package Engine.Worlds {
 	    var curY:int = y;
 	    var cellStackX:Array = new Array();
 	    var cellStackY:Array = new Array();
-	    var isAltar:Boolean = false;
 	    while (true) {
 		this.map[curY][curX].visited = true;
 		// calculate unvisited neighbours
@@ -337,20 +398,8 @@ package Engine.Worlds {
 		    this.map[nextY][nextX][neighbours[rn].nextAttr] = rSeed;
 		    curX = nextX;
 		    curY = nextY;
-		    isAltar = true;
 		} else if (cellStackX.length > 0) {
 		    // no neighbours, back to previous cell
-		    if (isAltar) {
-			var r:AltarRoom = new AltarRoom(this, this.map[curY][curX].posX, this.map[curY][curX].posY, this.map[curY][curX].width, this.map[curY][curX].height, this.map[curY][curX].type, this.map[curY][curX].prefix, this.map[curY][curX].seed, cellStackX.length);
-			r.freedomTop = this.map[curY][curX].freedomTop;
-			r.freedomBottom = this.map[curY][curX].freedomBottom;
-			r.freedomLeft = this.map[curY][curX].freedomLeft;
-			r.freedomRight = this.map[curY][curX].freedomRight;
-			r.visited = true;
-			delete this.map[curY][curX];
-			this.map[curY][curX] = r;
-			isAltar = false;
-		    }
 		    curX = cellStackX.pop();
 		    curY = cellStackY.pop();
 		} else {
@@ -360,11 +409,11 @@ package Engine.Worlds {
 	    }
 	}
 
-	private function cellVisited(x:int, y:int, type:uint, curX:int, curY:int, curAttr:String, nextAttr:String):Boolean {
+	private function cellVisited(x:int, y:int, type:uint = 0, curX:int = 0, curY:int = 0, curAttr:String = "", nextAttr:String = ""):Boolean {
 	    
 	    if (x < 0 || x > this.mapWidth - 1 || y < 0 || y > this.mapHeight - 1)
 		return true;
-	    if (this.map[y][x].type != type) {
+	    if (type > 0 && this.map[y][x].type != type) {
 		if (this.interRealmTransitions[this.map[y][x].type][type]) {
 		    this.interRealmTransitions[this.map[y][x].type][type] = false;
 		    var rSeed:uint = Rndm.integer(1, 10000000);
@@ -376,6 +425,65 @@ package Engine.Worlds {
 	    if (this.map[y][x].visited)
 		return true;
 	    return false;
+	}
+
+	private function cellPowerVisited(x:int, y:int):Boolean {
+	    if (x < 0 || x > this.mapWidth - 1 || y < 0 || y > this.mapHeight - 1)
+		return true;
+	    if (this.map[y][x].power > 0)
+		return true;
+	    return false;
+	}
+
+	private function buildRoomPowers(x:int, y:int, type:uint):int {
+	    var maxPower:int = 1;
+	    var curX:int = x;
+	    var curY:int = y;
+	    var cellStackX:Array = new Array();
+	    var cellStackY:Array = new Array();
+	    var isAltar:Boolean = false;
+	    for (var j:int = 0; j < this.mapHeight; j++) {
+		for (var i:int = 0; i < this.mapWidth; i++) {
+		    this.map[j][i].power = 0;
+		}
+	    }
+	    // using similar to DFS algorithm
+	    while (true) {
+		this.map[curY][curX].power = cellStackX.length;
+		if (this.map[curY][curX].type == type && this.map[curY][curX].power > maxPower) {
+		    maxPower = this.map[curY][curX].power;
+		}
+		// calculate unvisited neighbours
+		var neighbours:Array = new Array();
+		if (this.map[curY][curX].freedomLeft && !this.cellPowerVisited(curX - 1, curY)) {
+		    neighbours.push({x: curX - 1, y: curY});
+		}
+		if (this.map[curY][curX].freedomRight && !this.cellPowerVisited(curX + 1, curY)) {
+		    neighbours.push({x: curX + 1, y: curY});
+		}
+		if (this.map[curY][curX].freedomTop && !this.cellPowerVisited(curX, curY - 1)) {
+		    neighbours.push({x: curX, y: curY - 1});
+		}
+		if (this.map[curY][curX].freedomBottom && !this.cellPowerVisited(curX, curY + 1)) {
+		    neighbours.push({x: curX, y: curY + 1});
+		}
+		if (neighbours.length > 0) {
+		    // move to first unvisited neighbour
+		    var nextX:int = neighbours[0].x;
+		    var nextY:int = neighbours[0].y;
+		    cellStackX.push(curX);
+		    cellStackY.push(curY);
+		    curX = nextX;
+		    curY = nextY;
+		} else if (cellStackX.length > 0) {
+		    // no neighbours, back to previous cell
+		    curX = cellStackX.pop();
+		    curY = cellStackY.pop();
+		} else {
+		    break;
+		}
+	    }
+	    return maxPower;
 	}
 
 	public override function deconstruct():void {

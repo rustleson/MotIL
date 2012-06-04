@@ -135,9 +135,9 @@ package Engine.Dialogs {
 			    widget.hidden();
 		    } else {
 			if (widgetName == 'panel')
-			    widget.small(25);
-			else if (widgetName == 'space' || widgetName == 'water' || widgetName == 'earth' || widgetName == 'fire' || widgetName == 'air' || widgetName == 'karma')
 			    widget.small(15);
+			else if (widgetName == 'space' || widgetName == 'water' || widgetName == 'earth' || widgetName == 'fire' || widgetName == 'air' || widgetName == 'karma')
+			    widget.small(10);
 			else if (visibleWidgets.indexOf(widgetName) > 0)
 			    widget.small();
 			else

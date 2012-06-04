@@ -14,6 +14,9 @@ package Engine.Stats {
 	public static const DAKINI_TRIBE:int = 1; 
 	public static const YAKSHINI_TRIBE:int = 2; 
 	public static const RAKSHASI_TRIBE:int = 3; 
+	public static const BG_LOW:int = 3; 
+	public static const BG_MEDIUM:int = 2; 
+	public static const BG_HIGH:int = 1; 
 	public var TribesStrings:Object = new Object(); 
 	public var ElementalStrings:Object = new Object(); 
 
@@ -34,6 +37,7 @@ package Engine.Stats {
 	public var artefacts:Object = new Object();
 	public var death:Boolean = false;
 	public var buddhaMode:Boolean = false;
+	public var backgroundDetails:int = BG_HIGH; 
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -57,6 +61,9 @@ package Engine.Stats {
 	    ElementalStrings[WorldRoom.EARTH_TYPE] = 'Earth';
 	    ElementalStrings[WorldRoom.FIRE_TYPE] = 'Fire';
 	    ElementalStrings[WorldRoom.AIR_TYPE] = 'Air'; 
+	    ElementalStrings[WorldRoom.PURITY_TYPE] = 'Purity'; 
+	    ElementalStrings[WorldRoom.BALANCE_TYPE] = 'Balance'; 
+	    ElementalStrings[WorldRoom.CORRUPTION_TYPE] = 'Corruption'; 
 	    super();
 	}
 
@@ -189,7 +196,7 @@ package Engine.Stats {
 		stat.exp += dv * stat.level * stat.level / 4; //this._expPool.leakValue(dv * this.pain.value / this.pain.max);
 	    }
 	    if (painBefore < 0.95 && painAfter >= 0.95) {
-		this.takeExp(this.pain.value * this.level);
+		this.takeExp(this.pain.value * this.level * this.level);
 		this.statsDialog.widgets.log.show("Near-death experience!");
 	    }
 	    if (this.maxPain.level > l) {

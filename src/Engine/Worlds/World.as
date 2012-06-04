@@ -8,7 +8,7 @@ package Engine.Worlds {
     import Box2D.Common.*;
     import Box2D.Common.Math.*;
     import Main;
-    import General.Input;
+    import General.*;
     import flash.utils.getTimer;
     import flash.display.*;
     import Engine.Objects.*;
@@ -36,6 +36,7 @@ package Engine.Worlds {
 	public var stats:ProtagonistStats;
 	public var seed:uint;
 	public var blitSprite:Sprite;
+	public var tenorion:Tenorion;
 
 	public function World(){
 			

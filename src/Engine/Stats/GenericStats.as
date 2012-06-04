@@ -27,7 +27,7 @@ package Engine.Stats {
 	private var _constitution:PointStat = new PointStat(1, 50); 
 	private var _painResistance:PointStat = new PointStat(1, 0.4); 
 	private var _arousalBoost:PointStat = new PointStat(1, 2.5); 
-	private var _speed:PointStat = new PointStat(1, 10); 
+	private var _speed:PointStat = new PointStat(1, 3); 
 	
 	public static const SPACE_COLOR:Array = [0xDD, 0xD7, 0xD0];
 	public static const WATER_COLOR:Array = [0x00, 0x22, 0xCC];

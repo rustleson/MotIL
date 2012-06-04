@@ -95,6 +95,7 @@ package Engine.Dialogs.Widgets {
 		return this._transitionTo;
 	    if (this._transitionTo < this._transitionFrom)
 		return this._transitionTo + this._transition / this._transitionSteps * (this._transitionFrom - this._transitionTo);
+		//return this._transitionTo + Math.max(0, 1 - (1 - this._transition / this._transitionSteps) * 2) * (this._transitionFrom - this._transitionTo);
 	    return this._transitionTo + this._transition * this._transition / this._transitionSteps / this._transitionSteps * (this._transitionFrom - this._transitionTo);
 	}
 
@@ -104,7 +105,7 @@ package Engine.Dialogs.Widgets {
 
 	public function hidden(timeout:int = 0):void {
 	    if (this.state == 'large')
-		this.transition('hidden', 30, 2, 0, timeout);
+		this.transition('hidden', 15, 2, 0, timeout);
 	    if (this.state == 'small')
 		this.transition('hidden', 15, 1, 0, timeout);
 	    if (this.state == '')
@@ -113,16 +114,16 @@ package Engine.Dialogs.Widgets {
 
 	public function small(timeout:int = 0):void {
 	    if (this.state == 'large')
-		this.transition('small', 20, 2, 1, timeout);
+		this.transition('small', 10, 2, 1, timeout);
 	    if (this.state == 'hidden' || this.state == '')
 		this.transition('small', 15, 0, 1, timeout);
 	}
 
 	public function large(timeout:int = 0):void {
 	    if (this.state == 'hidden' || this.state == '')
-		this.transition('large', 30, 0, 2, timeout);
+		this.transition('large', 20, 0, 2, timeout);
 	    if (this.state == 'small')
-		this.transition('large', 20, 1, 2, timeout);
+		this.transition('large', 15, 1, 2, timeout);
 	}
 
 	public function get transitionComplete():Boolean {

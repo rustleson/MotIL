@@ -827,7 +827,7 @@ package Engine.Objects {
 		    this.wasUpdated = true;
 		}
 		if (Input.isKeyPressed(56)){ // 8
-		    this.stats.level = this.stats.level + 1;
+		    this.stats.takeExp(this.stats.exp.tnl + 1);
 		    this.rebuild();
 		}
 	    }

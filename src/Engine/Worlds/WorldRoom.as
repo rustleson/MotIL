@@ -14,6 +14,8 @@ package Engine.Worlds {
 	public var constructed:Boolean = false;
 	public var explored:Boolean = false;
 	public var visited:Boolean = false;
+	public var power:int = 0;
+	public var isArtefact:Boolean = false;
 	public var prefix:String = "";
 	public var type:uint = 0;
 	public var freedomTop:uint = 0;

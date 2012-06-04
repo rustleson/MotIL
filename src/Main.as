@@ -33,6 +33,7 @@ package{
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
 	    public var seed:uint;
+	    public var tenorion:Tenorion = new Tenorion(); // just uncomment to build with sound support
 
 	    public function Main() {
 		addEventListener(Event.ENTER_FRAME, update, false, 0, true);
@@ -50,6 +51,7 @@ package{
 		stats = new ProtagonistStats();
 		this.autoRebirth();
 		currWorld = new MandalaWorld(stats, seed);
+		currWorld.tenorion = this.tenorion;
 		this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights, spirit!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 		//this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); // Uncomment when HELP will be ready
 	    }
@@ -67,13 +69,15 @@ package{
 		    space = 1;
 		} else if (stats.water >= maxElement) {
 		    water = 1;
-		} else if (stats.earth >= maxElement) {
-		    earth = 1;
 		} else if (stats.fire >= maxElement) {
 		    fire = 1;
+		} else if (stats.earth >= maxElement) {
+		    earth = 1;
 		} else if (stats.air >= maxElement) {
 		    air = 1;
-		}
+		}  
+		//space = 0;
+		//fire = 1; // for testing
 		var vaginaValue:Number = this.stats.vaginaSlot.stretchedDiameter.levelFrac * this.stats.vaginaSlot.stretchedLength.levelFrac;
 		var anusValue:Number = this.stats.anusSlot.stretchedDiameter.levelFrac * this.stats.anusSlot.stretchedLength.levelFrac;
 		var mouthValue:Number = this.stats.mouthSlot.stretchedDiameter.levelFrac * this.stats.mouthSlot.stretchedLength.levelFrac;
@@ -105,6 +109,7 @@ package{
 		    currWorld.deconstruct();
 		    this.autoRebirth();
 		    currWorld = new MandalaWorld(stats, seed);
+		    currWorld.tenorion = this.tenorion;
 		    this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 		}
 		currWorld.update();

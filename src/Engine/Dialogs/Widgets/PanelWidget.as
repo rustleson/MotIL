@@ -41,6 +41,8 @@ package Engine.Dialogs.Widgets {
 	    this.titleFormat = new TextFormat("Medium", 8, this.textColor);
 	    this.titleFormat.align = TextFieldAutoSize.RIGHT;	    
 	    this.titleText.setTextFormat(this.titleFormat);
+	    this.titleText.width = 0;
+	    this.titleText.height = 0;
 	    this.sprite.addChild(this.titleText);
 	}
 
