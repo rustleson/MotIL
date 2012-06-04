@@ -9,18 +9,22 @@ package Engine.Objects {
     import Box2D.Common.Math.*;
     import General.Input;
     import flash.display.*;
-    import Engine.Stats.GenericStats;
+    import Engine.Stats.*;
 	
     public class Altar extends WorldObject {
 
 	public var thickness:Number;
 	public var length:Number;
 	public var stats:GenericStats = new GenericStats();
+	public var artefact:ArtefactStat;
+	public var blissDonated:Number = 0;
+	public var blissToObtain:Number = 523;
 
-	public function Altar(world:b2World, x:Number, y:Number, width:Number, height:Number, $thickness:Number, $length:Number, c:uint = 0xEEDD44, a:Number = 0.8){
+	public function Altar(world:b2World, x:Number, y:Number, width:Number, height:Number, $thickness:Number, $length:Number, c:uint = 0xEEDD44, a:Number = 0.8, $artefact:ArtefactStat = null){
 	    
 	    this.thickness = $thickness;
 	    this.length = $length;
+	    this.artefact = $artefact;
 	    var bd:b2BodyDef = new b2BodyDef();
 	    var fixtureDef:b2FixtureDef = new b2FixtureDef();
 	    var box:b2PolygonShape= new b2PolygonShape();
@@ -67,30 +71,15 @@ package Engine.Objects {
 
 	private function drawLinga(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
 	    super.drawGenericShape(shape, xf, c, drawScale, dx, dy, udata, spr);
-	    /*
-	    if (!udata.slot.isFree && udata.slot.joint) {
-		var maskSprite:Sprite;
-		if (spr.numChildren == 0) {
-		    maskSprite = new Sprite();
-		    spr.addChild(maskSprite);
-		} else {
-		    maskSprite = spr.getChildAt(0) as Sprite;
-		}
-		spr.blendMode = BlendMode.LAYER;
-		maskSprite.blendMode = BlendMode.ERASE;
-		if (udata.slot.connectedSlot.body.GetUserData().hasOwnProperty("buildSlotMask")) {
-		    udata.slot.connectedSlot.body.GetUserData().buildSlotMask(maskSprite);
-		} else {
-		    maskSprite.graphics.clear();
-		    var depth:Number = udata.slot.joint.GetJointTranslation();
-		    maskSprite.graphics.beginFill(0xffffff, 1);
-		    maskSprite.graphics.drawRect((-thickness * 1.1 / 2 - dx) * drawScale, (-(length + thickness) / 2 - dy) * drawScale, thickness * 1.1 * drawScale, -depth * drawScale);
-		    maskSprite.graphics.endFill();
- 
-
-		}
+	    if (this.artefact != null && !this.artefact.obtained) {
+		var transValue:Number = (this.length * drawScale + 25) * this.blissDonated / this.blissToObtain;
+		var scaleValue:Number = 1 - this.blissDonated / this.blissToObtain;
+		spr.graphics.lineStyle(2 * scaleValue, this.artefact.colorReal, 1);
+		spr.graphics.beginFill(Utils.colorDark(this.artefact.colorReal, 0.5), 1);
+		spr.graphics.drawCircle(0, this.length / 2 * drawScale + 25 - transValue, 15 * scaleValue);
+		spr.graphics.endFill();
+		this.artefact.iconReal(spr, 0, this.length / 2 * drawScale + 25 - transValue, 15 * scaleValue, this.artefact.colorReal, 2 * scaleValue);
 	    }
-	    */
 	}
 
     }

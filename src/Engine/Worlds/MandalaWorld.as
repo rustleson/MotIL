@@ -33,8 +33,12 @@ package Engine.Worlds {
 	public var curRoomY:int = -1;
 	private var backgroundsCache:Object = new Object();
 	private var roomTypes:Array = [WorldRoom.SPACE_TYPE, WorldRoom.WATER_TYPE, WorldRoom.EARTH_TYPE, WorldRoom.FIRE_TYPE, WorldRoom.AIR_TYPE, WorldRoom.CORRUPTION_TYPE, WorldRoom.BALANCE_TYPE, WorldRoom.PURITY_TYPE ];
+	private var realmDifficulties:Array = [20, 23, 25, 27, 22, 40, 33, 30];
+	private var realmDifficulty:Object = new Object();
+	private var realmArtefactsValues:Array = ["wheel", "vajra", "jewel", "lotus", "sword", "analTentacle", "pacifier", "chastityBelt"];
+	private var realmArtefacts:Object = new Object();
 	private var roomSongTendenciesValues:Array = [21, 6, 2, 10, 14, 8, 17, 23];
-	private var roomSongTendencies:Object = new Object();
+	public var roomSongTendencies:Object = new Object();
 	private var startingPositions:Object = new Object();
 	private var terrHeights:Array = new Array();
 	private var interRealmTransitions:Object = new Object();
@@ -47,15 +51,20 @@ package Engine.Worlds {
 	    primaryBgSprite = new Sprite();
 	    primaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
 	    sprite.addChild(primaryBgSprite);
+	    for (var i:int = 0; i < this.roomTypes.length; i++) {
+		this.realmArtefacts[this.roomTypes[i]] = realmArtefactsValues[i];
+		this.roomSongTendencies[this.roomTypes[i]] = roomSongTendenciesValues[i];
+		this.realmDifficulty[this.roomTypes[i]] = this.realmDifficulties[i];
+	    }
 	    this.roomWidth = 1000 / this.physScale;
 	    this.roomHeight = 1000 / this.physScale;
 	    this.stats = stats;
 	    this.seed = seed;
 	    Rndm.seed = seed;
-	    this.buildMap();
 	    this.stats.statsDialog = new MainStatsDialog(appWidth, appHeight);
 	    this.stats.statsDialog.sprite = Main.statsSprite;
 	    this.stats.initStats();
+	    this.buildMap();
 	    this.stats.statsDialog.widgets.map.map = this.map;
 	    this.stats.updateStats();
 	    this.stats.statsDialog.rebuild();
@@ -66,24 +75,10 @@ package Engine.Worlds {
 		this.backgroundsCache[type] = Utils.buildBackgrounds(type, appWidth, appHeight);
 	    }
 
-	    var startType:uint;
-	    if (this.stats.space == 1) {
-		startType = WorldRoom.SPACE_TYPE;
-	    }
-	    if (this.stats.water == 1) {
-		startType = WorldRoom.WATER_TYPE;
-	    }
-	    if (this.stats.earth == 1) {
-		startType = WorldRoom.EARTH_TYPE;
-	    }
-	    if (this.stats.fire == 1) {
-		startType = WorldRoom.FIRE_TYPE;
-	    }
-	    if (this.stats.air == 1) {
-		startType = WorldRoom.AIR_TYPE;
-	    }
-	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[startType] + " Realm.";
-	    objects['protagonist'] = new Protagonist(world, this.startingPositions[startType].x * this.roomWidth + 250 / physScale, this.startingPositions[startType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+	    var sType: uint = this.startType;
+
+	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[sType] + " Realm.";
+	    objects['protagonist'] = new Protagonist(world, this.startingPositions[sType].x * this.roomWidth + 250 / physScale, this.startingPositions[sType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
 	    objectsOrder = ['protagonist'];
 	    this.stats.statsDialog.widgets.log.show(startMessage);
 	    for each (var obj:WorldObject in objects) {
@@ -98,10 +93,26 @@ package Engine.Worlds {
 	    bc.angularDrag = 0.005;
 	    world.AddController(bc);
 
-	    for (var i:int = 0; i < this.roomTypes.length; i++) {
-		this.roomSongTendencies[this.roomTypes[i]] = roomSongTendenciesValues[i];
-	    }
 	    
+	}
+
+	public function get startType():uint {
+	    if (this.stats.space == 1) {
+		return WorldRoom.SPACE_TYPE;
+	    }
+	    if (this.stats.water == 1) {
+		return WorldRoom.WATER_TYPE;
+	    }
+	    if (this.stats.earth == 1) {
+		return WorldRoom.EARTH_TYPE;
+	    }
+	    if (this.stats.fire == 1) {
+		return WorldRoom.FIRE_TYPE;
+	    }
+	    if (this.stats.air == 1) {
+		return WorldRoom.AIR_TYPE;
+	    }
+	    return 0;
 	}
 
 	public override function update():void {
@@ -255,8 +266,10 @@ package Engine.Worlds {
 		this.startingPositions[t] = {'x': startX, 'y': startY};
 	    }
 	    // build specific rooms
+	    var maxPowers:Object = this.buildRoomPowers(this.startingPositions[WorldRoom.AIR_TYPE].x, this.startingPositions[WorldRoom.AIR_TYPE].y);
 	    for each(t in this.roomTypes) {
-		var maxPower:int = this.buildRoomPowers(this.startingPositions[t].x, this.startingPositions[t].y, t);
+		var maxPower:int = maxPowers[t].max;
+		var minPower:int = maxPowers[t].min;
 		var isAltar:Boolean = false;
 		for (j = this.mapHeight - 1; j >= 0 ; j--) {
 		    for (i = this.mapWidth - 1; i >= 0 ; i--) {
@@ -268,7 +281,10 @@ package Engine.Worlds {
 			    }
 			    // build altar/artefact room
 			    if (isArtefact || this.map[j][i].power % 4 == 0) {
-				var r:AltarRoom = new AltarRoom(this, this.map[j][i].posX, this.map[j][i].posY, this.map[j][i].width, this.map[j][i].height, this.map[j][i].type, this.map[j][i].prefix, this.map[j][i].seed, Math.floor(23 * this.map[j][i].power / maxPower) + 20, isArtefact);
+				var r:AltarRoom = new AltarRoom(this, this.map[j][i].posX, this.map[j][i].posY, this.map[j][i].width, this.map[j][i].height, this.map[j][i].type, this.map[j][i].prefix, this.map[j][i].seed, Math.floor(23 * (this.map[j][i].power - minPower) / (maxPower - minPower)) + this.realmDifficulty[t], isArtefact);
+				if (isArtefact) {
+				    r.artefact = this.stats.artefacts[this.realmArtefacts[t]];
+				}
 				r.freedomTop = this.map[j][i].freedomTop;
 				r.freedomBottom = this.map[j][i].freedomBottom;
 				r.freedomLeft = this.map[j][i].freedomLeft;
@@ -435,8 +451,11 @@ package Engine.Worlds {
 	    return false;
 	}
 
-	private function buildRoomPowers(x:int, y:int, type:uint):int {
-	    var maxPower:int = 1;
+	private function buildRoomPowers(x:int, y:int, type:uint = 0):Object {
+	    var maxPowers:Object = new Object();
+	    for each(var t:uint in this.roomTypes) {
+		maxPowers[t] = {'max':0, 'min':this.mapWidth * this.mapHeight};
+	    }
 	    var curX:int = x;
 	    var curY:int = y;
 	    var cellStackX:Array = new Array();
@@ -450,8 +469,11 @@ package Engine.Worlds {
 	    // using similar to DFS algorithm
 	    while (true) {
 		this.map[curY][curX].power = cellStackX.length;
-		if (this.map[curY][curX].type == type && this.map[curY][curX].power > maxPower) {
-		    maxPower = this.map[curY][curX].power;
+		if (this.map[curY][curX].power > maxPowers[this.map[curY][curX].type].max) {
+		    maxPowers[this.map[curY][curX].type].max = this.map[curY][curX].power;
+		}
+		if (this.map[curY][curX].power < maxPowers[this.map[curY][curX].type].min) {
+		    maxPowers[this.map[curY][curX].type].min = this.map[curY][curX].power;
 		}
 		// calculate unvisited neighbours
 		var neighbours:Array = new Array();
@@ -483,7 +505,7 @@ package Engine.Worlds {
 		    break;
 		}
 	    }
-	    return maxPower;
+	    return maxPowers;
 	}
 
 	public override function deconstruct():void {

@@ -48,6 +48,10 @@ package Engine.Stats {
 	    return this._name;
 	}
 
+	public function get nameReal():String {
+	    return this._name;
+	}
+
 	public function get description():String {
 	    if (this._name != this.DEFAULT_NAME) {
 		if (!this.obtained)
@@ -64,11 +68,23 @@ package Engine.Stats {
 	    return this._icon;
 	}
 
+	public function get iconReal():Function {
+	    return this._icon;
+	}
+
 	public function get color():uint {
 	    if (this._name != this.DEFAULT_NAME && !this.obtained) {
 		return DEFAULT_COLOR;
 	    }
 	    return Utils.colorLight(this._color, 0.5);
+	}
+
+	public function get colorReal():uint {
+	    return Utils.colorLight(this._color, 0.5);
+	}
+
+	public function get colorRaw():uint {
+	    return this._color;
 	}
 
 	public function get attached():Boolean {

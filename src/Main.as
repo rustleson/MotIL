@@ -76,8 +76,7 @@ package{
 		} else if (stats.air >= maxElement) {
 		    air = 1;
 		}  
-		//space = 0;
-		//fire = 1; // for testing
+		//space = 0; fire = 1; // for testing
 		var vaginaValue:Number = this.stats.vaginaSlot.stretchedDiameter.levelFrac * this.stats.vaginaSlot.stretchedLength.levelFrac;
 		var anusValue:Number = this.stats.anusSlot.stretchedDiameter.levelFrac * this.stats.anusSlot.stretchedLength.levelFrac;
 		var mouthValue:Number = this.stats.mouthSlot.stretchedDiameter.levelFrac * this.stats.mouthSlot.stretchedLength.levelFrac;
@@ -110,6 +109,8 @@ package{
 		    this.autoRebirth();
 		    currWorld = new MandalaWorld(stats, seed);
 		    currWorld.tenorion = this.tenorion;
+		    currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+		    currWorld.tenorion.matrixPad.generateUniversalSong();
 		    this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 		}
 		currWorld.update();

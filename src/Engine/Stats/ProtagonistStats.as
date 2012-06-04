@@ -4,7 +4,7 @@ package Engine.Stats {
     import Engine.Objects.*;
     import Engine.Worlds.WorldRoom;
     import Engine.Dialogs.MainStatsDialog;
-    import Engine.Dialogs.Widgets.Icons;
+    import Engine.Dialogs.Widgets.*;
     import flash.geom.Matrix;
     import mx.utils.StringUtil;
     import flash.events.MouseEvent;
@@ -176,13 +176,31 @@ package Engine.Stats {
 	public function takeAffinity(slot:SlotStat):void {
 	    if (slot.pleasure) {
 		var stats:GenericStats = slot.slot.connectedSlot.owner['stats'];
+		var obj:Object = slot.slot.connectedSlot.owner;
 		this.space += stats.space * slot.pleasure / 10000;
 		this.water += stats.water * slot.pleasure / 10000;
 		this.earth += stats.earth * slot.pleasure / 10000;
 		this.fire += stats.fire * slot.pleasure / 10000;
 		this.air += stats.air * slot.pleasure / 10000;
 		this.alignment += stats.alignment * slot.pleasure / 10000;
+		if (obj.hasOwnProperty('artefact') && obj.artefact != null && obj.artefact.nameReal == 'Pacifier') {
+		    this.alignment +=  ((this.alignment > 0) ? -1 : 1) * slot.pleasure / 10000;
+		}
 		protagonist.color = this.mixedElementsColor;
+		if (obj.hasOwnProperty('blissDonated') && obj.hasOwnProperty('artefact') && obj.artefact != null && !obj.artefact.obtained && obj.stats) {
+		    if (this.space >= stats.space && this.water >= stats.water && this.earth >= stats.earth && this.fire >= stats.fire && this.air >= stats.air && 
+			(obj.artefact.nameReal == 'Chastity Belt' && this.alignment == 1 || obj.artefact.nameReal == 'Anal Tentacle' && 
+			 this.alignment == -1 || obj.artefact.nameReal == 'Pacifier' && Math.round(this.alignment * 100) == 0 || 
+			 obj.artefact.nameReal != 'Chastity Belt' && obj.artefact.nameReal != 'Anal Tentacle' && obj.artefact.nameReal != 'Pacifier')) {
+			obj.blissDonated += slot.pleasure;
+		    }
+		    if (obj.blissDonated > obj.blissToObtain) {
+			obj.blissDonated = obj.blissToObtain;
+			obj.artefact.obtained = true;
+			this.statsDialog.widgets.log.show("Artefact adsorbed: " + obj.artefact.name + ".");
+			this.statsDialog.widgets.message.show(new Message(obj.artefact.name + ", powerful artefact of the " + this.ElementalStrings[obj.artefact.colorRaw] + " is now adsorbed into yourself and ready to help on your quest! You can read artefact description by going to <i>nfo screen and rolling mouse over artefact icon.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+		    }
+		}
 		protagonist.wasUpdated = true;
 	    }
 	}

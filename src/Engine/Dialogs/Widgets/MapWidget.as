@@ -96,8 +96,8 @@ package Engine.Dialogs.Widgets {
 			    }
 			    if (this.map[j][i].isArtefact) {
 				// mark artefact room
-				this.sprite.graphics.lineStyle(0, 0, 0);
-				this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.6), 1);
+				this.sprite.graphics.lineStyle(0.5, Utils.colorLight(this.map[j][i].type, 0.3), 1);
+				this.sprite.graphics.beginFill(Utils.colorDark(this.map[j][i].type, 0.8), 1);
 				this.sprite.graphics.drawRect(tx + (i + 0.4) * cellWidth, ty + (j + 0.3) * cellHeight, cellWidth * 0.2, cellHeight * 0.4);
 				this.sprite.graphics.endFill();
 			    }

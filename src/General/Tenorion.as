@@ -8,6 +8,7 @@ package General {
     import org.si.sion.*;
     import org.si.sion.events.*;
     import org.si.sion.utils.SiONPresetVoice;
+    import org.si.sion.effector.SiCtrlFilterLowPass;
     import General.Input;
     
     [SWF(backgroundColor="#000000")]
@@ -38,6 +39,13 @@ package General {
 	public var muteSound:Boolean = false;
 	
 	public var needRebuild:Boolean = true;
+	
+	//public var filter:SiCtrlFilterLowPass = new SiCtrlFilterLowPass();
+	private var cutoffCur:Number = 1;
+	private var cutoffTo:Number = 1
+	private var resCur:Number = 0.5;
+	private var resTo:Number = 0.5;
+
         // constructor
         function Tenorion() {
             var i:int;
@@ -67,7 +75,9 @@ package General {
             // start streaming
             beatCounter = 0;
 	    notes = notes1;
-            driver.play();
+	    //filter.control(1, 0.5);
+	    //driver.effector.slot0 = [filter];
+            driver.play(null, false);
         }
         
         
@@ -89,7 +99,12 @@ package General {
 		if (beatCounter % 512 == 0) {
 		    phrase = phrases[Math.floor(Math.random() * 24) % 15];
 		}
+		cutoffCur += (cutoffTo - cutoffCur) * 0.05;
+		resCur += (resTo - resCur) * 0.05;
+		//filter.control(cutoffCur, resCur);
 		if (beatCounter % 64 == 0) {
+		    cutoffTo = Math.random() / 4 + 0.375;
+		    resTo = Math.random() / 4 + 0.375;
 		    var code:String = phrase.substr(Math.floor((beatCounter % 256) / 64), 1);
 		    if (code == "A") {
 			notes = notes1;
