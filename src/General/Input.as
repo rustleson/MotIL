@@ -231,6 +231,17 @@ package General{
 			
 			// last key (for key config)
 			lastKey = e.keyCode;
+
+			// shift hack
+			if (e.shiftKey) {
+			    keyState[16] = Math.max(keyState[16], 1);
+			} else if (keyState[16] > 0) {
+			    keyState[16] = -1;
+			    for (var i:int = bufferSize-1; i > 0 ; i--){
+				keyBuffer[i] = keyBuffer[i - 1];
+			    }
+			    keyBuffer[0] = [16, 0];
+			}
 			
 		}
 		
@@ -245,6 +256,18 @@ package General{
 				keyBuffer[i] = keyBuffer[i - 1];
 			}
 			keyBuffer[0] = [e.keyCode, 0];
+
+			// shift hack
+			if (e.shiftKey) {
+			    keyState[16] = Math.max(keyState[16], 1);
+			} else if (keyState[16] > 0) {
+			    keyState[16] = -1;
+			    for (i = bufferSize-1; i > 0 ; i--){
+				keyBuffer[i] = keyBuffer[i - 1];
+			    }
+			    keyBuffer[0] = [16, 0];
+			}
+
 		}
 		
 		

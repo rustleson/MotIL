@@ -100,7 +100,7 @@ package General {
 	// public methods:
 		// random(); // returns a number between 0-1 exclusive.
 		public function random():Number {
-		    // UPDATED: added something MUCH faster and effective than this f@#king bitmap generation
+		    // UPDATED by rustleson: added something MUCH faster and effective than this f@#king bitmap generation
 		    _seed = (_seed*9301+49297) % 233280;
 		    return _seed/(233280.0);
 		}

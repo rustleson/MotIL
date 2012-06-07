@@ -16,7 +16,7 @@ package{
     import Engine.Stats.*;
     import Engine.Dialogs.Widgets.*;
     import flash.geom.Matrix; 
-    import flash.display.MovieClip;
+    import flash.display.*;
 
     [SWF(width='640', height='480', backgroundColor='#000000', frameRate='30')] // ???frameRate='25' is more smoother???
 	
@@ -27,23 +27,30 @@ package{
 	    static public var currWorld:World;
 	    static public var sprite:Sprite;
 	    static public var statsSprite:Sprite;
+	    static public var helpSprite:Sprite;
 	    static public var aboutText:TextField;
 	    static public var appWidth:int;
 	    static public var appHeight:int;
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
-	    public var seed:uint;
+	    static public var seed:uint;
+	    static public var version:String = "0.0.1";
 	    public var tenorion:Tenorion = new Tenorion(); // just uncomment to build with sound support
 
 	    public function Main() {
+		//stage.scaleMode = StageScaleMode.NO_SCALE;
+		//stage.quality = StageQuality.MEDIUM;
 		addEventListener(Event.ENTER_FRAME, update, false, 0, true);
 		sprite = new Sprite();
 		statsSprite = new Sprite();
+		helpSprite = new Sprite();
 		addChild(sprite);
-		addChild(statsSprite);
-		fpsCounter.x = 7;
-		fpsCounter.y = 430;
+		fpsCounter.x = 510;
+		fpsCounter.y = 110;
 		addChild(fpsCounter);
+		fpsCounter.visible = false;
+		addChild(statsSprite);
+		addChild(helpSprite);
 		input = new Input(sprite);
 		appWidth = stage.stageWidth;
 		appHeight = stage.stageHeight;
@@ -53,7 +60,7 @@ package{
 		currWorld = new MandalaWorld(stats, seed);
 		currWorld.tenorion = this.tenorion;
 		this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights, spirit!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-		//this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); // Uncomment when HELP will be ready
+		this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
 	    }
 
 	    private function autoRebirth():void {

@@ -244,7 +244,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ");
 	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.");
 	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.");
-	    this.statsDialog.widgets.map.setTooltip("The world map. Only previously explored areas are shown there. Your current position is displaying as a white dot. Different colors means different Realms.");
+	    this.statsDialog.widgets.map.setTooltip("The world map. Only previously explored areas are shown there. Your current position is displaying as a white dot. Different colors means different Realms. Artefacts are displaying as dark colored spots.");
 	    this.statsDialog.widgets.constitutionup.callback = this.constitutionUpClickHandler;
 	    this.statsDialog.widgets.painresup.callback = this.painResistanceUpClickHandler;
 	    this.statsDialog.widgets.arouseup.callback = this.arousalBoostUpClickHandler;
@@ -338,29 +338,29 @@ package Engine.Stats {
 	    this.statsDialog.update();
 	}
 
-	private function constitutionUpClickHandler(event:MouseEvent):void {
-	    if (this.pointPool > 0) {
+	public function constitutionUpClickHandler(event:MouseEvent = null):void {
+	    if (this.pointPool > 0 && this.constitutionLevel < 50) {
 		this.constitution = this.constitutionLevel + 1;
 		this.pointPool -= 1;
 	    }
 	}
 
-	private function painResistanceUpClickHandler(event:MouseEvent):void {
-	    if (this.pointPool > 0) {
+	public function painResistanceUpClickHandler(event:MouseEvent = null):void {
+	    if (this.pointPool > 0 && this.painResistanceLevel < 50) {
 		this.painResistance = this.painResistanceLevel + 1;
 		this.pointPool -= 1;
 	    }
 	}
 
-	private function arousalBoostUpClickHandler(event:MouseEvent):void {
-	    if (this.pointPool > 0) {
+	public function arousalBoostUpClickHandler(event:MouseEvent = null):void {
+	    if (this.pointPool > 0 && this.arousalBoostLevel < 50) {
 		this.arousalBoost = this.arousalBoostLevel + 1;
 		this.pointPool -= 1;
 	    }
 	}
 
-	private function speedUpClickHandler(event:MouseEvent):void {
-	    if (this.pointPool > 0) {
+	public function speedUpClickHandler(event:MouseEvent = null):void {
+	    if (this.pointPool > 0 && this.speedLevel < 50) {
 		this.speed = this.speedLevel + 1;
 		this.pointPool -= 1;
 	    }

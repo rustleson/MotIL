@@ -11,9 +11,9 @@
 [+]         - better formula for changing colors
 [+]         - better formula for mixing colors
 [+]     + purity/corruption scale [-1, +1]
-[ ]     + 8 artifacts stats
-[ ]         - slot attached [or none]
-[ ]         - level of use
+[+]     + 8 artifacts stats
+[+]         - slot attached [or none]
+[+]         - level of use
 [ ]     + basic stats
 [+]         - tribe / hair color / eyes color / hair length
 [+]         - pain stats
@@ -51,8 +51,8 @@
 [+]	+ improved hair physics
 [+]	+ improved breast physics
 [ ]	+ face emotions (depending on pain/pleasure) [optional]
-[ ]	+ screen blinking on orgasm (white) and death (black)
-[ ]	+ death processing
+[+]	+ screen blinking on orgasm (white) and death (black)
+[+]	+ death processing
 
 [ ] * protagonist movement
 [ ]     + poses / impulses
@@ -73,7 +73,7 @@
 [ ]         - customize eyes color
 [+]     + stats/upgrade
 [ ]     + dialogs / messages
-[ ]         - generic dialog system
+[+]         - generic dialog system
 [ ]         - entrance greeting
 [ ]         - tutorial
 [ ]         - conditional rooms terms
@@ -95,10 +95,10 @@
 [+]     + terrain generation
 [+]     + dfs maze generation
 [ ]     + randomized prim's algorithm for maze [optional]
-[ ]     + guaranteed smooth leveling 
+[+]     + guaranteed smooth leveling 
 [ ]     + specific rooms
 [+]         - altar room(s)
-[ ]         - artefact room(s)
+[+]         - artefact room(s)
 [ ]         - quest room(s)
 [ ]         - monster room(s)
 [ ]         - conditional room(s)

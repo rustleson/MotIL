@@ -12,7 +12,7 @@ package Engine.Worlds {
     import Engine.Dialogs.Widgets.MapWidget;
     import Engine.Objects.*;
     import Engine.Stats.*;
-    import Engine.Dialogs.MainStatsDialog;
+    import Engine.Dialogs.*;
     import Engine.Dialogs.Widgets.*;
     import flash.events.Event;
     import flash.display.*;
@@ -42,6 +42,7 @@ package Engine.Worlds {
 	private var startingPositions:Object = new Object();
 	private var terrHeights:Array = new Array();
 	private var interRealmTransitions:Object = new Object();
+	public var helpDialog:HelpDialog;
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
 			
@@ -68,6 +69,10 @@ package Engine.Worlds {
 	    this.stats.statsDialog.widgets.map.map = this.map;
 	    this.stats.updateStats();
 	    this.stats.statsDialog.rebuild();
+	    this.helpDialog = new HelpDialog(appWidth, appHeight);
+	    //this.helpDialog.sprite = Main.helpSprite;
+	    this.helpDialog.rebuild();
+	    //this.helpDialog.toggleHide();
 	    world.SetGravity(new b2Vec2(0, 2.0));
 			
 	    // backgrounds
@@ -170,12 +175,22 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.pacifier.needUpdate = true;
 		this.stats.statsDialog.widgets.analTentacle.needUpdate = true;
 	    }
-	    if (this.tenorion != null && Input.isKeyReleased(220)) {
+	    if (this.tenorion != null && Input.isKeyReleased(220)) { // key "\"
 		this.tenorion.muteSound = !this.tenorion.muteSound;
 		if (this.tenorion.muteSound)
 		    this.tenorion.driver.stop();
 		else
 		    this.tenorion.driver.play();
+	    }
+	    if (this.tenorion != null && Input.isKeyReleased(219)) { // key "["
+		this.tenorion.driver.volume = Math.max(0, this.tenorion.driver.volume - 0.1);
+	    }
+	    if (this.tenorion != null && Input.isKeyReleased(221)) { // key "]"
+		this.tenorion.driver.volume = Math.min(1, this.tenorion.driver.volume + 0.1);
+	    }
+	    this.helpDialog.update();
+	    if (Input.isKeyPressed(191) && Input.getKeyHold(16) > 0 || Input.isKeyPressed(27) && this.helpDialog.state == 'visible') {
+		this.helpDialog.toggleHide();
 	    }
 	}
 

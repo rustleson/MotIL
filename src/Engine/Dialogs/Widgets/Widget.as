@@ -6,13 +6,19 @@ package Engine.Dialogs.Widgets {
 
     public class Widget {
 
+	[Embed(source="/Assets/Sailor.ttf", fontFamily="Huge", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const HUGE_FONT:String;
+
+	[Embed(source="/Assets/Reaction.ttf", fontFamily="Large", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const LARGE_FONT:String;
+
 	[Embed(source="/Assets/GalaxyEB.ttf", fontFamily="Medium", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const MEDIUM_FONT:String;
 
 	[Embed(source="/Assets/Galaxy.ttf", fontFamily="Small", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const SMALL_FONT:String;
 
-	[Embed(source="/Assets/Harmony.ttf", fontFamily="Tiny", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	[Embed(source="/Assets/NeostandardExtended.ttf", fontFamily="Tiny", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const TINY_FONT:String;
 
 	public var sprite:Sprite; 

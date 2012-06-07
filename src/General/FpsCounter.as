@@ -88,7 +88,10 @@ package General{
 			avgCount--;
 			oldT = getTimer();
 			
-			textBox3.text = Math.round(System.totalMemory/(1024*1024)) + " MB used"
+			textBox3.text = Math.round(System.totalMemory/(1024*1024)) + " MB used";
+			textBox3.appendText("\nSeed: " + Main.seed);
+			textBox3.appendText("\nVersion: " + Main.version);
+			textBox3.appendText("\n<F8> to hide");
 			
 		}
 		
@@ -98,7 +101,7 @@ package General{
 			var f1:uint = newT-oldT2;
 			mfpsCount2 += f1;
 			if (avgCount2 < 1){
-				textBox2.text = String("Physics step: "+Math.round(mfpsCount2/30)+" ms (" +Math.round(1000/(mfpsCount2/30))+" fps)");
+				textBox2.text = String("Physics: "+Math.round(mfpsCount2/30)+" ms (" +Math.round(1000/(mfpsCount2/30))+" fps)");
 				avgCount2 = 30;
 				mfpsCount2 = 0;
 			}

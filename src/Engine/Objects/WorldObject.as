@@ -49,10 +49,12 @@ package Engine.Objects {
 	}
 
 	public function toggleMotors(onoff:Boolean):void {
-	    for (var joint:Object in joints) {
-		if (targetAngles.hasOwnProperty(joint))
-		    joints[joint].EnableMotor(onoff);
-	    }		    
+	    if (Input.getKeyHold(88) <= 0) {
+		for (var joint:Object in joints) {
+		    if (targetAngles.hasOwnProperty(joint))
+			joints[joint].EnableMotor(onoff);
+		}		    
+	    }
 	}
 		
 	public function update():void{

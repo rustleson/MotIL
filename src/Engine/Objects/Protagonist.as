@@ -685,37 +685,88 @@ package Engine.Objects {
 
 	public override function update():void{
 	    var repeatRate:int = 4;
+	    if (Input.isKeyPressed(81) || Input.isKeyDown(81) && Input.getKeyHold(81) % repeatRate == 0){ // Q
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: 120 / (180/Math.PI),
+				    jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: 10 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 30 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
+		bodies.stomach.ApplyImpulse(new b2Vec2(-this.stats.speed / 1.42, -this.stats.speed / 1.42), bodies.stomach.GetWorldCenter());
+	    }
 	    if (Input.isKeyPressed(65) || Input.isKeyDown(65) && Input.getKeyHold(65) % repeatRate == 0){ // A
-		targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
-	                        jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: 120 / (180/Math.PI),
-	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: 10 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 30 / (180/Math.PI) };
-		timeout = defaultTimeout;
-		toggleMotors(true);
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: 120 / (180/Math.PI),
+				    jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: 10 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 30 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
 		bodies.stomach.ApplyImpulse(new b2Vec2(-this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
+	    if (Input.isKeyPressed(90) || Input.isKeyDown(90) && Input.getKeyHold(90) % repeatRate == 0){ // Z
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: -45 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
+				    jointUpperLegL: 70 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -15 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
+		bodies.hips.ApplyImpulse(new b2Vec2(-this.stats.speed / 1.42, this.stats.speed / 1.42), bodies.hips.GetWorldCenter());
+	    }
+	    if (Input.isKeyPressed(67) || Input.isKeyDown(67) && Input.getKeyHold(67) % repeatRate == 0){ // C
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: 45 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
+				    jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: -70 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 15 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
+		bodies.hips.ApplyImpulse(new b2Vec2(this.stats.speed / 1.42, this.stats.speed / 1.42), bodies.hips.GetWorldCenter());
+	    }
 	    if (Input.isKeyPressed(83) || Input.isKeyDown(83) && Input.getKeyHold(83) % repeatRate == 0){ // S
-		targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
-	                        jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
-	                        jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
-		timeout = defaultTimeout;
-		toggleMotors(true);
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: 0 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: 45 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: 35 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
+				    jointUpperLegL: 110 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -115 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
 		bodies.hips.ApplyImpulse(new b2Vec2(0, this.stats.speed), bodies.hips.GetWorldCenter());
 	    }
+	    if (Input.isKeyPressed(69) || Input.isKeyDown(69) && Input.getKeyHold(69) % repeatRate == 0){ // E
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: 10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: -120 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
+				    jointUpperLegL: -10 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -30 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
+		bodies.stomach.ApplyImpulse(new b2Vec2(this.stats.speed / 1.42, -this.stats.speed / 1.42), bodies.stomach.GetWorldCenter());
+	    }
 	    if (Input.isKeyPressed(68) || Input.isKeyDown(68) && Input.getKeyHold(68) % repeatRate == 0){ // D
-		targetAngles = {jointHead: 10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
-	                        jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: -120 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
-	                        jointUpperLegL: -10 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -30 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
-		timeout = defaultTimeout;
-		toggleMotors(true);
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: 10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: -45 / (180/Math.PI), jointLowerArmL: -120 / (180/Math.PI), jointLowerArmR: -35 / (180/Math.PI),
+				    jointUpperLegL: -10 / (180/Math.PI), jointUpperLegR: -110 / (180/Math.PI), jointLowerLegL: -30 / (180/Math.PI), jointLowerLegR: 115 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
 		bodies.stomach.ApplyImpulse(new b2Vec2(this.stats.speed, 0), bodies.stomach.GetWorldCenter());
 	    }
 	    if (Input.isKeyPressed(87) || Input.isKeyDown(87) && Input.getKeyHold(87) % repeatRate == 0){ // W
-		targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
-	                        jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: -25 / (180/Math.PI), jointLowerArmR: 25 / (180/Math.PI),
-	                        jointUpperLegL: 10 / (180/Math.PI), jointUpperLegR: -10 / (180/Math.PI), jointLowerLegL: -10 / (180/Math.PI), jointLowerLegR: 10 / (180/Math.PI) };
-		timeout = defaultTimeout;
-		toggleMotors(true);
+		if (Input.getKeyHold(88) <=0) {
+		    targetAngles = {jointHead: -10 / (180/Math.PI), jointNeck: 0 / (180/Math.PI), jointStomach: 0 / (180/Math.PI), jointHips: 0 / (180/Math.PI),
+				    jointUpperArmL: -65 / (180/Math.PI), jointUpperArmR: 65 / (180/Math.PI), jointLowerArmL: -25 / (180/Math.PI), jointLowerArmR: 25 / (180/Math.PI),
+				    jointUpperLegL: 10 / (180/Math.PI), jointUpperLegR: -10 / (180/Math.PI), jointLowerLegL: -10 / (180/Math.PI), jointLowerLegR: 10 / (180/Math.PI) };
+		    timeout = defaultTimeout;
+		    toggleMotors(true);
+		}
 		bodies.shoulders.ApplyImpulse(new b2Vec2(0, -this.stats.speed), bodies.shoulders.GetWorldCenter());
+	    }
+	    if (Input.isKeyReleased(88)){ // X
+		    toggleMotors(false);
 	    }
 	    if (Input.isKeyPressed(77)){ // M
 		if (!this.stats.anusSlot.slot.isFree) {
@@ -830,6 +881,30 @@ package Engine.Objects {
 		    this.stats.takeExp(this.stats.exp.tnl + 1);
 		    this.rebuild();
 		}
+	    }
+	    if (Input.isKeyPressed(9)){ // TAB
+		if (this.stats.statsDialog.widgets.map.state != 'large') {
+		    this.stats.statsDialog.widgets.map.large();
+		    this.stats.statsDialog.widgets.mappanel.large();
+		} else {
+		    this.stats.statsDialog.widgets.map.small();
+		    this.stats.statsDialog.widgets.mappanel.small();
+		}
+	    }
+	    if (Input.isKeyPressed(89)){ // Y
+		this.stats.arousalBoostUpClickHandler();
+	    }	    
+	    if (Input.isKeyPressed(85)){ // U
+		this.stats.painResistanceUpClickHandler();
+	    }	    
+	    if (Input.isKeyPressed(79)){ // O
+		this.stats.constitutionUpClickHandler();
+	    }	    
+	    if (Input.isKeyPressed(76)){ // L
+		this.stats.speedUpClickHandler();
+	    }	    
+	    if (Input.isKeyPressed(119)) {
+		Main.fpsCounter.visible = !Main.fpsCounter.visible;
 	    }
 	    this.stats.timeStep();
 	    super.update();

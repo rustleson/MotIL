@@ -57,7 +57,7 @@ package Engine.Dialogs.Widgets {
 		this.width = this.widthSmall + (this.widthLarge - this.widthSmall) * (ratio - 1);
 		this.height = this.heightSmall + (this.heightLarge - this.heightSmall) * (ratio - 1);
 		this.titleText.width = (this.titleText.textWidth + 3) * (ratio - 1);
-		this.titleText.height = this.titleText.textHeight + 2;
+		this.titleText.height = this.titleText.textHeight + 4;
 		this.titleText.x = 10;
 		this.titleText.y = -6;
 	    }
