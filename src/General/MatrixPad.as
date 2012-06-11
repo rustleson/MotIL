@@ -23,7 +23,12 @@ package General {
 	    for (i=0; i<20; i++) sequencesFill[i] = 0;
 	    for (i=0; i<12; i++) {
 		var t:int = Math.floor((Math.random() * 16 - tendence) * 0.23 + tendence) % 20;
-		sequences[t] |= 1<<Math.floor(Math.random() * 16);
+		var n:int = Math.floor(Math.random() * 16);
+		var tg:int = Math.floor(t / 4) * 4;
+		while ((sequences[tg] & 1<<n) || (sequences[tg + 1] & 1<<n) || (sequences[tg + 2] & 1<<n) || (sequences[tg + 3] & 1<<n)) {
+		    n = (n + 1) % 20;
+		}
+		sequences[t] |= 1<<n;
 		sequencesFill[t] = sequences[t];
 	    }
 	    for (i=0; i<6; i++) {

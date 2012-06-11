@@ -25,6 +25,17 @@ package Engine.Stats {
 	    this._description = $description;
 	}
 
+	public override function save():Object {
+	    var saveObj:Object = super.save();
+	    saveObj['obtained'] = this.obtained;
+	    return saveObj;
+	}
+
+	public override function load(saveObj:Object):void {
+	    super.load(saveObj);
+	    this.obtained = saveObj['obtained'];
+	}
+
 	public function set name(n:String):void {
 	    this._name = n;
 	}

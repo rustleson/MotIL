@@ -21,6 +21,27 @@ package Engine.Stats {
 	    this.buildValue();
 	}
 
+	public function save():Object {
+	    var saveObj:Object = {'level': this._level,
+				  'exp': this._exp,
+				  'fromValue': this._fromValue,
+				  'toValue': this._toValue,
+				  'progressRate': this._progressRate
+				};
+	    return saveObj;
+	}
+
+	public function load(saveObj:Object):void {
+	    if (saveObj.hasOwnProperty('level')) {
+		this._level = saveObj.level;
+		this._exp = saveObj.exp;
+		this._fromValue = saveObj.fromValue;
+		this._toValue = saveObj.toValue;
+		this._progressRate = saveObj.progressRate;
+		this.buildValue();
+	    }
+	}
+
 	public function getValue(from:Number, to:Number):Number {
 	    return from + (to - from) * (this._level - 1) / 49;
 	}

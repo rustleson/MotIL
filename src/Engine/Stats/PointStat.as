@@ -14,6 +14,23 @@ package Engine.Stats {
 	    this.buildValue();
 	}
 
+	public function save():Object {
+	    var saveObj:Object = {'level': this._level,
+				  'fromValue': this._fromValue,
+				  'toValue': this._toValue
+				};
+	    return saveObj;
+	}
+
+	public function load(saveObj:Object):void {
+	    if (saveObj.hasOwnProperty('level')) {
+		this._level = saveObj.level;
+		this._fromValue = saveObj.fromValue;
+		this._toValue = saveObj.toValue;
+		this.buildValue();
+	    }
+	}
+
 	public function get value():Number {
 	    return this._value;
 	}

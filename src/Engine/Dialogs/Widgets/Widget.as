@@ -9,6 +9,9 @@ package Engine.Dialogs.Widgets {
 	[Embed(source="/Assets/Sailor.ttf", fontFamily="Huge", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const HUGE_FONT:String;
 
+	[Embed(source="/Assets/Estudio.ttf", fontFamily="LargeEstudio", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const LARGE2_FONT:String;
+
 	[Embed(source="/Assets/Reaction.ttf", fontFamily="Large", embedAsCFF = "false", advancedAntiAliasing = "true")]
 	public static const LARGE_FONT:String;
 

@@ -117,7 +117,8 @@ package Engine.Worlds {
 		    sprite.addChild(objSprite);
 		}
 	    }
-	    stats.updateStats();
+	    if (stats.statsDialog != null)
+		stats.updateStats();
 	    var painPercent:Number = this.stats.pleasure.value / this.stats.pleasure.max;
 	    var pleasurePercent:Number = this.stats.pain.value / this.stats.pain.max;
 	    if (painPercent > 0.5 || pleasurePercent > 0.5) {

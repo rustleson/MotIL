@@ -51,14 +51,14 @@ package Engine.Dialogs.Widgets {
 	    var ratio:Number = this.transValue2;
 	    var tx:int = this.x;
 	    var ty:int = this.y;
-	    var curX:int = 0;
+	    var curX:int = 4;
 	    var i:int = 0;
 	    for each (var titleText:TextField in this.topicTexts) {
 		titleText.width = (titleText.textWidth + 3) * ratio / 2;
 		titleText.height = titleText.textHeight + 2;
 		titleText.x = curX;
 		titleText.y = -6;
-		curX += titleText.width + 5;
+		curX += titleText.width + 9;
 		if (i == this.dialog.activeTopic) {
 		    titleText.setTextFormat(this.activeTitleFormat);
 		} else {
@@ -77,15 +77,15 @@ package Engine.Dialogs.Widgets {
 	    this.sprite.graphics.clear();
 	    i = 0;
 	    for each (titleText in this.topicTexts) {
-		titleText.x = Math.round(tx + titleText.x);
+		titleText.x = Math.round(tx + titleText.x + 2);
 		titleText.y = Math.round(ty + titleText.y);
 		this.sprite.graphics.lineStyle(0, 0, 0);
 		if (i == this.dialog.activeTopic) {
 		    this.sprite.graphics.beginFill(Utils.colorLight(this.bgColor, 0.1), 1);
-		    this.sprite.graphics.drawRoundRect(titleText.x, titleText.y + 1, titleText.width, titleText.height + 4, 5, 5);
+		    this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height + 4, 5, 5);
 		} else {
 		    this.sprite.graphics.beginFill(this.bgColor, 1);
-		    this.sprite.graphics.drawRoundRect(titleText.x, titleText.y + 1, titleText.width, titleText.height, 5, 5);
+		    this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height, 5, 5);
 		}
 		this.sprite.graphics.endFill();
 		i++

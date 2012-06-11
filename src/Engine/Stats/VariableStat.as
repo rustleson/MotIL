@@ -25,6 +25,10 @@ package Engine.Stats {
 	    this._curValue = Math.max(0, Math.min(this._maxValue, this._curValue));
 	}
 
+	public function set exactValue(v:Number):void {
+	    this._curValue = v;
+	}
+
 	public function get max():Number {
 	    return this._maxValue;
 	}
@@ -37,6 +41,24 @@ package Engine.Stats {
 	    v = Math.max(0, Math.min(v, this._curValue));
 	    this.value -= v;
 	    return v;
+	}
+
+	public function save():Object {
+	    var saveObj:Object = {'curValue': this._curValue,
+				  'maxValue': this._maxValue,
+				  'decRate': this.decRate,
+				  'incRate': this.incRate
+				};
+	    return saveObj;
+	}
+
+	public function load(saveObj:Object):void {
+	    if (saveObj.hasOwnProperty('curValue')) {
+		this._curValue = saveObj.curValue;
+		this._maxValue = saveObj.maxValue;
+		this.decRate = saveObj.decRate;
+		this.incRate = saveObj.incRate;
+	    }
 	}
 
     }

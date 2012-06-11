@@ -38,6 +38,8 @@ package Engine.Stats {
 	public var death:Boolean = false;
 	public var buddhaMode:Boolean = false;
 	public var backgroundDetails:int = BG_HIGH; 
+	public var ageConfirmed:Boolean = false; 
+	public var generated:Boolean = false; 
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -166,6 +168,7 @@ package Engine.Stats {
 		this.takeExp(this.pleasure.max); // ?multiply on level?
 		this.pleasure.value *= 0.2;
 		this.statsDialog.widgets.log.show("Orgasm experience!");
+		this.save();
 	    }
 	    if (this.maxPleasure.level > l) {
 		this.statsDialog.widgets.log.show("Your orgasm point is improving to level " + this.maxPleasure.level.toString() + ".");
@@ -187,6 +190,15 @@ package Engine.Stats {
 		    this.alignment +=  ((this.alignment > 0) ? -1 : 1) * slot.pleasure / 10000;
 		}
 		protagonist.color = this.mixedElementsColor;
+		protagonist.bodyUserData.auraColor = this.auraColor;
+		protagonist.bodyUserData.auraIntencity = this.auraIntencity;
+		protagonist.headUserData.auraColor = this.auraColor;
+		protagonist.headUserData.auraIntencity = this.auraIntencity;
+		protagonist.handLUserData.auraColor = this.auraColor;
+		protagonist.handLUserData.auraIntencity = this.auraIntencity;
+		protagonist.handRUserData.auraColor = this.auraColor;
+		protagonist.handRUserData.auraIntencity = this.auraIntencity;
+		protagonist.wasUpdated = true;
 		if (obj.hasOwnProperty('blissDonated') && obj.hasOwnProperty('artefact') && obj.artefact != null && !obj.artefact.obtained && obj.stats) {
 		    if (this.space >= stats.space && this.water >= stats.water && this.earth >= stats.earth && this.fire >= stats.fire && this.air >= stats.air && 
 			(obj.artefact.nameReal == 'Chastity Belt' && this.alignment == 1 || obj.artefact.nameReal == 'Anal Tentacle' && 
@@ -399,6 +411,101 @@ package Engine.Stats {
 	    super.air = v;
 	    if (this.air == 1 && valBefore != 1 && this.statsDialog != null)
 		this.statsDialog.widgets.log.show("Your are made of pure Air now.");
+	}
+
+	public override function set alignment(v:Number):void {
+	    var valBefore:Number = this.alignment;
+	    super.alignment = v;
+	    if (this.alignment == 1 && valBefore != 1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are totally Pure now.");
+	    if (this.alignment == -1 && valBefore != -1 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are totally Corrupted now.");
+	    if (Math.round(this.alignment * 100) == 0 && Math.round(valBefore) != 0 && this.statsDialog != null)
+		this.statsDialog.widgets.log.show("Your are of perfect Balance now.");
+	}
+	
+	public function save():void {
+	    if (this.buddhaMode)
+		return;
+	    var saveObj:Object = {'ageConfirmed': this.ageConfirmed,
+				  'space': this._space,
+				  'water': this._water,
+				  'earth': this._earth,
+				  'fire': this._fire,
+				  'air': this._air,
+				  'alignment': this._alignment,
+				  'tendencyRatio': this._tendencyRatio,
+				  'alignmentTendency': this._alignmentTendency,
+				  'pain': this._pain.save(),
+				  'pleasure': this._pleasure.save(),
+				  'expPool': this._expPool.save(),
+				  'pointPool': this._pointPool.save(),
+				  'level': this._level.save(),
+				  'maxPain': this._maxPain.save(),
+				  'maxPleasure': this._maxPleasure.save(),
+				  'constitution': this._constitution.save(),
+				  'painResistance': this._painResistance.save(),
+				  'arousalBoost': this._arousalBoost.save(),
+				  'speed': this._speed.save(),
+				  'hairColor': this.hairColor,
+				  'hairLength': this.hairLength,
+				  'eyesColor': this.eyesColor,
+				  'tribe': this._tribe,
+				  'vagina': this.vaginaSlot.save(),
+				  'anus': this.anusSlot.save(),
+				  'mouth': this.mouthSlot.save(),
+				  'leftHand': this.leftHandSlot.save(),
+				  'rightHand': this.rightHandSlot.save(),
+				  'artefacts': {}
+				};
+	    for (var key:String in this.artefacts) {
+		saveObj.artefacts[key] = artefacts[key].save();
+	    }
+	    Main.save.data['stats'] = saveObj;
+	}
+
+	public function load():Boolean {
+	    if (Main.save.data.hasOwnProperty('stats')) {
+		var saveObj:Object = Main.save.data.stats;
+		this._space = saveObj.space;
+		this._water = saveObj.water;
+		this._earth = saveObj.earth;
+		this._fire = saveObj.fire;
+		this._air = saveObj.air;
+		this._alignment = saveObj.alignment;
+		this._alignmentTendency = saveObj.alignmentTendency;
+		this._tendencyRatio = saveObj.tendencyRatio;
+		this._pain.load(saveObj.pain);
+		this._pleasure.load(saveObj.pleasure);
+		this._expPool.load(saveObj.expPool);
+		this._pointPool.load(saveObj.pointPool);
+		this._level.load(saveObj.level);
+		this._maxPain.load(saveObj.maxPain);
+		this._maxPleasure.load(saveObj.maxPleasure);
+		this._constitution.load(saveObj.constitution);
+		this._painResistance.load(saveObj.painResistance);
+		this._arousalBoost.load(saveObj.arousalBoost);
+		this._speed.load(saveObj.speed);
+		this.hairColor = saveObj.hairColor;
+		this.hairLength = saveObj.hairLength;
+		this.eyesColor = saveObj.eyesColor;
+		this._tribe = saveObj.tribe;
+		this.ageConfirmed = saveObj.ageConfirmed;
+		if (saveObj.hasOwnProperty('artefacts')) {
+		    for (var key:String in this.artefacts) {
+			artefacts[key].load(saveObj.artefacts[key]);
+		    }
+		}
+		if (saveObj.hasOwnProperty('vagina')) {
+		    this.vaginaSlot.load(saveObj.vagina, this.artefacts);
+		    this.anusSlot.load(saveObj.anus, this.artefacts);
+		    this.mouthSlot.load(saveObj.mouth, this.artefacts);
+		    this.leftHandSlot.load(saveObj.leftHand, this.artefacts);
+		    this.rightHandSlot.load(saveObj.rightHand, this.artefacts);
+		}
+		return true;
+	    }
+	    return false;
 	}
 
     }

@@ -68,6 +68,7 @@ package Engine.Objects {
 		this.connectedSlot.isReady = false;
 		this.connectedSlot.isFree = false;
 		if (this.sensorFixture) this.sensorFixture.SetSensor(true);
+		Main.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus6'];
 		return true;
 	    } else {
 		return false;
@@ -92,6 +93,7 @@ package Engine.Objects {
 		this.connectedSlot.isFree = true;
 		this.connectedSlot = null;
 		if (this.sensorFixture) this.sensorFixture.SetSensor(false);
+		Main.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus3'];
 		return true;
 	    } else {
 		return false;

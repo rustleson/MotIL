@@ -52,7 +52,7 @@ package General {
             
             // set voices from preset
             var percusVoices:Array = presetVoice["valsound.percus"];
-            voices[0] = percusVoices[0];  // bass drum
+            voices[0] = presetVoice["valsound.percus3"];  // bass drum
             voices[1] = percusVoices[27]; // snare drum
             voices[2] = percusVoices[16]; // close hihat
             voices[3] = percusVoices[22]; // open hihat
@@ -77,7 +77,8 @@ package General {
 	    notes = notes1;
 	    //filter.control(1, 0.5);
 	    //driver.effector.slot0 = [filter];
-            driver.play(null, false);
+	    if (!this.muteSound)
+		driver.play(null, false);
         }
         
         

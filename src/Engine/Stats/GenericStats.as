@@ -2,32 +2,32 @@ package Engine.Stats {
 	
     public class GenericStats {
 
-	private var _space:Number = 0; // [0, 1]
-	private var _water:Number = 0; // [0, 1]
-	private var _earth:Number = 0; // [0, 1]
-	private var _fire:Number = 0; // [0, 1]
-	private var _air:Number = 0; // [0, 1]
-	private var _alignment:Number = 0; // [-1, 1] 
-	private var _alignmentTendency: Number = 0; // [-1, 1]
-	private var _tendencyRatio: Number = 1; // must be > 0 
+	protected var _space:Number = 0; // [0, 1]
+	protected var _water:Number = 0; // [0, 1]
+	protected var _earth:Number = 0; // [0, 1]
+	protected var _fire:Number = 0; // [0, 1]
+	protected var _air:Number = 0; // [0, 1]
+	protected var _alignment:Number = 0; // [-1, 1] 
+	protected var _alignmentTendency: Number = 0; // [-1, 1]
+	protected var _tendencyRatio: Number = 1; // must be > 0 
 	private var POINTS_EACH_LEVEL:int = 2;
 
 	// variable stats
-	private var _pain:VariableStat = new VariableStat(); 
-	private var _pleasure:VariableStat = new VariableStat(); 
+	protected var _pain:VariableStat = new VariableStat(); 
+	protected var _pleasure:VariableStat = new VariableStat(); 
 	protected var _expPool:VariableStat = new VariableStat(); 
-	private var _pointPool:VariableStat = new VariableStat(); 
+	protected var _pointPool:VariableStat = new VariableStat(); 
 
 	// experience stats
-	private var _level:ExpStat = new ExpStat(); 
-	private var _maxPain:ExpStat = new ExpStat(100, 30, 300); 
-	private var _maxPleasure:ExpStat = new ExpStat(100, 30, 300); 
+	protected var _level:ExpStat = new ExpStat(); 
+	protected var _maxPain:ExpStat = new ExpStat(100, 30, 300); 
+	protected var _maxPleasure:ExpStat = new ExpStat(100, 30, 300); 
 	
 	// point stats
-	private var _constitution:PointStat = new PointStat(1, 50); 
-	private var _painResistance:PointStat = new PointStat(1, 0.4); 
-	private var _arousalBoost:PointStat = new PointStat(1, 2.5); 
-	private var _speed:PointStat = new PointStat(1, 3); 
+	protected var _constitution:PointStat = new PointStat(1, 50); 
+	protected var _painResistance:PointStat = new PointStat(1, 0.4); 
+	protected var _arousalBoost:PointStat = new PointStat(1, 2.5); 
+	protected var _speed:PointStat = new PointStat(1, 3); 
 	
 	public static const SPACE_COLOR:Array = [0xDD, 0xD7, 0xD0];
 	public static const WATER_COLOR:Array = [0x00, 0x22, 0xCC];

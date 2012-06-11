@@ -18,6 +18,29 @@ package Engine.Stats {
 	    this.artefactAttached = new ArtefactStat()
 	}
 
+	public function save():Object {
+	    var saveObj:Object = {'stretchedDiameter': this.stretchedDiameter.save(),
+				  'stretchedLength': this.stretchedLength.save(),
+				  'name': this.name,
+				  'artefactAttached': this.artefactAttached.nameReal
+				};
+	    return saveObj;
+	}
+
+	public function load(saveObj:Object, artefacts:Object):void {
+	    if (saveObj.hasOwnProperty('stretchedDiameter')) {
+		this.stretchedDiameter.load(saveObj.stretchedDiameter);
+		this.stretchedLength.load(saveObj.stretchedLength);
+		this.name = saveObj.name;
+		for each(var artefact:ArtefactStat in artefacts) {
+		    if (artefact.nameReal == saveObj.artefactAttached) {
+			artefact.attach(this);
+			break;
+		    }
+		}
+	    }
+	}
+
 	public function get painD():Number {
 	    var pos:Number = this.currentPosition;
 	    var d:Number = (this.slot != null && this.slot.connectedSlot != null) ? this.slot.connectedSlot.getDiameter(pos) : 0;

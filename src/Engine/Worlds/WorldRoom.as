@@ -90,6 +90,20 @@ package Engine.Worlds {
 	    // secondary function to override if you wanna put some additional init stuff
 	}
 
+	public function save():Object {
+	    var saveObj:Object = {'explored': this.explored,
+				  'visited': this.visited
+				};
+	    return saveObj;
+	}
+
+	public function load(saveObj:Object):void {
+	    if (saveObj.hasOwnProperty('explored')) {
+		this.explored = saveObj.explored;
+		this.visited = saveObj.visited;
+	    }
+	}
+
     }
 	
 }

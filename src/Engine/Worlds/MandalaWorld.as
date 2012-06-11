@@ -7,8 +7,7 @@ package Engine.Worlds {
     import Box2D.Dynamics.Contacts.*;
     import Box2D.Common.*;
     import Box2D.Common.Math.*;
-    import General.Input;
-    import General.Rndm;
+    import General.*;
     import Engine.Dialogs.Widgets.MapWidget;
     import Engine.Objects.*;
     import Engine.Stats.*;
@@ -44,8 +43,8 @@ package Engine.Worlds {
 	private var interRealmTransitions:Object = new Object();
 	public var helpDialog:HelpDialog;
 
-	public function MandalaWorld(stats:ProtagonistStats, seed:uint){
-			
+	public function MandalaWorld(stats:ProtagonistStats, seed:uint, $tenorion:Tenorion = null, loadNeeded:Boolean = true){
+	    this.tenorion = $tenorion;
 	    secondaryBgSprite = new Sprite();
 	    secondaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
 	    sprite.addChild(secondaryBgSprite);
@@ -61,6 +60,9 @@ package Engine.Worlds {
 	    this.roomHeight = 1000 / this.physScale;
 	    this.stats = stats;
 	    this.seed = seed;
+	    if (Main.save.data.hasOwnProperty('world')) {
+		this.seed = Main.save.data.world.seed;
+	    }
 	    Rndm.seed = seed;
 	    this.stats.statsDialog = new MainStatsDialog(appWidth, appHeight);
 	    this.stats.statsDialog.sprite = Main.statsSprite;
@@ -71,6 +73,8 @@ package Engine.Worlds {
 	    this.stats.statsDialog.rebuild();
 	    this.helpDialog = new HelpDialog(appWidth, appHeight);
 	    //this.helpDialog.sprite = Main.helpSprite;
+	    if (loadNeeded)
+		this.load();
 	    this.helpDialog.rebuild();
 	    //this.helpDialog.toggleHide();
 	    world.SetGravity(new b2Vec2(0, 2.0));
@@ -83,7 +87,15 @@ package Engine.Worlds {
 	    var sType: uint = this.startType;
 
 	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[sType] + " Realm.";
-	    objects['protagonist'] = new Protagonist(world, this.startingPositions[sType].x * this.roomWidth + 250 / physScale, this.startingPositions[sType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+	    
+	    if (this.curRoomX >= 0 && this.curRoomY >= 0) {
+		objects['protagonist'] = new Protagonist(world, this.curRoomX * this.roomWidth + 250 / physScale, this.curRoomY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+		this.curRoomX = -1;
+		this.curRoomY = -1;
+		startMessage = "Incarnation is restored.";
+	    } else {
+		objects['protagonist'] = new Protagonist(world, this.startingPositions[sType].x * this.roomWidth + 250 / physScale, this.startingPositions[sType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+	    }
 	    objectsOrder = ['protagonist'];
 	    this.stats.statsDialog.widgets.log.show(startMessage);
 	    for each (var obj:WorldObject in objects) {
@@ -102,19 +114,19 @@ package Engine.Worlds {
 	}
 
 	public function get startType():uint {
-	    if (this.stats.space == 1) {
+	    if (this.stats.space > 0.5) {
 		return WorldRoom.SPACE_TYPE;
 	    }
-	    if (this.stats.water == 1) {
+	    if (this.stats.water > 0.5) {
 		return WorldRoom.WATER_TYPE;
 	    }
-	    if (this.stats.earth == 1) {
+	    if (this.stats.earth > 0.5) {
 		return WorldRoom.EARTH_TYPE;
 	    }
-	    if (this.stats.fire == 1) {
+	    if (this.stats.fire > 0.5) {
 		return WorldRoom.FIRE_TYPE;
 	    }
-	    if (this.stats.air == 1) {
+	    if (this.stats.air > 0.5) {
 		return WorldRoom.AIR_TYPE;
 	    }
 	    return 0;
@@ -151,6 +163,8 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.map.needUpdate = true;
 		this.stats.statsDialog.widgets.map.curX = this.curRoomX;
 		this.stats.statsDialog.widgets.map.curY = this.curRoomY;
+		this.save();
+		this.stats.save();
 	    }
 	    super.update();
 	    if (!this.stats.buddhaMode && Input.getKeyStroke(30) == "ARAHCEK") {
@@ -191,6 +205,10 @@ package Engine.Worlds {
 	    this.helpDialog.update();
 	    if (Input.isKeyPressed(191) && Input.getKeyHold(16) > 0 || Input.isKeyPressed(27) && this.helpDialog.state == 'visible') {
 		this.helpDialog.toggleHide();
+	    }
+	    if (Input.isKeyPressed(27)) {
+		this.stats.save();
+		this.save();
 	    }
 	}
 
@@ -540,6 +558,48 @@ package Engine.Worlds {
 		this.sprite.removeChildAt(0); 
 	    }
 	    this.stats.statsDialog.destroy();
+	}
+
+	public function save():void {
+	    if (this.stats.buddhaMode)
+		return;
+	    var saveObj:Object = {'soundVolume': this.tenorion.driver.volume,
+				  'muteSound': this.tenorion.muteSound,
+				  'version': Main.version,
+				  'seed': this.seed,
+				  'curX': this.curRoomX,
+				  'curY': this.curRoomY,
+				  'activeTopic': this.helpDialog.activeTopic,
+				  'map': new Array()
+				};
+	    for (var j:int = 0; j < this.mapHeight; j++) {
+		saveObj.map[j] = new Array();
+		for (var i:int = 0; i < this.mapWidth; i++) {
+		    saveObj.map[j].push(this.map[j][i].save());
+		}
+	    }
+	    Main.save.data['world'] = saveObj;
+	}
+
+	public function load():Boolean {
+	    if (Main.save.data.hasOwnProperty('world')) {
+		var saveObj:Object = Main.save.data.world;
+		this.tenorion.driver.volume = saveObj.soundVolume;
+		this.tenorion.muteSound = saveObj.muteSound;
+		if (!tenorion.muteSound)
+		    tenorion.driver.play();
+		this.seed = saveObj.seed;
+		this.curRoomX = saveObj.curX;
+		this.curRoomY = saveObj.curY;
+		this.helpDialog.activeTopic = saveObj.activeTopic;
+		for (var j:int = 0; j < this.mapHeight; j++) {
+		    for (var i:int = 0; i < this.mapWidth; i++) {
+			this.map[j][i].load(saveObj.map[j][i]);
+		    }
+		}
+		return true;
+	    }
+	    return false;
 	}
 
     }

@@ -2,9 +2,10 @@ package Engine.Dialogs.Widgets {
 	
     import General.Input;
     import flash.text.*;
+    import flash.events.MouseEvent;
     import Engine.Objects.Utils;
 
-    public class MessageWidget extends Widget{
+    public class QuestionWidget extends Widget{
 
 	public var panelColor:uint;
 	public var titleDY:int = 0;
@@ -21,13 +22,16 @@ package Engine.Dialogs.Widgets {
 	public var icon:Function;
 	private var titleText:TextField;
 	private var messageText:TextField;
+	public var answerText:TextField;
 	private var contText:TextField;
 	public var titleFormat:TextFormat;
 	public var messageFormat:TextFormat;
+	public var answerFormat:TextFormat;
 	private var contFormat:TextFormat;
 	private var messageQueue:Array;
+	public var submitted:Boolean = false;
 
-	public function MessageWidget(x:Number = 0, y:Number = 0, ws:Number = 0, hs:Number = 0, wl:Number = 0, hl:Number = 0, 
+	public function QuestionWidget(x:Number = 0, y:Number = 0, ws:Number = 0, hs:Number = 0, wl:Number = 0, hl:Number = 0, 
 				    c:uint = 0, right:Boolean = false, bottom:Boolean = false):void {
 	    super(x, y, title);
 	    this.messageQueue = new Array();
@@ -59,18 +63,31 @@ package Engine.Dialogs.Widgets {
 	    this.messageFormat.align = TextFieldAutoSize.LEFT;	    
 	    this.messageText.setTextFormat(this.messageFormat);
 	    this.sprite.addChild(this.messageText);
+	    // answer text
+	    this.answerText = new TextField();
+	    this.answerText.text = ' ';
+	    this.answerText.selectable = true;
+	    this.answerText.embedFonts = true;
+	    this.answerText.wordWrap = false;
+	    this.answerText.type = TextFieldType.INPUT;
+	    this.answerFormat = new TextFormat("Small", 8, this.textColor, 1);
+	    this.answerFormat.align = TextFieldAutoSize.LEFT;	    
+	    this.answerText.setTextFormat(this.answerFormat);
+	    this.sprite.addChild(this.answerText);
 	    // continue text
 	    this.contText = new TextField();
-	    this.contText.text = 'hit <space> to continue';
+	    this.contText.text = 'Continue';
 	    this.contText.selectable = false;
 	    this.contText.embedFonts = true;
-	    this.contText.wordWrap = true;
-	    this.contFormat = new TextFormat("Tiny", 8, Utils.colorDark(this.textColor,0.3));
+	    this.contText.wordWrap = false;
+	    this.contFormat = new TextFormat("Medium", 8, Utils.colorLight(this.textColor,0.5));
 	    this.contFormat.align = TextFieldAutoSize.RIGHT;	    
 	    this.contText.width = wl - 10;
 	    this.contText.x = x;
 	    this.contText.y = y;
 	    this.contText.setTextFormat(this.contFormat);
+	    this.contText.addEventListener(MouseEvent.CLICK, onContClick);
+	    this.answerText.addEventListener(MouseEvent.CLICK, onAnswerClick);
 	    this.sprite.addChild(this.contText);
 	}
 
@@ -85,17 +102,23 @@ package Engine.Dialogs.Widgets {
 		this.messageText.height = 0;
 		this.contText.width = 0;
 		this.contText.height = 0;
+		this.answerText.width = 0;
+		this.answerText.height = 0;
 	    } else if (ratio <= 2) {
 		this.width = this.widthSmall + (this.widthLarge - this.widthSmall) * (ratio - 1);
 		this.height = this.heightSmall + (this.heightLarge - this.heightSmall) * (ratio - 1);
 		this.titleText.width = (this.titleText.textWidth + 3) * (ratio - 1);
-		this.titleText.height = this.titleText.textHeight + 2;
+		this.titleText.height = this.titleText.textHeight + 10;
 		this.messageText.width = (this.width - 20); // * (ratio - 1);
 		this.messageText.height = this.messageText.textHeight + 100;
-		this.contText.width = (this.width - 10) * (ratio - 1);
-		this.contText.height = this.contText.textHeight + 10;
+		this.contText.width = (this.contText.textWidth + 3) * (ratio - 1);
+		this.contText.height = this.contText.textHeight + 5;
+		this.answerText.width = (this.width - (this.contText.width + 30)) * (ratio - 1);
+		this.answerText.height = this.contText.textHeight + 10;
 		this.titleText.x = 15;
 		this.titleText.y = -6;
+		this.contText.x = this.width - this.contText.width - 13;
+		this.contText.y = this.height - this.contText.height - 15;
 		this.messageText.x = 15;
 		if (this.icon != null) {
 		    this.messageText.width = (this.width - this.height/2 - 20); // * (ratio - 1);
@@ -115,8 +138,10 @@ package Engine.Dialogs.Widgets {
 	    this.titleText.y = Math.round(ty + this.titleText.y + this.titleDY);
 	    this.messageText.x = Math.round(tx + this.messageText.x);
 	    this.messageText.y = Math.round(ty + this.messageText.y);
-	    this.contText.x = Math.round(tx);
-	    this.contText.y = Math.round(ty + this.height - this.contText.textHeight - 10);
+	    this.contText.x = Math.round(tx + this.contText.x);
+	    this.contText.y = Math.round(ty + this.contText.y);
+	    this.answerText.x = Math.round(tx + 13);
+	    this.answerText.y = Math.round(ty + this.height - this.contText.textHeight - 20);
 	    this.sprite.graphics.clear();
 	    if (this.width != 0 || this.height != 0) {
 		this.sprite.graphics.lineStyle(2, this.textColor, 0.5);
@@ -126,6 +151,12 @@ package Engine.Dialogs.Widgets {
 		this.sprite.graphics.lineStyle(0, 0, 0);
 		this.sprite.graphics.beginFill(this.panelColor, 1);
 		this.sprite.graphics.drawRoundRect(this.titleText.x, this.titleText.y + 1, this.titleText.width, this.titleText.height, 5, 5);
+		this.sprite.graphics.endFill();
+		this.sprite.graphics.beginFill(Utils.colorDark(this.textColor, 0.3), 1);
+		this.sprite.graphics.drawRoundRect(this.contText.x - 5, this.contText.y - 4, this.contText.width + 10, this.contText.height + 10, 5, 5);
+		this.sprite.graphics.endFill();
+		this.sprite.graphics.lineStyle(1, this.textColor, 0.5);
+		this.sprite.graphics.drawRoundRect(this.answerText.x - 5, this.answerText.y - 4, this.answerText.width, this.contText.height + 10, 5, 5);
 		this.sprite.graphics.endFill();
 		if (this.icon != null) {
 		    this.sprite.graphics.lineStyle(2, this.textColor, 0.7);
@@ -139,6 +170,10 @@ package Engine.Dialogs.Widgets {
 
 	public function show(m:Message):void {
 	    this.messageQueue.push(m);
+	    this.answerText.text = 'enter your answer there';
+	    //this.answerFormat = new TextFormat("Small", 8, Utils.colorDark(this.textColor, 0.7), 1);
+	    //this.answerFormat.align = TextFieldAutoSize.LEFT;	    
+	    this.answerText.setTextFormat(this.answerFormat);
 	    this.hidden();
 	}
 
@@ -153,11 +188,46 @@ package Engine.Dialogs.Widgets {
 		this.messageQueue.splice(0, 1);
 		this.large();
 	    }
-	    if (this.state == 'large' && this.transitionComplete && Input.isKeyPressed(32)) {
-		this.hidden();
+	    if (this.state == 'large' && this.transitionComplete) {
+		if (Input.isKeyPressed(13)) {
+		    this.submitted = true;
+		    this.hidden();
+		} else {
+		    //this.sprite.stage.focus = this.answerText;
+		    //this.answerText.setSelection(0,0);
+		}
+	    } else {
+		/*
+		for (var i:int = 65; i <= 90; i++) {
+		    if (Input.isKeyPressed(i)) {
+			this.answerText.appendText(Input.getKeyString(i));
+			break;
+		    }
+		}
+		if (Input.isKeyPressed(8)) {
+		    this.answerText.replaceText(this.answerText.text.length - 2, 1, '');
+		}
+		*/
 	    }
 	    super.update();
 	}
+
+	public function get answer():String {
+	    return this.answerText.text;
+	}
+
+	private function onContClick(e:MouseEvent):void {
+	    this.submitted = true;
+	    this.hidden();
+	}
+
+	private function onAnswerClick(e:MouseEvent):void {
+	    if (this.answerText.text == 'enter your answer there') {
+		this.answerText.text = '';
+		this.answerText.setTextFormat(this.answerFormat);
+	    }
+	}
+
     }
 	
 }
