@@ -13,6 +13,7 @@ package Engine.Worlds {
 	public var seed:uint;
 	public var constructed:Boolean = false;
 	public var explored:Boolean = false;
+	public var traveled:Boolean = false;
 	public var visited:Boolean = false;
 	public var power:int = 0;
 	public var isArtefact:Boolean = false;
@@ -92,7 +93,7 @@ package Engine.Worlds {
 
 	public function save():Object {
 	    var saveObj:Object = {'explored': this.explored,
-				  'visited': this.visited
+				  'visited': this.traveled
 				};
 	    return saveObj;
 	}
@@ -100,7 +101,7 @@ package Engine.Worlds {
 	public function load(saveObj:Object):void {
 	    if (saveObj.hasOwnProperty('explored')) {
 		this.explored = saveObj.explored;
-		this.visited = saveObj.visited;
+		this.traveled = saveObj.visited;
 	    }
 	}
 

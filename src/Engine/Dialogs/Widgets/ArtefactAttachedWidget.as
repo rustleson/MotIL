@@ -1,7 +1,7 @@
 package Engine.Dialogs.Widgets {
 	
     import Engine.Objects.Utils;
-    import Engine.Stats.SlotStat;
+    import Engine.Stats.*;
     import flash.text.*;
     import flash.events.*;
     import flash.display.*;
@@ -15,6 +15,7 @@ package Engine.Dialogs.Widgets {
 	public var dy:Number;
 	public var rightAligned:Boolean;
 	public var bottomAligned:Boolean;
+	public var stats:ProtagonistStats;
 	public var slot:SlotStat;
 	private var titleText:TextField;
 	private var titleFormat:TextFormat;
@@ -97,6 +98,7 @@ package Engine.Dialogs.Widgets {
 		this.dragSprite.x = 0;
 		this.dragSprite.y = 0;
 		this.needUpdate = true;
+		this.stats.protagonist.wasUpdated = true;
 	    }
 	}
 

@@ -233,6 +233,10 @@ package Engine.Stats {
 	    return this._expPool.value;
 	}
 
+	public function expPoolLeak(v:Number):Number {
+	    return this._expPool.leakValue(v);
+	}
+
 	public function get pointPool():Number {
 	    return this._pointPool.value;
 	}

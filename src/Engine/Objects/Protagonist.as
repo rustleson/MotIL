@@ -131,6 +131,8 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
+	    fixtureDef.isSensor = true;
+	    bd.bullet = true;
 	    this.createOrUpdateBody('mouth', bd, startX, startY + headUnit * 0.875, update);
 	    bodies['mouth'].CreateFixture(fixtureDef);
 	    if (update) {
@@ -143,12 +145,15 @@ package Engine.Objects {
 		mouthSlot.depth = headUnit;
 		mouthSlot.sensorFixture = bodies.head.GetFixtureList();
 		mouthSlot.connectionAngle = 181 * Math.PI / 180;
+		mouthSlot.owner = this;
 		bodies['mouth'].SetUserData({'slot': mouthSlot});;
 		bodies['head'].SetUserData(headUserData);
 		bodies['head'].GetUserData()['slot'] = mouthSlot;
 		bodies['head'].GetUserData()['buildSlotMask'] = this.buildMouthSlotMask;
 		this.stats.mouthSlot.slot = mouthSlot;
 	    }
+	    fixtureDef.isSensor = false;
+	    bd.bullet = false;
 
 	    // Neck
 	    fixtureDef.filter.categoryBits = 0x0002;
@@ -262,6 +267,8 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
+	    fixtureDef.isSensor = true;
+	    bd.bullet = true;
 	    this.createOrUpdateBody('vagina', bd, startX, startY + headUnit * 4.2, update);
 	    bodies['vagina'].CreateFixture(fixtureDef);
 	    if (update) {
@@ -273,10 +280,13 @@ package Engine.Objects {
 		vaginaSlot.axis = new b2Vec2(0, -1);
 		vaginaSlot.depth = headUnit;
 		vaginaSlot.sensorFixture = bodies.vagina.GetFixtureList();
+		vaginaSlot.owner = this;
 		bodies['vagina'].SetUserData({'slot': vaginaSlot});
 		bodies['vagina_sym'].SetUserData({'slot': vaginaSlot});
 		this.stats.vaginaSlot.slot = vaginaSlot;
 	    }
+	    fixtureDef.isSensor = false;
+	    bd.bullet = false;
 
 	    // Anus
 	    fixtureDef.filter.categoryBits = 0x0002;
@@ -291,6 +301,8 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
+	    fixtureDef.isSensor = true;
+	    bd.bullet = true;
 	    this.createOrUpdateBody('anus', bd, startX, startY + headUnit * 4.45, update);
 	    bodies['anus'].CreateFixture(fixtureDef);
 	    if (update) {
@@ -302,10 +314,13 @@ package Engine.Objects {
 		anusSlot.axis = new b2Vec2(0, -1);
 		anusSlot.depth = headUnit;
 		anusSlot.sensorFixture = bodies.anus.GetFixtureList();
+		anusSlot.owner = this;
 		bodies['anus'].SetUserData({'slot': anusSlot});
 		bodies['anus_sym'].SetUserData({'slot': anusSlot});
 		this.stats.anusSlot.slot = anusSlot;
 	    }
+	    fixtureDef.isSensor = false;
+	    bd.bullet = false;
 
 	    // UpperArm
 	    // L
@@ -345,12 +360,14 @@ package Engine.Objects {
 	    fixtureDef.shape = box;
 	    this.createOrUpdateBody('fistL', bd, startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistL'].CreateFixture(fixtureDef);
-	    bodies['fistL'].drawingFunction = drawFist as Function;
+	    bodies['fistL'].drawingFunction = drawFistR as Function;
 	    // Left hand Sensor
 	    box.SetAsBox(headUnit * 0.25 * wideRatio / 2, headUnit * 0.25 / 2);
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
+	    fixtureDef.isSensor = true;
+	    bd.bullet = true;
 	    this.createOrUpdateBody('fistLsensor', bd, startX - headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistLsensor'].CreateFixture(fixtureDef);
 	    if (update) {
@@ -370,18 +387,22 @@ package Engine.Objects {
 	    }
 	    fixtureDef.filter.categoryBits = 0x0002;
 	    fixtureDef.filter.maskBits = 0x0004;
+	    fixtureDef.isSensor = false;
+	    bd.bullet = false;
 	    // R
 	    box = new b2PolygonShape();
 	    box.SetAsBox(headUnit * 1/2 / 2, headUnit * 1/2 * wideRatio / 2);
 	    fixtureDef.shape = box;
 	    this.createOrUpdateBody('fistR', bd, startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistR'].CreateFixture(fixtureDef);
-	    bodies['fistR'].drawingFunction = drawFist as Function;
+	    bodies['fistR'].drawingFunction = drawFistL as Function;
 	    // Right hand Sensor
 	    box.SetAsBox(headUnit * 0.25 * wideRatio / 2, headUnit * 0.25 / 2);
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
+	    fixtureDef.isSensor = true;
+	    bd.bullet = true;
 	    this.createOrUpdateBody('fistRsensor', bd, startX + headUnit * (1.75 + 2/3 + 1 + 1/3), startY + headUnit * (1 + 1/3 + 1/4), update);
 	    bodies['fistRsensor'].CreateFixture(fixtureDef);
 	    if (update) {
@@ -401,6 +422,8 @@ package Engine.Objects {
 	    }
 	    fixtureDef.filter.categoryBits = 0x0002;
 	    fixtureDef.filter.maskBits = 0x0004;
+	    fixtureDef.isSensor = false;
+	    bd.bullet = false;
 				
 	    // UpperLeg
 	    // L
@@ -771,6 +794,8 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(77)){ // M
 		if (!this.stats.anusSlot.slot.isFree) {
 		    this.stats.anusSlot.slot.disconnect();
+		} else if (this.stats.anusSlot.artefactAttached.name != 'Nothing') {
+		    this.stats.anusSlot.artefactAttached.active = !this.stats.anusSlot.artefactAttached.active;
 		} else {
 		    this.stats.anusSlot.slot.isReady = !this.stats.anusSlot.slot.isReady;
 		}
@@ -779,6 +804,8 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(78)){ // N
 		if (!this.stats.vaginaSlot.slot.isFree) {
 		    this.stats.vaginaSlot.slot.disconnect();
+		} else if (this.stats.vaginaSlot.artefactAttached.name != 'Nothing') {
+		    this.stats.vaginaSlot.artefactAttached.active = !this.stats.vaginaSlot.artefactAttached.active;
 		} else {
 		    this.stats.vaginaSlot.slot.isReady = !this.stats.vaginaSlot.slot.isReady;
 		}
@@ -787,6 +814,8 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(74)){ // J
 		if (!this.stats.mouthSlot.slot.isFree) {
 		    this.stats.mouthSlot.slot.disconnect();
+		} else if (this.stats.mouthSlot.artefactAttached.name != 'Nothing') {
+		    this.stats.mouthSlot.artefactAttached.active = !this.stats.mouthSlot.artefactAttached.active;
 		} else {
 		    this.stats.mouthSlot.slot.isReady = !this.stats.mouthSlot.slot.isReady;
 		}
@@ -795,6 +824,8 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(72)){ // H
 		if (!this.stats.leftHandSlot.slot.isFree) {
 		    this.stats.leftHandSlot.slot.disconnect();
+		} else if (this.stats.rightHandSlot.artefactAttached.name != 'Nothing') {
+		    this.stats.rightHandSlot.artefactAttached.active = !this.stats.rightHandSlot.artefactAttached.active;
 		} else {
 		    this.stats.leftHandSlot.slot.isReady = !this.stats.leftHandSlot.slot.isReady;
 		}
@@ -803,6 +834,8 @@ package Engine.Objects {
 	    if (Input.isKeyPressed(75)){ // K
 		if (!this.stats.rightHandSlot.slot.isFree) {
 		    this.stats.rightHandSlot.slot.disconnect();
+		} else if (this.stats.leftHandSlot.artefactAttached.name != 'Nothing') {
+		    this.stats.leftHandSlot.artefactAttached.active = !this.stats.leftHandSlot.artefactAttached.active;
 		} else {
 		    this.stats.rightHandSlot.slot.isReady = !this.stats.rightHandSlot.slot.isReady;
 		}
@@ -1102,6 +1135,10 @@ package Engine.Objects {
 		this.drawLHorn(shape, xf, c, drawScale, dx - headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
 		this.drawRHorn(shape, xf, c, drawScale, dx + headWidth * drawScale * 0.5, dy - headUnit * 1.1 * drawScale / 2, udata, spr);
 	    }
+	    var iconSize:Number = headUnit * 1.1 * wideRatio * drawScale;
+	    if (this.stats.mouthSlot.artefactAttached.name != 'Nothing' && this.stats.mouthSlot.artefactAttached.active) {
+		this.stats.mouthSlot.artefactAttached.icon(spr, 0, mouthShift * drawScale, iconSize, this.stats.mouthSlot.artefactAttached.color, iconSize * 0.1);
+	    }
 	}
 
 	public function buildMouthSlotMask(maskSprite:Sprite, body:b2Body, drawScale:Number):void {
@@ -1113,7 +1150,8 @@ package Engine.Objects {
 	    var dy:Number = slot.localAnchor.y;
 	    var angle:Number = Math.acos(b2Math.Dot(slot.body.GetWorldVector(slot.axis), slot.connectedSlot.body.GetWorldVector(slot.connectedSlot.axis)));
 	    var axis:b2Vec2 = slot.body.GetLocalVector(slot.connectedSlot.axis);
-	    //maskSprite.rotation = angle;
+	    axis.MulM(b2Mat22.FromAngle(slot.connectedSlot.body.GetAngle()));
+	    //maskSprite.rotation = slot.connectedSlot.body.GetAngle();
 	    maskSprite.graphics.lineStyle(thickness * 3 * drawScale, 0xffffff, 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
 	    maskSprite.graphics.moveTo(dx * drawScale, dy * drawScale);
 	    maskSprite.graphics.lineTo((-depth * axis.x + dx) * drawScale, (-depth * axis.y + dy) * drawScale);
@@ -1224,6 +1262,10 @@ package Engine.Objects {
 	    spr.graphics.curveTo(((lipsOpen * 2) - dx) * drawScale, (-dy) * drawScale, 0, (vaginaHeight / 2 - dy) * drawScale);
 	    spr.graphics.curveTo(((-lipsOpen * 2) - dx) * drawScale, (-dy) * drawScale, 0, (-vaginaHeight / 2 - dy) * drawScale);
 	    spr.graphics.endFill();
+	    var iconSize:Number = headUnit * 1.1 * wideRatio * drawScale;
+	    if (this.stats.vaginaSlot.artefactAttached.name != 'Nothing' && this.stats.vaginaSlot.artefactAttached.active) {
+		this.stats.vaginaSlot.artefactAttached.icon(spr, 0, 0, iconSize, this.stats.vaginaSlot.artefactAttached.color, iconSize * 0.1);
+	    }
 	}
 
 	private function drawAnus(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
@@ -1243,6 +1285,10 @@ package Engine.Objects {
 	    spr.graphics.curveTo(((lipsOpen * 2) - dx) * drawScale, (-dy) * drawScale, 0, (anusHeight / 2 - dy) * drawScale);
 	    spr.graphics.curveTo(((-lipsOpen * 2) - dx) * drawScale, (-dy) * drawScale, 0, (-anusHeight / 2 - dy) * drawScale);
 	    spr.graphics.endFill();
+	    var iconSize:Number = headUnit * 1.1 * wideRatio * drawScale;
+	    if (this.stats.anusSlot.artefactAttached.name != 'Nothing' && this.stats.anusSlot.artefactAttached.active) {
+		this.stats.anusSlot.artefactAttached.icon(spr, 0, 0, iconSize, this.stats.anusSlot.artefactAttached.color, iconSize * 0.1);
+	    }
 	}
 
 	private function drawFist(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
@@ -1280,6 +1326,22 @@ package Engine.Objects {
 
 	private function drawBreastR(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
 	    drawBreast(shape, xf, c, drawScale, dx, dy, udata, spr);
+	}
+
+	private function drawFistL(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
+	    drawFist(shape, xf, c, drawScale, dx, dy, udata, spr);
+	    var iconSize:Number = headUnit * 1.1 * wideRatio * drawScale;
+	    if (this.stats.leftHandSlot.artefactAttached.name != 'Nothing' && this.stats.leftHandSlot.artefactAttached.active) {
+		this.stats.leftHandSlot.artefactAttached.icon(spr, 0, 0, iconSize, this.stats.leftHandSlot.artefactAttached.color, iconSize * 0.1);
+	    }
+	}
+
+	private function drawFistR(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {
+	    drawFist(shape, xf, c, drawScale, dx, dy, udata, spr);
+	    var iconSize:Number = headUnit * 1.1 * wideRatio * drawScale;
+	    if (this.stats.rightHandSlot.artefactAttached.name != 'Nothing' && this.stats.rightHandSlot.artefactAttached.active) {
+		this.stats.rightHandSlot.artefactAttached.icon(spr, 0, 0, iconSize, this.stats.rightHandSlot.artefactAttached.color, iconSize * 0.1);
+	    }
 	}
 
     }

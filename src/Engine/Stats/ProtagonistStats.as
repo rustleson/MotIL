@@ -266,6 +266,11 @@ package Engine.Stats {
 	    this.statsDialog.widgets.anusslot.slot = this.anusSlot;
 	    this.statsDialog.widgets.rhandslot.slot = this.rightHandSlot;
 	    this.statsDialog.widgets.lhandslot.slot = this.leftHandSlot;
+	    this.statsDialog.widgets.vaginaslot.stats = this;
+	    this.statsDialog.widgets.mouthslot.stats = this;
+	    this.statsDialog.widgets.anusslot.stats = this;
+	    this.statsDialog.widgets.rhandslot.stats = this;
+	    this.statsDialog.widgets.lhandslot.stats = this;
 	    this.statsDialog.widgets.wheel.artefact = this.artefacts.wheel;
 	    this.statsDialog.widgets.vajra.artefact = this.artefacts.vajra;
 	    this.statsDialog.widgets.jewel.artefact = this.artefacts.jewel;

@@ -63,13 +63,16 @@ package Engine.Dialogs {
 	    if (this.widgets.question.state == 'hidden' && this.widgets.question.transitionComplete && this.stats != null) {
 		if (this.state == 'question1' && this.widgets.question.submitted) {
 		    if (this.widgets.question.answer.toLowerCase() == "anal intercourse" || this.widgets.question.answer.toLowerCase() == "anal copulation") {
+			// yes just "anal sex" is not a medical term
 			this.state = 'question2';
 		    } else {
 			this.state = 'wrongAnswer';
 		    }
 		}
 		if (this.state == 'question2' && this.widgets.question.submitted) {
-		    if (this.widgets.question.answer.toLowerCase() == "tentacle rape") {
+		    if (this.widgets.question.answer.toLowerCase().substr(0, 8) == "tentacle") { 
+			// correct answer is "tentacle rape", but not everyone knows exact translation
+			// so any answer beginning with "tentacle" counts as correct
 			this.stats.ageConfirmed = true;
 			this.stats.save();
 			this.state = 'mainMenu';

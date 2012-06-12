@@ -6,7 +6,7 @@ package Engine.Objects {
 
     public class ContactListener extends b2ContactListener {              
 
-	public override function PostSolve(contact:b2Contact, impulse:b2ContactImpulse):void {
+	public override function BeginContact(contact:b2Contact):void {
 	    var obj1:Object = contact.GetFixtureA().GetBody().GetUserData();
 	    var obj2:Object = contact.GetFixtureB().GetBody().GetUserData();
 	    var body1:Object = contact.GetFixtureA().GetBody();

@@ -32,7 +32,7 @@ package Engine.Objects {
 	    color = c;
 	    alpha = a;
 	    bd.type = b2Body.b2_staticBody;
-	    fixtureDef.density = 0.00;
+	    fixtureDef.density = 0.01;
 	    fixtureDef.friction = 0.4;
 	    fixtureDef.restitution = 0.3;
 	    fixtureDef.filter.categoryBits = 0x0004;
@@ -49,12 +49,15 @@ package Engine.Objects {
 	    // linga
 	    box = new b2PolygonShape();
 	    Utils.setBoxAttributes(box, bd, x + width / 2 - thickness / 2, y - length * 1.5  + thickness, thickness, length + thickness);
+	    
 	    fixtureDef.shape = box;
 	    fixtureDef.filter.categoryBits = 0x0008;
 	    fixtureDef.filter.maskBits = 0x0008;
 	    bd.userData = {gradientType: GradientType.RADIAL, gradientColors: [0xFFFFFF, color, color], gradientAlphas: [1, 1, alpha], gradientRatios: [0x00, 0x23, 0xFF], gradientRot: 0, curved: true, curveAdjust: 1}
+	    //bd.type = b2Body.b2_dynamicBody;
 	    bodies['linga'] = world.CreateBody(bd);
 	    bodies['linga'].CreateFixture(fixtureDef);
+	    //bodies.linga.SetAngle(Math.PI / 17);
 	    var headSlot:Slot = new Slot(Slot.FATHER, bodies.linga);
 	    headSlot.axis = new b2Vec2(0, -1);
 	    headSlot.localAnchor = new b2Vec2(0, -(length + thickness) / 2);
@@ -67,6 +70,26 @@ package Engine.Objects {
 	    bodies['linga'].drawingFunction = this.drawLinga as Function;
 	    bodiesOrder = ['linga', 'altar'];
 
+	    // linga joint
+	    var jd:b2RevoluteJointDef = new b2RevoluteJointDef();
+	    jd.enableLimit = true;
+	    jd.enableMotor = true;
+	    jd.maxMotorTorque = motorTorture;
+	    jd.collideConnected = false;
+	    jd.lowerAngle = -10 / (180/Math.PI);
+	    jd.upperAngle = 10 / (180/Math.PI);
+	    jd.Initialize(bodies['altar'], bodies['linga'], new b2Vec2(x + width / 2, y));
+	    joints['jointLinga'] = world.CreateJoint(jd) as b2RevoluteJoint;
+	    targetAngles = {jointLinga: 0};
+	    gain = 5;
+
+	}
+
+	public override function update():void{
+	    for (var joint:Object in joints) {
+		if (targetAngles.hasOwnProperty(joint))
+		    joints[joint].SetMotorSpeed(-gain * (joints[joint].GetJointAngle() - targetAngles[joint]));
+	    }	         
 	}
 
 	private function drawLinga(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void {

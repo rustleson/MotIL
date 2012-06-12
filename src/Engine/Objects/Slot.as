@@ -15,8 +15,8 @@ package Engine.Objects {
 	public static const FATHER:int = 2;
 	public static const HOLDER:int = 3;
 
-	public var connectionDistance:Number = 0.2;
-	public var connectionAngle:Number = 15 * Math.PI / 180;
+	public var connectionDistance:Number = 0.4;
+	public var connectionAngle:Number = 25 * Math.PI / 180;
 
 	public var type:int;
 	public var body:b2Body;
@@ -47,6 +47,7 @@ package Engine.Objects {
 	    //trace(angle / Math.PI * 180);
 
 	    if (dist < connectionDistance && angle < connectionAngle) {
+		this.body.SetAngle(this.body.GetAngle() - angle);
 		this.connectedSlot = slot;
 		jd.collideConnected = false;
 		jd.enableLimit = true;
@@ -67,7 +68,7 @@ package Engine.Objects {
 		this.connectedSlot.connectedSlot = this;
 		this.connectedSlot.isReady = false;
 		this.connectedSlot.isFree = false;
-		if (this.sensorFixture) this.sensorFixture.SetSensor(true);
+		//if (this.sensorFixture) this.sensorFixture.SetSensor(true);
 		Main.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus6'];
 		return true;
 	    } else {
@@ -77,13 +78,13 @@ package Engine.Objects {
 
 	public function disconnect():Boolean {
 	    var dist:Number = b2Math.Distance(this.body.GetLocalPoint(this.connectedSlot.body.GetWorldPoint(this.connectedSlot.localAnchor)), this.localAnchor);
-	    if (dist < connectionDistance) {
+	    if (this.joint.GetJointTranslation() > 0) {
 		if (this.joint){
 		    var world:b2World = this.body.GetWorld();
 		    world.DestroyJoint(this.joint);
 		}
 		this.joint = null;
-		this.isReady = false;
+		this.isReady = true;
 		this.isFree = true;
 		this.connectedSlot.joint = null;
 		this.connectedSlot.body.sprite.graphics.clear();
@@ -91,8 +92,10 @@ package Engine.Objects {
 		this.connectedSlot.connectedSlot = null;
 		this.connectedSlot.isReady = true;
 		this.connectedSlot.isFree = true;
+		//this.connectedSlot.owner.wasUpdated = true;
+		this.owner.wasUpdated = true;
 		this.connectedSlot = null;
-		if (this.sensorFixture) this.sensorFixture.SetSensor(false);
+		//if (this.sensorFixture) this.sensorFixture.SetSensor(false);
 		Main.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus3'];
 		return true;
 	    } else {
@@ -118,6 +121,10 @@ package Engine.Objects {
 	    if (x > x0)
 		return d;
 	    return 0;
+	}
+
+	public function getMaxDiameter():Number {
+	    return this.radiuses[this.radiuses.length - 1].y;
 	}
 
     }

@@ -58,13 +58,13 @@ package Engine.Objects {
 	}
 		
 	public function update():void{
-	    if (timeout > 0) {
+	    if (timeout > 0 || Input.getKeyHold(88) <= 0) {
 		for (var joint:Object in joints) {
 		    if (targetAngles.hasOwnProperty(joint))
 			joints[joint].SetMotorSpeed(-gain * (joints[joint].GetJointAngle() - targetAngles[joint]));
 		}	         
 		timeout--;
-		if (timeout == 0) {
+		if (timeout <= 0) {
 		    toggleMotors(false);
 		}
 	    }
@@ -116,6 +116,8 @@ package Engine.Objects {
 				    drawingFunction = udata.slot.connectedSlot.body.drawingFunction as Function ? udata.slot.connectedSlot.body.drawingFunction as Function : this.drawGenericShape;
 				    
 				    drawingFunction(udata.slot.connectedSlot.body.GetFixtureList().GetShape(), udata.slot.connectedSlot.body.m_xf, color, physScale, udata.slot.connectedSlot.body.GetPosition().x - udata.slot.connectedSlot.body.m_xf.position.x, udata.slot.connectedSlot.body.GetPosition().y - udata.slot.connectedSlot.body.m_xf.position.y, udata.slot.connectedSlot.body.GetUserData(), spr);
+				    matrix = new Matrix();
+				    matrix.rotate(udata.slot.connectedSlot.body.GetAngle());
 				    matrix.tx = (-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
 				    matrix.ty = (-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
 				    matrix.rotate(-bodyRotation);
@@ -126,6 +128,7 @@ package Engine.Objects {
 				    matrix.rotate(bodyRotation);
 				    matrix.tx = -(-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
 				    matrix.ty = -(-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
+				    matrix.rotate(-udata.slot.connectedSlot.body.GetAngle());
 				    maskSprite.transform.matrix = matrix;
 				} else {
 				    while (body.sprite.numChildren > 0) {
@@ -259,12 +262,17 @@ package Engine.Objects {
 	public function buildGenericSlotMask(maskSprite:Sprite, body:b2Body, drawScale:Number):void {
 	    maskSprite.graphics.clear();
 	    var slot:Slot = body.GetUserData().slot;
-	    var depth:Number = slot.joint.GetJointTranslation();
-	    var thickness:Number = slot.connectedSlot.getDiameter(-depth);
-	    var dx:Number = 0;//slot.localAnchor.x;
-	    var dy:Number = 0;//slot.localAnchor.y;
+	    var depth:Number = slot.joint.GetJointTranslation() * drawScale;
+	    var thickness:Number = slot.connectedSlot.getMaxDiameter() * 1.1 * 1.5 * drawScale;
 	    maskSprite.graphics.beginFill(0xffffff, 1);
-	    maskSprite.graphics.drawRect((-thickness * 2 * 1.1 - dx) * drawScale, (-dy) * drawScale, thickness * 1.1 * 4 * drawScale,  depth * drawScale);
+	    //maskSprite.graphics.drawRect(-thickness / 2, 0, thickness,  depth);
+	    maskSprite.graphics.moveTo(-thickness * 3.5 / 2, -depth);
+	    maskSprite.graphics.curveTo(-thickness * 2 / 2, 0, -thickness / 2, 0);
+	    maskSprite.graphics.lineTo(thickness / 2, 0);
+	    maskSprite.graphics.curveTo(thickness * 2 / 2, 0, thickness * 3.5 / 2, -depth);
+	    maskSprite.graphics.lineTo(thickness * 3.5 / 2, depth);
+	    maskSprite.graphics.lineTo(-thickness * 3.5 / 2, depth);
+	    maskSprite.graphics.lineTo(-thickness * 3.5 / 2, 0);
 	    maskSprite.graphics.endFill();
 	}
 

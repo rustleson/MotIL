@@ -42,6 +42,7 @@ package Engine.Worlds {
 	private var terrHeights:Array = new Array();
 	private var interRealmTransitions:Object = new Object();
 	public var helpDialog:HelpDialog;
+	private var teleportTimeout:int = 0;
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint, $tenorion:Tenorion = null, loadNeeded:Boolean = true){
 	    this.tenorion = $tenorion;
@@ -160,6 +161,7 @@ package Engine.Worlds {
 			}
 		    }
 		}
+		this.map[proY][proX].traveled = true;
 		this.stats.statsDialog.widgets.map.needUpdate = true;
 		this.stats.statsDialog.widgets.map.curX = this.curRoomX;
 		this.stats.statsDialog.widgets.map.curY = this.curRoomY;
@@ -189,6 +191,14 @@ package Engine.Worlds {
 		this.stats.statsDialog.widgets.pacifier.needUpdate = true;
 		this.stats.statsDialog.widgets.analTentacle.needUpdate = true;
 	    }
+	    this.wheelAction();
+	    this.vajraAction();
+	    this.jewelAction();
+	    this.lotusAction();
+	    this.swordAction();
+	    this.chastityBeltAction();
+	    this.pacifierAction();
+	    this.analTentacleAction();
 	    if (this.tenorion != null && Input.isKeyReleased(220)) { // key "\"
 		this.tenorion.muteSound = !this.tenorion.muteSound;
 		if (this.tenorion.muteSound)
@@ -601,6 +611,54 @@ package Engine.Worlds {
 	    }
 	    return false;
 	}
+
+	private function wheelAction():void {
+	    if (this.stats.artefacts.wheel.active) {
+		if (this.teleportTimeout == 0) {
+		    objects.protagonist.clearStuff();
+		    do {
+			var newX:int = Math.random() * this.mapWidth;
+			var newY:int = Math.random() * this.mapHeight;
+		    } while (!map[newY][newX].traveled);
+		    objects.protagonist = new Protagonist(world, newX * this.roomWidth + 250 / physScale, newY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+		    this.teleportTimeout = 69;
+		} else if (this.teleportTimeout > 0) {
+		    this.teleportTimeout--;
+		}
+		this.stats.space -= this.stats.artefacts.wheel.value;
+		this.stats.artefacts.wheel.exp += this.stats.expPoolLeak(1 - this.stats.artefacts.wheel.value);
+		this.stats.statsDialog.widgets.wheel.needUpdate = true;
+	    }
+	}
+
+	private function vajraAction():void {
+
+	}
+
+	private function jewelAction():void {
+
+	}
+
+	private function lotusAction():void {
+
+	}
+
+	private function swordAction():void {
+
+	}
+
+	private function chastityBeltAction():void {
+
+	}
+
+	private function pacifierAction():void {
+
+	}
+
+	private function analTentacleAction():void {
+
+	}
+
 
     }
 	

@@ -201,6 +201,7 @@ package Engine.Dialogs.Widgets {
 		this.dragSprite.graphics.clear();
 		this.dragSprite.x = 0;
 		this.dragSprite.y = 0;
+		this.stats.protagonist.wasUpdated = true;
 	    }
 	}
     }

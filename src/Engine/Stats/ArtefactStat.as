@@ -6,6 +6,7 @@ package Engine.Stats {
     public class ArtefactStat extends ExpStat {
 
 	public var obtained:Boolean = false;
+	public var active:Boolean = false;
 	private var _name:String;
 	private var _description:String;
 	private var _icon:Function;
@@ -112,6 +113,7 @@ package Engine.Stats {
 	    if (this.attachedTo != null) {
 		this.attachedTo.artefactAttached = new ArtefactStat();
 		this.attachedTo = null;
+		this.active = false;
 	    }
 	}
 
