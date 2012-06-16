@@ -19,7 +19,8 @@ package Engine.Worlds {
 	}
 
 	public override function build():void {
-	    super.build();
+	    this.objects[this.prefix + 'roomBorder'] = new Room(this.world.world, this.posX, this.posY, this.width, this.height, 35 / this.world.physScale, this.type, 1, this.freedomTop, this.freedomBottom, this.freedomLeft, this.freedomRight, Room.ROOM_TYPE_EMPTY);
+	    this.objectsOrder = [this.prefix + 'roomBorder'];	    
 	    var roomWidth:Number = (this.world as MandalaWorld).roomWidth;
 	    var roomHeight:Number = (this.world as MandalaWorld).roomHeight;
 	    var stairNum:int = (this.artefact == null) ? 5 : 10;

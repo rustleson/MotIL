@@ -35,7 +35,7 @@ package{
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
 	    static public var seed:uint;
-	    static public var version:String = "0.0.3";
+	    static public var version:String = "0.0.4-alpha";
 	    static public var tenorion:Tenorion = new Tenorion(); 
 	    static public var save:SharedObject = SharedObject.getLocal('MotIL', '/');
 	    private var autoRebirthNeeded:Boolean = false;

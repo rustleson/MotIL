@@ -89,13 +89,23 @@ package Engine.Worlds {
 
 	    var startMessage:String = "Born as " + this.stats.TribesStrings[this.stats.tribe] + " of the " + this.stats.ElementalStrings[sType] + " Realm.";
 	    
+	    var birthX:Number;
+	    var birthY:Number;
 	    if (this.curRoomX >= 0 && this.curRoomY >= 0) {
-		objects['protagonist'] = new Protagonist(world, this.curRoomX * this.roomWidth + 250 / physScale, this.curRoomY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+		this.map[this.curRoomY][this.curRoomX].construct();
+		birthX = this.map[this.curRoomY][this.curRoomX].birthX;
+		birthY = this.map[this.curRoomY][this.curRoomX].birthY - 75 / physScale;
+		this.map[this.curRoomY][this.curRoomX].deconstruct();
+		objects['protagonist'] = new Protagonist(world, birthX, birthY, 150 / physScale, stats);
 		this.curRoomX = -1;
 		this.curRoomY = -1;
 		startMessage = "Incarnation is restored.";
 	    } else {
-		objects['protagonist'] = new Protagonist(world, this.startingPositions[sType].x * this.roomWidth + 250 / physScale, this.startingPositions[sType].y * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+		this.map[this.startingPositions[sType].y][this.startingPositions[sType].x].construct();
+		birthX = this.map[this.startingPositions[sType].y][this.startingPositions[sType].x].birthX;
+		birthY = this.map[this.startingPositions[sType].y][this.startingPositions[sType].x].birthY - 75 / physScale;
+		this.map[this.startingPositions[sType].y][this.startingPositions[sType].x].deconstruct();
+		objects['protagonist'] = new Protagonist(world, birthX, birthY, 150 / physScale, stats);
 	    }
 	    objectsOrder = ['protagonist'];
 	    this.stats.statsDialog.widgets.log.show(startMessage);
