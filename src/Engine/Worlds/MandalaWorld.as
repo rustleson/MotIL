@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//
+//    Copyright 2011-2012 Reyna D "rustleson"
+//
+//---------------------------------------------------------------------------
+//
+//    This file is part of MotIL.
+//
+//    MotIL is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    MotIL is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with MotIL.  If not, see <http://www.gnu.org/licenses/>.
+//
+//---------------------------------------------------------------------------
+
 package Engine.Worlds {
 	
     import Box2D.Dynamics.*;
@@ -17,6 +40,7 @@ package Engine.Worlds {
     import flash.display.*;
     import flash.geom.Matrix;
     import Box2D.Dynamics.Controllers.*;
+    import flash.utils.getTimer;
 	
     public class MandalaWorld extends World {
 		
@@ -43,8 +67,11 @@ package Engine.Worlds {
 	private var interRealmTransitions:Object = new Object();
 	public var helpDialog:HelpDialog;
 	private var teleportTimeout:int = 0;
+	private var lastAge:uint = 0;
+	private var startedAge:uint;
 
 	public function MandalaWorld(stats:ProtagonistStats, seed:uint, $tenorion:Tenorion = null, loadNeeded:Boolean = true){
+	    this.startedAge = getTimer();
 	    this.tenorion = $tenorion;
 	    secondaryBgSprite = new Sprite();
 	    secondaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
@@ -144,6 +171,7 @@ package Engine.Worlds {
 	}
 
 	public override function update():void {
+	    this.stats.age = this.lastAge + getTimer() - this.startedAge;
 	    var proX:Number = Math.floor(this.objects.protagonist.bodies.chest.GetPosition().x / this.roomWidth);
 	    var proY:Number = Math.floor(this.objects.protagonist.bodies.chest.GetPosition().y / this.roomHeight);
 	    var i:int;
@@ -590,7 +618,8 @@ package Engine.Worlds {
 				  'curX': this.curRoomX,
 				  'curY': this.curRoomY,
 				  'activeTopic': this.helpDialog.activeTopic,
-				  'map': new Array()
+				  'map': new Array(),
+				  'age': this.stats.age
 				};
 	    for (var j:int = 0; j < this.mapHeight; j++) {
 		saveObj.map[j] = new Array();
@@ -616,6 +645,10 @@ package Engine.Worlds {
 		    for (var i:int = 0; i < this.mapWidth; i++) {
 			this.map[j][i].load(saveObj.map[j][i]);
 		    }
+		}
+		if (saveObj.hasOwnProperty('age')) {
+		    this.lastAge = saveObj.age;
+		    this.startedAge = getTimer();
 		}
 		return true;
 	    }

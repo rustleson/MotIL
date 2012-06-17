@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//
+//    Copyright 2011-2012 Reyna D "rustleson"
+//
+//---------------------------------------------------------------------------
+//
+//    This file is part of MotIL.
+//
+//    MotIL is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    MotIL is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with MotIL.  If not, see <http://www.gnu.org/licenses/>.
+//
+//---------------------------------------------------------------------------
+
 package Engine.Stats {
 	
     import flash.display.*;
@@ -40,6 +63,7 @@ package Engine.Stats {
 	public var backgroundDetails:int = BG_HIGH; 
 	public var ageConfirmed:Boolean = false; 
 	public var generated:Boolean = false; 
+	public var age:uint = 0;
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -256,6 +280,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.speed.setTooltip("Speed. Higher this stat is, more quick you are. Be careful, being too quick is not good for a light body, it can become uncontrollable. ");
 	    this.statsDialog.widgets.pool.setTooltip("Experience pool. Once you get experience, it goes there. Then, you can reallocate exp from pool to other stats by making certain actions. I.e. when you are taking pain, your Pain Treshold stat is getting experience from pool; when you take pleasure, your Orgasm Point is improving, etc.");
 	    this.statsDialog.widgets.points.setTooltip("Stat points. Once you have level up, you get some points to spend on following stats: Pain Resistance, Arousal Boost, Constitution, Speed. Unallocated points shown there.");
+	    this.statsDialog.widgets.age.setTooltip("Your current incarnation age measured in hours and minutes.");
 	    this.statsDialog.widgets.map.setTooltip("The world map. Only previously explored areas are shown there. Your current position is displaying as a white dot. Different colors means different Realms. Artefacts are displaying as dark colored spots.");
 	    this.statsDialog.widgets.constitutionup.callback = this.constitutionUpClickHandler;
 	    this.statsDialog.widgets.painresup.callback = this.painResistanceUpClickHandler;
@@ -339,6 +364,10 @@ package Engine.Stats {
 	    this.statsDialog.widgets.pool.valueString = int(this.expPool).toString();
 	    this.statsDialog.widgets.points.value = int(this.pointPool);
 	    this.statsDialog.widgets.points.valueString = int(this.pointPool).toString();
+	    if (this.age % 1000 < 100) {
+		this.statsDialog.widgets.age.value = this.age;
+		this.statsDialog.widgets.age.valueString = this.leadingZero(Math.floor(this.age / (1000*60*60))) + ":" + this.leadingZero(Math.floor((this.age % (1000*60*60)) / (1000*60)));
+	    }
 	    this.statsDialog.widgets.mouthd.value = this.mouthSlot.stretchedDiameter.levelFrac / 50;
 	    this.statsDialog.widgets.mouthd.valueString = (this.mouthSlot.stretchedDiameter.valueFrac*100).toFixed(1);
 	    this.statsDialog.widgets.mouthl.value = this.mouthSlot.stretchedLength.levelFrac / 50;
@@ -511,6 +540,13 @@ package Engine.Stats {
 		return true;
 	    }
 	    return false;
+	}
+
+	private function leadingZero(num : Number) : String {
+	    if(num < 10) {
+		return "0" + num;
+	    }
+	    return num.toString();
 	}
 
     }

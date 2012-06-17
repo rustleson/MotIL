@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//
+//    Copyright 2011-2012 Reyna D "rustleson"
+//
+//---------------------------------------------------------------------------
+//
+//    This file is part of MotIL.
+//
+//    MotIL is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    MotIL is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with MotIL.  If not, see <http://www.gnu.org/licenses/>.
+//
+//---------------------------------------------------------------------------
+
 package Engine.Dialogs {
 	
     import Engine.Stats.GenericStats;
@@ -38,6 +61,7 @@ package Engine.Dialogs {
 	    this.widgets['speedup'] = new LevelUpWidget(w - 12, 34, 10, 10, null, 0xffdd55, 'Level Up', true, false, -33);
 	    this.widgets['pool'] = new PercentWidget(w - 12, 48, 102, 6, 0xffdd55, 'Pool', Icons.Experience, true, false, 0, 0, true);
 	    this.widgets['points'] = new PercentWidget(w - 12, 60, 102, 6, 0xffdd55, 'Points', Icons.Experience, true, false, 0, 0, true);
+	    this.widgets['age'] = new PercentWidget(w - 12, 72, 102, 6, 0xffdd55, 'Age', Icons.Experience, true, false, 0, 0, true);
 	    this.widgets['mouthpanel'] = new PanelWidget(w - 255, 70, 130, 50, 130, 50, 0x474444, 'Mouth', true);
 	    this.widgets['mouthslot'] = new ArtefactAttachedWidget(w - 250, 56, 130, 30);
 	    this.widgets['mouthd'] = new PercentWidget(w - 255, 96, 75, 6, 0x552211, 'D:', null, true);
@@ -69,7 +93,7 @@ package Engine.Dialogs {
 	    this.widgets['analTentacle'] = new ArtefactWidget(25, 435, 175, 24);
 	    this.widgets['message'] = new MessageWidget(10, h - 10, 540, 70, 540, 70, 0x111111, false, true);
 	    this.widgets['log'] = new LogWidget(5, 5, 225, 95, 500, 380, 0x888888);
-	    this.widgetsOrder = ['message', 'log', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthslot', 'mouthd', 'mouthl', 'vaginapanel', 'vaginaslot', 'vaginad', 'vaginal', 'anuspanel', 'anusslot', 'anusd', 'anusl', 'mappanel', 'map', 'rhandpanel', 'rhandslot', 'lhandpanel', 'lhandslot', 'artpanel', 'wheel', 'vajra', 'jewel', 'lotus', 'sword', 'chastityBelt', 'pacifier', 'analTentacle'];
+	    this.widgetsOrder = ['message', 'log', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'maxpain', 'maxpleasure', 'painres', 'arouse', 'constitution', 'speed', 'pool', 'points', 'age', 'levelup', 'painresup', 'arouseup', 'constitutionup', 'speedup', 'mouthpanel', 'mouthslot', 'mouthd', 'mouthl', 'vaginapanel', 'vaginaslot', 'vaginad', 'vaginal', 'anuspanel', 'anusslot', 'anusd', 'anusl', 'mappanel', 'map', 'rhandpanel', 'rhandslot', 'lhandpanel', 'lhandslot', 'artpanel', 'wheel', 'vajra', 'jewel', 'lotus', 'sword', 'chastityBelt', 'pacifier', 'analTentacle'];
 	    this.visibleWidgets = ['log', 'panel', 'space', 'water', 'earth', 'fire', 'air', 'karma', 'pain', 'pleasure', 'level', 'mappanel', 'map'];
 	    this.levelupWidgets = ['painresup', 'arouseup', 'constitutionup', 'speedup'];
 	    this.toggleHide();

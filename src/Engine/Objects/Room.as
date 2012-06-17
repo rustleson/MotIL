@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//
+//    Copyright 2011-2012 Reyna D "rustleson"
+//
+//---------------------------------------------------------------------------
+//
+//    This file is part of MotIL.
+//
+//    MotIL is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    MotIL is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with MotIL.  If not, see <http://www.gnu.org/licenses/>.
+//
+//---------------------------------------------------------------------------
+
 package Engine.Objects {
 	
     import Box2D.Dynamics.*;
@@ -11,6 +34,7 @@ package Engine.Objects {
     import General.Rndm;
     import flash.display.*;
     import Engine.Objects.Utils;
+    import Engine.Worlds.*;
 
     
     public class Room extends WorldObject {
@@ -22,6 +46,10 @@ package Engine.Objects {
 	
 	public var birthX:Number;
 	public var birthY:Number;
+
+	public var map:Array = new Array();
+	public var mapWidth:int = 4;
+	public var mapHeight:int = 4;
 
 	public function Room(world:b2World, x:Number, y:Number, width:Number, height:Number, thickness:Number, c:uint = 0xDDEEEE, a:Number = 0.8, freedomTop:uint = 0, freedomBottom:uint = 0, freedomLeft:uint = 0, freedomRight:uint = 0, roomType:int = 2){
 			
@@ -97,12 +125,16 @@ package Engine.Objects {
 	    }
 
 	    // Top
+	    var topHoleX1:Number = -1;
+	    var topHoleX2:Number = -1;
 	    if (!freedomTop) {
 		this.buildWall(world, x, y, width, thickness, 'wallTop', -Math.PI/2);
 	    } else {
 		if (roomType != Room.ROOM_TYPE_OPEN) {
 		    holeLen = getHoleLen(freedomTop, roomWidth);
 		    holePos = getHolePos(roomWidth, holeLen);
+		    topHoleX1 = holePos;
+		    topHoleX2 = holePos + holeLen;
 		    this.buildWall(world, x, y, holePos - x + roomX, thickness, 'wallTop1', -Math.PI/2);
 		    this.buildWall(world, roomX + holePos + holeLen, y, x - roomX + width - holePos - holeLen, thickness, 'wallTop2', -Math.PI/2);
 		}
@@ -112,12 +144,16 @@ package Engine.Objects {
 		}
 	    }
 	    // Right
+	    var rightHoleY1:Number = -1;
+	    var rightHoleY2:Number = -1;
 	    if (!freedomRight) {
 		this.buildWall(world, x + width - thickness, y, thickness, height, 'wallRight', 0);
 	    } else {
 		if (roomType != Room.ROOM_TYPE_OPEN) {
 		    holeLen = getHoleLen(freedomRight, roomWidth);
 		    holePos = getHolePos(roomWidth, holeLen);
+		    rightHoleY1 = holePos;
+		    rightHoleY2 = holePos + holeLen;
 		    this.buildWall(world, x + width - thickness, y, thickness, holePos - y + roomY, 'wallRight1', 0);
 		    this.buildWall(world, x + width - thickness, roomY + holePos + holeLen, thickness, y - roomY + height - holePos - holeLen, 'wallRight2', 0);
 		}
@@ -127,12 +163,16 @@ package Engine.Objects {
 		}
 	    } 
 	    // Bottom
+	    var bottomHoleX1:Number = -1;
+	    var bottomHoleX2:Number = -1;
 	    if (!freedomBottom) {
 		this.buildWall(world, x, y + height - thickness, width, thickness, 'wallBottom', Math.PI/2);
 	    } else {
 		if (roomType != Room.ROOM_TYPE_OPEN) {
 		    holeLen = getHoleLen(freedomBottom, roomWidth);
 		    holePos = getHolePos(roomWidth, holeLen);
+		    bottomHoleX1 = holePos;
+		    bottomHoleX2 = holePos + holeLen;
 		    this.buildWall(world, x, y + height - thickness, holePos - x + roomX, thickness, 'wallBottom1', -Math.PI/2);
 		    this.buildWall(world, roomX + holePos + holeLen, y + height - thickness, x - roomX + width - holePos - holeLen, thickness, 'wallBottom2', -Math.PI/2);
 		}
@@ -142,12 +182,16 @@ package Engine.Objects {
 		}
 	    }
 	    // Left
+	    var leftHoleY1:Number = -1;
+	    var leftHoleY2:Number = -1;
 	    if (!freedomLeft) {
 		this.buildWall(world, x, y, thickness, height, 'wallLeft', Math.PI);
 	    } else {
 		if (roomType != Room.ROOM_TYPE_OPEN) {
 		    holeLen = getHoleLen(freedomLeft, roomWidth);
 		    holePos = getHolePos(roomWidth, holeLen);
+		    leftHoleY1 = holePos;
+		    leftHoleY2 = holePos + holeLen;
 		    this.buildWall(world, x, y, thickness, holePos - y + roomY, 'wallLeft1', 0);
 		    this.buildWall(world, x, roomY + holePos + holeLen, thickness, y - roomY + height - holePos - holeLen, 'wallLeft2', 0);
 		}
@@ -156,10 +200,40 @@ package Engine.Objects {
 		    this.buildWall(world, roomX, roomY + holePos + holeLen, x - roomX, thickness, 'tunnelLeft2', Math.PI/2);
 		}
 	    } 
-	    
+
 	    this.birthX = x + width / 2;
 	    this.birthY = y + height / 2;
 
+	    if (roomType == Room.ROOM_TYPE_RUBBLE) {
+		// build rubble
+		for (var j:int = 0; j < this.mapHeight; j++) {
+		    this.map[j] = new Array();
+		    for (var i:int = 0; i < this.mapWidth; i++) {
+			var room:WorldRoom = new EmptyRoom(null, 0, 0, 0, 0, 0, "", 0);
+			this.map[j].push(room);
+		    }
+		}
+		this.generateDFSMaze(0, 0);
+		var cellWidth:Number = roomWidth / this.mapWidth;
+		var cellHeight:Number = roomHeight / this.mapHeight;
+		for (j = 0; j < this.mapHeight; j++) {
+		    for (i = 0; i < this.mapWidth; i++) {
+			if (!this.map[j][i].freedomRight && i < this.mapWidth - 1 &&
+			    !(j == 0 && ((i + 1) * cellWidth) > topHoleX1 - thickness && ((i + 1) * cellWidth) < topHoleX2) &&
+			    !(j == this.mapHeight - 1 && ((i + 1) * cellWidth) > bottomHoleX1 - thickness && ((i + 1) * cellWidth) < bottomHoleX2) ) {
+			    this.buildWall(world, roomX + (i + 1) * cellWidth, roomY + j * cellHeight, thickness, cellHeight + (j == this.mapHeight - 1 ? 0 : thickness), 'rubbleWallRight' + j.toString() + "-" + i.toString(), Math.PI);    
+			}
+			if (!this.map[j][i].freedomBottom && j < this.mapHeight - 1 &&
+			    !(i == 0 && ((j + 1) * cellHeight) > leftHoleY1 - thickness && ((j + 1) * cellHeight) < leftHoleY2) &&
+			    !(i == this.mapWidth - 1 && ((j + 1) * cellHeight) > rightHoleY1 - thickness && ((j + 1) * cellHeight) < rightHoleY2) ) {
+			    this.buildWall(world, roomX + i * cellWidth, roomY + (j + 1) * cellHeight, cellWidth, thickness, 'rubbleWallBottom' + j.toString() + "-" + i.toString(), Math.PI/2);    
+			}
+		    }
+		}		
+		this.birthX -= cellWidth / 2;
+		this.birthY -= cellHeight / 2;
+	    }
+	    
 	}
 
 	private function buildWall(world:b2World, x:Number, y:Number, width:Number, height:Number, name:String, gradientRot:Number):void {
@@ -190,6 +264,60 @@ package Engine.Objects {
 	private function getHolePos(lengthTotal:Number, lengthHole:Number):Number {
 	    return Rndm.float(lengthTotal * 0.03, lengthTotal * 0.97 - lengthHole);
 	}
+
+	private function generateDFSMaze(x:int, y:int):void {
+	    var curX:int = x;
+	    var curY:int = y;
+	    var cellStackX:Array = new Array();
+	    var cellStackY:Array = new Array();
+	    while (true) {
+		this.map[curY][curX].visited = true;
+		// calculate unvisited neighbours
+		var neighbours:Array = new Array();
+		if (!this.cellVisited(curX - 1, curY)) {
+		    neighbours.push({x: curX - 1, y: curY, curAttr: "freedomLeft", nextAttr: "freedomRight"});
+		}
+		if (!this.cellVisited(curX + 1, curY)) {
+		    neighbours.push({x: curX + 1, y: curY, curAttr: "freedomRight", nextAttr: "freedomLeft"});
+		}
+		if (!this.cellVisited(curX, curY - 1)) {
+		    neighbours.push({x: curX, y: curY - 1, curAttr: "freedomTop", nextAttr: "freedomBottom"});
+		}
+		if (!this.cellVisited(curX, curY + 1)) {
+		    neighbours.push({x: curX, y: curY + 1, curAttr: "freedomBottom", nextAttr: "freedomTop"});
+		}
+		if (neighbours.length > 0) {
+		    // move to random unvisited neighbour
+		    var rn:int = Rndm.integer(0, neighbours.length);
+		    var nextX:int = neighbours[rn].x;
+		    var nextY:int = neighbours[rn].y;
+		    cellStackX.push(curX);
+		    cellStackY.push(curY);
+		    var rSeed:uint = Rndm.integer(1, 10000000);
+		    this.map[curY][curX][neighbours[rn].curAttr] = rSeed;
+		    this.map[nextY][nextX][neighbours[rn].nextAttr] = rSeed;
+		    curX = nextX;
+		    curY = nextY;
+		} else if (cellStackX.length > 0) {
+		    // no neighbours, back to previous cell
+		    curX = cellStackX.pop();
+		    curY = cellStackY.pop();
+		} else {
+		    // generation finished
+		    break;
+		}
+	    }
+	}
+
+	private function cellVisited(x:int, y:int):Boolean {
+	    
+	    if (x < 0 || x > this.mapWidth - 1 || y < 0 || y > this.mapHeight - 1)
+		return true;
+	    if (this.map[y][x].visited)
+		return true;
+	    return false;
+	}
+
     }
 	
 }
