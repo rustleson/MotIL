@@ -122,40 +122,42 @@ package Engine.Objects {
 				body.sprite.graphics.clear();
 			    } else {
 				drawingFunction(f.GetShape(), xf, color, physScale, bodyPosition.x - xf.position.x, bodyPosition.y - xf.position.y, udata, body.sprite);
-				if (udata.hasOwnProperty('slot') && udata.slot.type == Slot.MOTHER && udata.slot.connectedSlot != null) {
-				    var spr:Sprite;
-				    var maskSprite:Sprite;
-				    if (body.sprite.numChildren == 0) {
-					spr = new Sprite();
-					body.sprite.addChild(spr);
-					maskSprite = new Sprite();
-					spr.addChild(maskSprite);
-				    } else {
-					spr = body.sprite.getChildAt(0) as Sprite;
-					maskSprite = spr.getChildAt(0) as Sprite;
-				    }
-				    spr.blendMode = BlendMode.LAYER;
-				    maskSprite.blendMode = BlendMode.ERASE;
-				    drawingFunction = udata.slot.connectedSlot.body.drawingFunction as Function ? udata.slot.connectedSlot.body.drawingFunction as Function : this.drawGenericShape;
+				if (udata.hasOwnProperty('slot')) {
+				    if (udata.slot.type == Slot.MOTHER && udata.slot.connectedSlot != null) {
+					var spr:Sprite;
+					var maskSprite:Sprite;
+					if (body.sprite.numChildren == 0) {
+					    spr = new Sprite();
+					    body.sprite.addChild(spr);
+					    maskSprite = new Sprite();
+					    spr.addChild(maskSprite);
+					} else {
+					    spr = body.sprite.getChildAt(0) as Sprite;
+					    maskSprite = spr.getChildAt(0) as Sprite;
+					}
+					spr.blendMode = BlendMode.LAYER;
+					maskSprite.blendMode = BlendMode.ERASE;
+					drawingFunction = udata.slot.connectedSlot.body.drawingFunction as Function ? udata.slot.connectedSlot.body.drawingFunction as Function : this.drawGenericShape;
 				    
-				    drawingFunction(udata.slot.connectedSlot.body.GetFixtureList().GetShape(), udata.slot.connectedSlot.body.m_xf, color, physScale, udata.slot.connectedSlot.body.GetPosition().x - udata.slot.connectedSlot.body.m_xf.position.x, udata.slot.connectedSlot.body.GetPosition().y - udata.slot.connectedSlot.body.m_xf.position.y, udata.slot.connectedSlot.body.GetUserData(), spr);
-				    matrix = new Matrix();
-				    matrix.rotate(udata.slot.connectedSlot.body.GetAngle());
-				    matrix.tx = (-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
-				    matrix.ty = (-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
-				    matrix.rotate(-bodyRotation);
-				    spr.transform.matrix = matrix;
-				    var buildSlotMask:Function = udata.slot.body.GetUserData().hasOwnProperty("buildSlotMask") ? udata.slot.body.GetUserData().buildSlotMask : this.buildGenericSlotMask;
-				    buildSlotMask(maskSprite, body, physScale);
-				    matrix = new Matrix();
-				    matrix.rotate(bodyRotation);
-				    matrix.tx = -(-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
-				    matrix.ty = -(-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
-				    matrix.rotate(-udata.slot.connectedSlot.body.GetAngle());
-				    maskSprite.transform.matrix = matrix;
-				} else {
-				    while (body.sprite.numChildren > 0) {
-					body.sprite.removeChildAt(0);
+					drawingFunction(udata.slot.connectedSlot.body.GetFixtureList().GetShape(), udata.slot.connectedSlot.body.m_xf, color, physScale, udata.slot.connectedSlot.body.GetPosition().x - udata.slot.connectedSlot.body.m_xf.position.x, udata.slot.connectedSlot.body.GetPosition().y - udata.slot.connectedSlot.body.m_xf.position.y, udata.slot.connectedSlot.body.GetUserData(), spr);
+					matrix = new Matrix();
+					matrix.rotate(udata.slot.connectedSlot.body.GetAngle());
+					matrix.tx = (-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
+					matrix.ty = (-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
+					matrix.rotate(-bodyRotation);
+					spr.transform.matrix = matrix;
+					var buildSlotMask:Function = udata.slot.body.GetUserData().hasOwnProperty("buildSlotMask") ? udata.slot.body.GetUserData().buildSlotMask : this.buildGenericSlotMask;
+					buildSlotMask(maskSprite, body, physScale);
+					matrix = new Matrix();
+					matrix.rotate(bodyRotation);
+					matrix.tx = -(-bodyPosition.x + udata.slot.connectedSlot.body.GetPosition().x) * physScale;
+					matrix.ty = -(-bodyPosition.y + udata.slot.connectedSlot.body.GetPosition().y) * physScale;
+					matrix.rotate(-udata.slot.connectedSlot.body.GetAngle());
+					maskSprite.transform.matrix = matrix;
+				    } else {
+					while (body.sprite.numChildren > 0) {
+					    body.sprite.removeChildAt(0);
+					}
 				    }
 				}
 			    }

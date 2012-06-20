@@ -100,11 +100,10 @@ package Engine.Worlds {
 	    this.stats.updateStats();
 	    this.stats.statsDialog.rebuild();
 	    this.helpDialog = new HelpDialog(appWidth, appHeight);
-	    //this.helpDialog.sprite = Main.helpSprite;
 	    if (loadNeeded)
 		this.load();
 	    this.helpDialog.rebuild();
-	    //this.helpDialog.toggleHide();
+
 	    world.SetGravity(new b2Vec2(0, 2.0));
 			
 	    // backgrounds
@@ -136,6 +135,7 @@ package Engine.Worlds {
 	    }
 	    objectsOrder = ['protagonist'];
 	    this.stats.statsDialog.widgets.log.show(startMessage);
+	    //Room.buildTextures();
 	    for each (var obj:WorldObject in objects) {
 		for each (var body:b2Body in obj.bodies) {
 		    bc.AddBody(body);
@@ -147,7 +147,7 @@ package Engine.Worlds {
 	    bc.linearDrag = 0.005;
 	    bc.angularDrag = 0.005;
 	    world.AddController(bc);
-
+	    Main.helpSprite.graphics.clear();
 	    
 	}
 
@@ -628,6 +628,7 @@ package Engine.Worlds {
 		}
 	    }
 	    Main.save.data['world'] = saveObj;
+	    Main.save.flush();
 	}
 
 	public function load():Boolean {
@@ -663,7 +664,10 @@ package Engine.Worlds {
 			var newX:int = Math.random() * this.mapWidth;
 			var newY:int = Math.random() * this.mapHeight;
 		    } while (!map[newY][newX].traveled);
-		    objects.protagonist = new Protagonist(world, newX * this.roomWidth + 250 / physScale, newY * this.roomHeight + 250 / physScale, 150 / physScale, stats);
+		    this.map[newY][newX].construct();
+		    var birthX:Number = this.map[newY][newX].birthX;
+		    var birthY:Number = this.map[newY][newX].birthY - 75 / physScale;
+		    objects.protagonist = new Protagonist(world, birthX, birthY, 150 / physScale, stats);
 		    this.teleportTimeout = 69;
 		} else if (this.teleportTimeout > 0) {
 		    this.teleportTimeout--;

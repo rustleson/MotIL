@@ -233,8 +233,16 @@ package Engine.Stats {
 		    if (obj.blissDonated > obj.blissToObtain) {
 			obj.blissDonated = obj.blissToObtain;
 			obj.artefact.obtained = true;
-			this.statsDialog.widgets.log.show("Artefact adsorbed: " + obj.artefact.name + ".");
-			this.statsDialog.widgets.message.show(new Message(obj.artefact.name + ", powerful artefact of the " + this.ElementalStrings[obj.artefact.colorRaw] + " is now adsorbed into yourself and ready to help on your quest! You can read artefact description by going to <i>nfo screen and rolling mouse over artefact icon.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			this.statsDialog.widgets.log.show("Artefact absorbed: " + obj.artefact.name + ".");
+			this.statsDialog.widgets.message.show(new Message(obj.artefact.name + ", powerful artefact of the " + this.ElementalStrings[obj.artefact.colorRaw] + " is now absorbed into yourself and ready to help on your quest! You can read artefact description by going to <i>nfo screen and rolling mouse over artefact icon.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			this.statsDialog.widgets.wheel.needUpdate = true;
+			this.statsDialog.widgets.vajra.needUpdate = true;
+			this.statsDialog.widgets.jewel.needUpdate = true;
+			this.statsDialog.widgets.lotus.needUpdate = true;
+			this.statsDialog.widgets.sword.needUpdate = true;
+			this.statsDialog.widgets.chastityBelt.needUpdate = true;
+			this.statsDialog.widgets.pacifier.needUpdate = true;
+			this.statsDialog.widgets.analTentacle.needUpdate = true;
 		    }
 		}
 		protagonist.wasUpdated = true;
@@ -388,6 +396,9 @@ package Engine.Stats {
 	    if (this.pointPool > 0 && this.constitutionLevel < 50) {
 		this.constitution = this.constitutionLevel + 1;
 		this.pointPool -= 1;
+		this.statsDialog.widgets.log.show("Your Constitution is upgraded to level " + this.constitutionLevel.toString() + ".");
+		if (this.pointPool == 0)
+		    this.statsDialog.upgradeAvailable = false;
 	    }
 	}
 
@@ -395,6 +406,9 @@ package Engine.Stats {
 	    if (this.pointPool > 0 && this.painResistanceLevel < 50) {
 		this.painResistance = this.painResistanceLevel + 1;
 		this.pointPool -= 1;
+		this.statsDialog.widgets.log.show("Your Pain Resistance is upgraded to level " + this.painResistanceLevel.toString() + ".");
+		if (this.pointPool == 0)
+		    this.statsDialog.upgradeAvailable = false;
 	    }
 	}
 
@@ -402,6 +416,9 @@ package Engine.Stats {
 	    if (this.pointPool > 0 && this.arousalBoostLevel < 50) {
 		this.arousalBoost = this.arousalBoostLevel + 1;
 		this.pointPool -= 1;
+		this.statsDialog.widgets.log.show("Your Arousal Boost is upgraded to level " + this.arousalBoostLevel.toString() + ".");
+		if (this.pointPool == 0)
+		    this.statsDialog.upgradeAvailable = false;
 	    }
 	}
 
@@ -409,6 +426,9 @@ package Engine.Stats {
 	    if (this.pointPool > 0 && this.speedLevel < 50) {
 		this.speed = this.speedLevel + 1;
 		this.pointPool -= 1;
+		this.statsDialog.widgets.log.show("Your Speed is upgraded to level " + this.speedLevel.toString() + ".");
+		if (this.pointPool == 0)
+		    this.statsDialog.upgradeAvailable = false;
 	    }
 	}
 
@@ -496,6 +516,7 @@ package Engine.Stats {
 		saveObj.artefacts[key] = artefacts[key].save();
 	    }
 	    Main.save.data['stats'] = saveObj;
+	    Main.save.flush();
 	}
 
 	public function load():Boolean {

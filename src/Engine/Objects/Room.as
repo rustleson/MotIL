@@ -35,14 +35,19 @@ package Engine.Objects {
     import flash.display.*;
     import Engine.Objects.Utils;
     import Engine.Worlds.*;
+    import flash.geom.Matrix;
+    import flash.geom.Rectangle;
+    import flash.geom.Point;
+    import flash.filters.*;
 
-    
     public class Room extends WorldObject {
 
 	public static const ROOM_TYPE_OPEN:int = 1;
 	public static const ROOM_TYPE_EMPTY:int = 2;
 	public static const ROOM_TYPE_TUNNEL:int = 3;
 	public static const ROOM_TYPE_RUBBLE:int = 4;
+
+	public static var textures:Object = new Object();
 	
 	public var birthX:Number;
 	public var birthY:Number;
@@ -50,6 +55,9 @@ package Engine.Objects {
 	public var map:Array = new Array();
 	public var mapWidth:int = 4;
 	public var mapHeight:int = 4;
+
+	public static const textureWidth:Number = 400;
+	public static const textureHeight:Number = 400;
 
 	public function Room(world:b2World, x:Number, y:Number, width:Number, height:Number, thickness:Number, c:uint = 0xDDEEEE, a:Number = 0.8, freedomTop:uint = 0, freedomBottom:uint = 0, freedomLeft:uint = 0, freedomRight:uint = 0, roomType:int = 2){
 			
@@ -236,6 +244,318 @@ package Engine.Objects {
 	    
 	}
 
+	public static function buildTextures(typeIndex:int):Boolean {
+	    var texturesFunctions:Object = new Object();
+	    texturesFunctions[WorldRoom.SPACE_TYPE] = Room.drawSpaceTexture;
+	    texturesFunctions[WorldRoom.WATER_TYPE] = Room.drawWaterTexture;
+	    texturesFunctions[WorldRoom.EARTH_TYPE] = Room.drawEarthTexture;
+	    texturesFunctions[WorldRoom.FIRE_TYPE] = Room.drawFireTexture;
+	    texturesFunctions[WorldRoom.AIR_TYPE] = Room.drawAirTexture;
+	    texturesFunctions[WorldRoom.PURITY_TYPE] = Room.drawPurityTexture;
+	    texturesFunctions[WorldRoom.BALANCE_TYPE] = Room.drawBalanceTexture;
+	    texturesFunctions[WorldRoom.CORRUPTION_TYPE] = Room.drawCorruptionTexture;
+	    var i:int = 0;
+	    for (var roomType:String in texturesFunctions) {
+		if (i == typeIndex) {
+		    var mainBitmap:BitmapData = new BitmapData(textureWidth, textureHeight, true, 0x00111111);
+		    var c:Sprite = new Sprite();
+		    c.graphics.clear();
+		    texturesFunctions[roomType](c, mainBitmap);
+		    //bitmap.draw(c);
+		    Room.textures[roomType] = mainBitmap;
+		    return true;
+		}
+		i++;
+	    }
+	    return false;
+	}
+
+	private static function drawSpaceTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.RED | BitmapDataChannel.BLUE;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(5, 5, 3, seed, true, false, 7, true, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    var bmd2:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    var bmd3:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    var threshold:uint =  0xFF999999; 
+	    var color:uint = 0x11000000;
+	    var maskColor:uint = 0xffffffff;
+	    b.threshold(b, rect, pt, "<", threshold, color, maskColor, true);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		    bmd2.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		    bmd3.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array();
+            matrix = matrix.concat([2, 0, 0, 0, 0]); // red
+            matrix = matrix.concat([0, 2, 0, 0, 0]); // green
+            matrix = matrix.concat([0, 0, 2, 0, 0]); // blue
+            matrix = matrix.concat([1, 0, 0, 0, 0]); // alpha
+	    var filter2:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd2.applyFilter(bmd1, rect, pt, filter2);
+	    var filter3:BlurFilter = new BlurFilter(2, 2, flash.filters.BitmapFilterQuality.HIGH);
+	    bmd3.applyFilter(bmd3, rect, pt, filter3);
+	    bmd3.applyFilter(bmd3, rect, pt, filter2);
+	    //var filter:GlowFilter = new GlowFilter(0xffffff, 0.5, 13, 13, 127, BitmapFilterQuality.HIGH, true, true);
+	    var filter:BlurFilter = new BlurFilter(10, 10, flash.filters.BitmapFilterQuality.HIGH);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd2.draw(bmd3, null, null, BlendMode.ADD);
+	    bmd1.draw(bmd2, null, null, BlendMode.ADD);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawWaterTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.BLUE;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 15, 1, seed, true, true, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array(-1,  0, -1,  0,  0,  1,
+					  0,  1,  0,  1, -1,  0,
+					  0,  0,  0,  0,  0,  0,
+					  0,  0,  0,  0,  0,  0,
+					  0, -1,  1,  1,  1,  0,
+					  1,  0,  0, -1,  0, -1);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 1, 0);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0, 0, 0.7, 0, -73]); // red
+            matrix = matrix.concat([0, 0, 0.7, 0, -73]); // green
+            matrix = matrix.concat([0, 0, 1, 0, 44]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawEarthTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.GREEN;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 15, 3, seed, true, false, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 0,  0,  0,  0,  0,  0,
+					  0,  0,  0,  0,  0,  0,
+					  0, -1, -1,  0,  0,  0,
+					 -1,  0,  1,  0,  0,  0,
+					 -1,  1,  1,  0,  0,  0,
+					  1,  1,  1,  0,  0,  0);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 2, 15);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0, 1, 0, 0, 0]); // red
+            matrix = matrix.concat([0, 0.8, 0, 0, 0]); // green
+            matrix = matrix.concat([0, 0, 1, 0, 0]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawFireTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.RED;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(6, 25, 3, seed, true, true, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 0,  0,  1,  1,  0,  0,
+					  0,  1, -1, -1,  1,  0,
+					  1, -1,  0,  1, -1,  1,
+					  1, -1,  0,  0, -1,  1,
+					  0,  1, -1, -1,  1,  0,
+					  0,  0,  1,  1,  0,  0);
+
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 5, 0);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([1.5, 0, 0, 0, 20]); // red
+            matrix = matrix.concat([1.5, 0, 0, 0, -140]); // green
+            matrix = matrix.concat([0, 0, 0, 0, 0]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+
+	}
+
+	private static function drawAirTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.GREEN;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 15, 3, seed, true, true, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 0,  0, -1,  0,  0,  0,
+					  0,  0, -1, -1,  0,  0,
+					 -1, -1,  1, -1,  1,  0,
+					 -1,  1,  1,  1,  0,  0,
+					  1,  1,  1, -1,  0,  0,
+					  2,  1, -1, -1,  0,  0);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 3, 0);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0, 0.1, 0, 0, 0]); // red
+            matrix = matrix.concat([0, 0.9, 0, 0, 0x22]); // green
+            matrix = matrix.concat([0, 0.1, 2, 0, 0]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawPurityTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.GREEN;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 45, 3, seed, true, false, channels, false, null);
+	    var threshold:uint =  0xFF009900; 
+	    var color:uint = 0x11000000;
+	    var maskColor:uint = 0xffffffff;
+	    //b.threshold(b, rect, pt, "<", threshold, color, maskColor, true);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 0,  0,  0, -1,  0,  0,
+					  0,  0,  0,  1,  0,  0,
+					  0,  1, -1,  1, -1,  0,
+					  0,  1,  1,  1,  1,  0,
+					  0,  0, -1,  1, -1,  0,
+					  0,  0,  0, -1,  0,  0);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 1.3, 30);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0, 0.4, 0, 0, 0]); // red
+            matrix = matrix.concat([0, 0.8, 0, 0, 0]); // green
+            matrix = matrix.concat([0, 0.66, 0, 0, 0]); // blue
+            matrix = matrix.concat([0, 1, 0, 0, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawBalanceTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.GREEN;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 15, 3, seed, true, false, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 0,  0, -1,  1,  0,  0,
+					  0,  0,  0,  0,  0,  0,
+					 -1,  0,  0,  0,  0, -1,
+					  1,  0,  0,  0,  0,  1,
+					  0,  0,  0,  0,  0,  0,
+					  0,  0, -1,  1,  0,  0);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 1, 15);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0, 0.6, 0, 0, 30]); // red
+            matrix = matrix.concat([0, 0.8, 0, 0, 30]); // green
+            matrix = matrix.concat([0, 0.4, 0, 0, 30]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+	}
+
+	private static function drawCorruptionTexture(spr:Sprite, b:BitmapData):void {
+	    var seed:Number = Math.floor(Math.random() * 10000);
+	    var channels:uint = BitmapDataChannel.RED | BitmapDataChannel.BLUE;
+	    var pt:Point = new Point(0, 0);
+	    var rect0:Rectangle = new Rectangle(0, 0, textureWidth, textureHeight);
+	    var rectM:Rectangle = new Rectangle(textureWidth, textureHeight, textureWidth, textureHeight);
+	    var rect:Rectangle = new Rectangle(0, 0, textureWidth * 3, textureHeight * 3);
+	    b.perlinNoise(15, 15, 3, seed, true, false, channels, false, null);
+	    var bmd1:BitmapData = new BitmapData(textureWidth * 3, textureHeight * 3, true, 0x00CCCCCC);
+	    for (var i:int = 0; i < 3; i++) {
+		for (var j:int = 0; j < 3; j++) {
+		    bmd1.copyPixels(b, rect0, new Point(i * textureWidth, j * textureHeight));
+		}
+	    }
+	    var matrix:Array = new Array( 1, -1, -1,  2,  1, -1,
+					  2, -1,  1,  1, -1,  2,
+					 -1, -1,  0, -1,  1, -1,
+					 -1,  1,  1,  1, -1, -1,
+					  1, -1,  1,  1, -2,  2,
+					  2, -1, -1, -1,  1, -1);
+	    var filter2:ConvolutionFilter = new ConvolutionFilter(6, 6, matrix, 3, 0);
+	    bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    //bmd1.applyFilter(bmd1, rect, pt, filter2);
+	    matrix = new Array();
+            matrix = matrix.concat([0.5, 0.1, 0.5, 0, 0]); // red
+            matrix = matrix.concat([0.1, 0.3, 0.5, 0, 0]); // green
+            matrix = matrix.concat([0.5, 0.1, 0.5, 0, 0]); // blue
+            matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+	    var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+	    bmd1.applyFilter(bmd1, rect, pt, filter);
+	    b.copyPixels(bmd1, rectM, pt);
+
+	}
+
 	private function buildWall(world:b2World, x:Number, y:Number, width:Number, height:Number, name:String, gradientRot:Number):void {
 	    if (width > 0 && height > 0 ) {
 		var wall:b2PolygonShape= new b2PolygonShape();
@@ -252,6 +572,7 @@ package Engine.Objects {
 		wallBd.userData = {gradientType: GradientType.LINEAR, gradientColors: [Utils.colorLight(this.color, 0.5), this.color, Utils.colorDark(this.color, 0.3)], gradientAlphas: [1, 1, this.alpha], gradientRatios: [0x00, 0x23, 0xFF], gradientRot: gradientRot, curved: false}
 		bodies[name] = world.CreateBody(wallBd);
 		bodies[name].CreateFixture(fixtureDef);
+		bodies[name].drawingFunction = this.drawWall as Function;
 		bodiesOrder.push(name);
 	    }	    
 	}
@@ -317,6 +638,79 @@ package Engine.Objects {
 		return true;
 	    return false;
 	}
+
+        public function drawWall(shape:b2Shape, xf:b2Transform, c:uint, drawScale:Number, dx:Number, dy:Number, udata:Object, spr:Sprite):void{
+	    var gradMatrix:Matrix = new Matrix();
+	    spr.cacheAsBitmap = true;
+	    spr.graphics.clear();
+
+	    var i:int;
+	    var poly:b2PolygonShape = (shape as b2PolygonShape);
+	    var vertexCount:int = poly.GetVertexCount();
+			
+	    var orig_vertices:Vector.<b2Vec2> = poly.GetVertices();
+	    var vertices:Vector.<b2Vec2> = new Vector.<b2Vec2>(vertexCount);
+	    if (udata.curved) {
+		for (i = 0; i < vertexCount; i++){
+		    vertices[i] = new b2Vec2(orig_vertices[i].x * udata.curveAdjust, orig_vertices[i].y * udata.curveAdjust);
+		}
+	    } else {
+		vertices = orig_vertices;
+	    }
+		    
+	    var localBounds:b2AABB = new b2AABB();
+	    var auraBounds:b2AABB = new b2AABB();
+	    localBounds.lowerBound = new b2Vec2(vertices[0].x, vertices[0].y);
+	    localBounds.upperBound = new b2Vec2(vertices[0].x, vertices[0].y);
+	    for (i = 1; i < vertexCount; i++){
+		if (vertices[i].x < localBounds.lowerBound.x) localBounds.lowerBound.x = vertices[i].x;
+		if (vertices[i].y < localBounds.lowerBound.y) localBounds.lowerBound.y = vertices[i].y;
+		if (vertices[i].x > localBounds.upperBound.x) localBounds.upperBound.x = vertices[i].x;
+		if (vertices[i].y > localBounds.upperBound.y) localBounds.upperBound.y = vertices[i].y;
+	    }
+	    spr.graphics.lineStyle(1, c, 0);
+	    spr.graphics.moveTo((vertices[0].x - dx) * drawScale, (vertices[0].y - dy) * drawScale);
+	    if (textures.hasOwnProperty(this.color)) {
+		var matrix:Matrix = new Matrix();
+		matrix.translate(-dx * drawScale, -dy * drawScale);
+		spr.graphics.beginBitmapFill(textures[this.color], matrix.clone(), true);
+	    } else {
+		gradMatrix.createGradientBox((localBounds.upperBound.x - localBounds.lowerBound.x) * drawScale, (localBounds.upperBound.y - localBounds.lowerBound.y) * drawScale, udata.gradientRot, (localBounds.lowerBound.x - dx) * drawScale, (localBounds.lowerBound.y - dy) * drawScale);
+		spr.graphics.beginGradientFill(udata.gradientType, udata.gradientColors, udata.gradientAlphas, udata.gradientRatios, gradMatrix);
+	    }
+	    for (i = 1; i < vertexCount; i++){
+		spr.graphics.lineTo((vertices[i].x - dx) * drawScale, (vertices[i].y - dy) * drawScale);
+	    }
+	    spr.graphics.lineTo((vertices[0].x - dx) * drawScale, (vertices[0].y - dy) * drawScale);
+	    spr.graphics.endFill();
+
+	    // smooth wall edges are commented to investigate if it cause sporadic app crashes
+	    // UPD: game didn't crashed after 30 mins of gameplay without smooth wall edges. 
+	    // TODO: re-think masking concept or just left it unmasked
+	    /*
+	    var maskSpr:Sprite = new Sprite();
+	    while (spr.numChildren > 0) {
+		spr.removeChildAt(0);
+	    }
+	    spr.addChild(maskSpr);
+	    spr.blendMode = BlendMode.LAYER;
+	    maskSpr.blendMode = BlendMode.ALPHA;
+	    maskSpr.graphics.clear();
+	    var bd:BitmapData = new BitmapData((localBounds.upperBound.x - localBounds.lowerBound.x) * drawScale, (localBounds.upperBound.y - localBounds.lowerBound.y) * drawScale, true, 0x00000000);
+	    bd.fillRect(new Rectangle(4, 4, (localBounds.upperBound.x - localBounds.lowerBound.x) * drawScale - 8, (localBounds.upperBound.y - localBounds.lowerBound.y) * drawScale - 8), 0xffffffff);
+	    var filter:BlurFilter = new BlurFilter(5, 5, flash.filters.BitmapFilterQuality.HIGH);
+	    bd.applyFilter(bd, new Rectangle(0, 0, (localBounds.upperBound.x - localBounds.lowerBound.x) * drawScale, (localBounds.upperBound.y - localBounds.lowerBound.y) * drawScale), new Point(0, 0), filter);
+	    matrix = new Matrix();
+	    matrix.translate((localBounds.lowerBound.x - dx) * drawScale, (localBounds.lowerBound.y - dy) * drawScale);
+	    maskSpr.graphics.beginBitmapFill(bd, matrix, true);
+	    
+	    maskSpr.graphics.drawRect((localBounds.lowerBound.x - dx) * drawScale, (localBounds.lowerBound.y - dy) * drawScale, (localBounds.upperBound.x - localBounds.lowerBound.x) * drawScale, (localBounds.upperBound.y - localBounds.lowerBound.y) * drawScale);
+	    maskSpr.graphics.endFill();
+	    //spr.mask = maskSpr;		
+	    //bd.dispose();
+	    */ 
+        }
+
 
     }
 	

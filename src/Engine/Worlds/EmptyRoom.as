@@ -58,7 +58,7 @@ package Engine.Worlds {
 		  roomType = Room.ROOM_TYPE_OPEN + Rndm.bit(0.1);
 		  break;
 	      case WorldRoom.BALANCE_TYPE:
-		  roomType = Rndm.integer(1, 5);
+		  roomType = Rndm.integer(2, 5);
 		  break;
 	      case WorldRoom.CORRUPTION_TYPE:
 		  roomType = Room.ROOM_TYPE_RUBBLE - Rndm.bit(0.23);

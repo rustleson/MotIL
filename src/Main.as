@@ -34,7 +34,7 @@ package{
     import flash.text.*;
     import flash.net.SharedObject;
     import General.*;
-    import Engine.Objects.Utils;
+    import Engine.Objects.*;
     import Engine.Worlds.*;
     import Engine.Dialogs.*;
     import Engine.Stats.*;
@@ -58,10 +58,13 @@ package{
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
 	    static public var seed:uint;
-	    static public var version:String = "0.0.5-alpha";
-	    static public var tenorion:Tenorion = new Tenorion(); 
+	    static public var version:String = "0.0.6-alpha";
+	    static public var tenorion:Tenorion; 
 	    static public var save:SharedObject = SharedObject.getLocal('MotIL', '/');
 	    private var autoRebirthNeeded:Boolean = false;
+	    private var generating:Boolean = true;
+	    private var textureIndex:int = 0;
+	    public static var progressWidget:PercentWidget = new PercentWidget(100, 220, 240, 6, 0xddeedd, "Generating the Mandala:");
 
 	    public function Main() {
 		//stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -89,6 +92,10 @@ package{
 		currWorld = new EntranceWorld(stats, seed);
 		currWorld.tenorion = tenorion;
 		// if (stats.muteSound) { }
+		helpSprite.addChild(progressWidget.sprite);
+		progressWidget.transition('large', 0, 0, 2);
+		progressWidget.update();
+		progressWidget.forceRedraw();
 	    }
 
 	    private function autoRebirth():void {
@@ -140,45 +147,62 @@ package{
 	    }
 		
 	    public function update(e:Event):void{
-		sprite.graphics.clear();
-		if (stats.death){
-		    currWorld.deconstruct();
-		    this.autoRebirth();
-		    currWorld = new MandalaWorld(stats, seed, tenorion, false);
-		    currWorld.tenorion = tenorion;
-		    currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
-		    currWorld.tenorion.matrixPad.generateUniversalSong();
-		    currWorld.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus3'];
-		    this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-		    stats.save();
-		}
-		if (stats.generated) {
-		    currWorld.deconstruct();
-		    if (this.autoRebirthNeeded) {
+		if (!generating) {
+		    sprite.graphics.clear();
+		    if (stats.death){
+			generating = true;
+			currWorld.deconstruct();
 			this.autoRebirth();
-			this.autoRebirthNeeded = false;
 			currWorld = new MandalaWorld(stats, seed, tenorion, false);
-			this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights! \nWe are always glad to see the young spirit coming.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-			this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
-		    } else {
-			currWorld = new MandalaWorld(stats, seed, tenorion);
-			this.stats.statsDialog.widgets.message.show(new Message("Welcome back to the Mandala of the Interpenetrating lights! \nWe are always glad to see your growing spirit again.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-			this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
+			currWorld.tenorion = tenorion;
+			currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+			currWorld.tenorion.matrixPad.generateUniversalSong();
+			currWorld.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus3'];
+			this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			stats.save();
 		    }
-		    currWorld.tenorion = tenorion;
-		    currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
-		    currWorld.tenorion.matrixPad.generateUniversalSong();
-		    this.stats.generated = false;
-		    stats.save();
+		    if (stats.generated) {
+			generating = true;
+			currWorld.deconstruct();
+			if (this.autoRebirthNeeded) {
+			    this.autoRebirth();
+			    this.autoRebirthNeeded = false;
+			    currWorld = new MandalaWorld(stats, seed, tenorion, false);
+			    this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights! \nWe are always glad to see the young spirit coming.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			    this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
+			} else {
+			    currWorld = new MandalaWorld(stats, seed, tenorion);
+			    this.stats.statsDialog.widgets.message.show(new Message("Welcome back to the Mandala of the Interpenetrating lights! \nWe are always glad to see your growing spirit again.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			    this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
+			}
+			currWorld.tenorion = tenorion;
+			currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+			currWorld.tenorion.matrixPad.generateUniversalSong();
+			this.stats.generated = false;
+			stats.save();
+		    }
+		    currWorld.update();
+		    Input.update();
+		    fpsCounter.update();
+		    FRateLimiter.limitFrame(30);
+		} else {
+		    generating = Room.buildTextures(textureIndex);
+		    progressWidget.forceRedraw();
+		    progressWidget.value += 1/8;
+		    textureIndex++;
+		    if (!generating) {
+			tenorion = new Tenorion();
+			helpSprite.removeChild(progressWidget.sprite);
+		    }
 		}
-		currWorld.update();
-		Input.update();
-		fpsCounter.update();
-		FRateLimiter.limitFrame(30);
 	    }
 
 	    private function onClose():void {
 		this.stats.save();
+	    }
+
+	    public static function updateStage():void {
+		//stage.invalidate();
 	    }
 	    
 	}

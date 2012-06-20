@@ -209,6 +209,10 @@ package Engine.Dialogs.Widgets {
 	    }
 	}
 
+	public function forceRedraw():void {
+	    this.draw();
+	}
+
     }
 	
 }

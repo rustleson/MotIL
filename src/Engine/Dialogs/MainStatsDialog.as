@@ -205,6 +205,8 @@ package Engine.Dialogs {
 		} else if (this._state == 'small') {
 		    if (v)
 			this.widgets.levelup.small();
+		    else
+			this.widgets.levelup.hidden();
 		}
 		this._upgradeAvailable = v;
 	    }
