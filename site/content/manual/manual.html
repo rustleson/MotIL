@@ -1,0 +1,24 @@
+{% extends "_about.html" %}
+
+{% hyde
+    title: Player's Handbook
+    subtitle: a.k.a. Hyper Enlightened Liberty Prerequisites (HELP)
+    subnav: True
+%}
+
+{% block subnav %}
+    <div class="subnav">
+      <ul class="nav nav-pills">
+	<li><a href="#overv">Overview</a></li>
+	<li><a href="#thestory">The Story</a></li>
+	<li><a href="#character">Character</a></li>
+	<li><a href="#action">Action</a></li>
+	<li><a href="#theworld">The World</a></li>
+	<li><a href="#controls">Controls</a></li>
+      </ul>
+    </div>
+{% endblock %}
+
+{% block article %}
+{% include "Manual.txt" %}
+{% endblock %}

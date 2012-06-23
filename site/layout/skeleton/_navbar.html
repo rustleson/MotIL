@@ -1,0 +1,7 @@
+    <ul class="nav">
+        {% for module in site.children %}
+        <li{% ifequal page.module module %} class="active" {% endifequal %}>
+            <a href="{{ module.listing_url }}">{{ module.name|unslugify }}</a>
+        </li>
+        {% endfor %}
+    </ul>

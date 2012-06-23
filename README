@@ -1,1 +1,36 @@
-asocial coding in motion :P
+Copyright 2011-2012 Reyna D "rustleson"
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Build Instructions
+------------------
+
+Game is developing using Flex 4 SDK, so following steps are required 
+to successfully compile the application from a source:
+
+1. Download and install Flex SDK from 
+http://www.adobe.com/devnet/flex/flex-sdk-download.html
+
+2. Put mxmlc on your system path.
+
+3. Change directory to MotIL/
+
+4. Launch following command:
+mxmlc -static-link-runtime-shared-libraries=true -output build/MotIL.swf -source-path=src src/Main.as
+
+Compiled Flash application will be at build/MotIL.swf
+
+You can also write you own custom script for automatic build. For
+Unix users, see MotIL/build.sh as a working example.

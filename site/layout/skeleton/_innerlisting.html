@@ -1,0 +1,32 @@
+{% extends "skeleton/_root.html" %}
+
+{% block all %}
+{% spaceless %}
+{% comment %}
+{% ifnotequal node page.node %}
+    {% if node.has_listing %}<a href="{{ node.listing_url }}">{% endif %}
+    <h2>{{ node.name|unslugify }}</h2>
+    {% if node.has_listing %}</a>{% endif %}
+{% endifnotequal %}
+{% endcomment %}
+{% for list_page in node.pages %}
+{% ifnotequal list_page node.listing_page %}
+{% if list_page.display_in_list %}
+        <article>
+        <header>
+        <h3>
+        {% with list_page.name_without_extension|remove_date_prefix|unslugify as default_title %}
+            {{ list_page.title|default_if_none:default_title }}
+        {% endwith %}</h3>
+        <span><time pubdate><i>{{ list_page.created|date:"Y-m-d" }}</i></time></span>
+        </header>
+        <p>
+        {% render_excerpt list_page %}
+	</p>
+        </article>
+    {% if forloop.last != True %}<hr />{% endif %}
+{% endif %}
+{% endifnotequal %}
+{% endfor %}
+{% endspaceless %}
+{% endblock %}

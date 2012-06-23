@@ -64,6 +64,7 @@ package Engine.Stats {
 	public var ageConfirmed:Boolean = false; 
 	public var generated:Boolean = false; 
 	public var age:uint = 0;
+	public var name:String = "";
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -320,6 +321,7 @@ package Engine.Stats {
 	    this.statsDialog.widgets.chastityBelt.stats = this;
 	    this.statsDialog.widgets.pacifier.stats = this;
 	    this.statsDialog.widgets.analTentacle.stats = this;
+	    this.statsDialog.widgets.panel.titleString = this.name + " the " + TribesStrings[this.tribe];
 	}
 
 	public function updateStats():void {
@@ -510,6 +512,7 @@ package Engine.Stats {
 				  'mouth': this.mouthSlot.save(),
 				  'leftHand': this.leftHandSlot.save(),
 				  'rightHand': this.rightHandSlot.save(),
+				  'name': this.name,
 				  'artefacts': {}
 				};
 	    for (var key:String in this.artefacts) {
@@ -557,6 +560,9 @@ package Engine.Stats {
 		    this.mouthSlot.load(saveObj.mouth, this.artefacts);
 		    this.leftHandSlot.load(saveObj.leftHand, this.artefacts);
 		    this.rightHandSlot.load(saveObj.rightHand, this.artefacts);
+		}
+		if (saveObj.hasOwnProperty('name')) {
+		    this.name = saveObj.name;
 		}
 		return true;
 	    }

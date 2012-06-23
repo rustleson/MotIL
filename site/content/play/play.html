@@ -1,0 +1,64 @@
+{% extends "skeleton/_body.html" %}
+
+{% hyde
+    title: "Play!"
+    subtitle: "latest stable build: 0.1.0-alpha a.k.a. \"Not The Meal\" "
+%}
+
+{% block extra_js %}<script src="{{ site.url }}/media/js/AC_OETags.js" language="javascript"></script>{% endblock %}
+
+{% block content_body %}
+      <div class="row" style="text-align: center;">
+	
+	<div class="span" style="width: 110px;">&nbsp;</div>
+	<div class="span" style="width: 680px;">
+
+	  <div class="well">
+
+<script language="JavaScript" type="text/javascript">
+<!--
+		AC_FL_RunContent(
+					"src", "{{ site.url }}/media/swf/MotIL",
+					"width", "640",
+					"height", "480",
+					"align", "middle",
+					"id", "MotIL",
+					"quality", "high",
+					"bgcolor", "#000000",
+					"name", "MotIL",
+					"allowScriptAccess","always",
+					"type", "application/x-shockwave-flash",
+					"pluginspage", "http://www.adobe.com/go/getflashplayer"
+	);
+// -->
+</script>
+<noscript>
+	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+			id="MotIL" width="640" height="480"
+			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" name="MotIL">
+			<param name="movie" value="{{ site.url }}/media/swf/MotIL.swf" />
+			<param name="quality" value="high" />
+			<param name="bgcolor" value="#000000" />
+			<param name="allowScriptAccess" value="always" />
+			<embed src="{{ site.url }}/media/swf/MotIL.swf" quality="high" bgcolor="#000000"
+				width="640" height="480" name="MotIL" align="middle"
+				play="true"
+				loop="false"
+				quality="high"
+				allowScriptAccess="always"
+				type="application/x-shockwave-flash"
+				pluginspage="http://www.adobe.com/go/getflashplayer">
+			</embed>
+	</object>
+</noscript>
+
+	  </div>
+	</div>
+</div>
+    
+{% endblock %}
+
+
+
+
+

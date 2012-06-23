@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>MotIL :: Content Warning</title>
+    <link rel="stylesheet" href="{{ site.url }}/media/css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="{{ site.url }}/media/css/docs.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="shortcut icon" href="/media/favicon.ico" />
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+      <div id="windowTitleDialog" class="modal hide fade">
+
+	<div class="modal-header">
+	  <a href="#" class="close">&times;</a>
+	  <h3 class="contentwarning">Content Warning</h3>
+	</div>
+	<div class="modal-body">
+	  <div class="divDialogElements contentwarning">
+	    This site is about a game containing explicit scenes of the adult nature. If you didn't reach adult age in your country, please leave immediately. Otherwise, be warned, a lot of scenes in the game and on the site are containing nudity, hardcore sexual actions, bestiality with fictional creatures and rape. Although graphics is very abstract and there are not much anatomic details, it would be enough to insult a person who is not ready for the things described above. Please confirm that you are of legal age and really willing to access the site's content.
+	  </div>
+	  
+	</div>
+	<div class="modal-footer">
+	  <a href="#" class="btn primary btn-danger" onclick="okClicked (); return false;">I'm adult person and willing to continue</a>
+	</div>
+      </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ site.url }}/media/js/jquery.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-dropdown.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-modal.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-scrollspy.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-collapse.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-tooltip.js"></script>
+    <script src="{{ site.url }}/media/js/application.js"></script>
+    <script>
+      $(document).ready(function() {
+	$("#windowTitleDialog").modal({show: true}); 
+      });
+      function closeDialog () {
+        $('#windowTitleDialog').modal('hide'); 
+      };
+      function okClicked () {
+        document.location.href = '{{ site.url }}/index.html';
+        closeDialog ();
+      };
+    </script>
+
+</body>
+</html>

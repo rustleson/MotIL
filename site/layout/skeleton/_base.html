@@ -1,0 +1,80 @@
+{% extends "skeleton/_root.html" %}
+{% block all %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}{{ site.name }}{% endblock %}</title>
+    <!--[if IE]><script src="../j/html5.js"></script><![endif]-->
+    {% block meta_tags %}
+    <meta name="description" content="{{ site.name }}: Your site description.">
+    <meta name="keywords" content="">
+    {% endblock %}
+    {% block feeds %}
+    <link href="{{ site.url }}/blog/atom.xml" rel="alternate" title="{{ site.name }}" type="application/atom+xml"/>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{{ site.url }}/media/css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
+    <!-- <link rel="stylesheet" href="{{ site.url }}/media/css/bootstrap-responsive.css" type="text/css" media="screen" charset="utf-8"> -->
+    <link rel="stylesheet" href="{{ site.url }}/media/css/docs.css" type="text/css" media="screen" charset="utf-8">
+    {% block extra_css %}{% endblock %}
+    {% endblock %}
+    {% block js %}
+    <!-- <script src="{{ site.url }}/media/js/jquery-1.4.2.min.js"></script> -->
+    {% block extra_js %}{% endblock %}
+    {% endblock %}
+    <link rel="shortcut icon" href="{{ site.url }}/media/favicon.ico" />
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+  <!-- Navbar
+    ================================================== -->
+ <div class="navbar navbar-fixed-top">
+   <div class="navbar-inner">
+     <div class="container">
+       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+       </a>
+       <a class="brand" href="{{ site.url }}/index.html">Mandala of the Interpenetrating Lights</a>
+       <div class="nav-collapse">
+{% include "skeleton/_navbar.html" %}         
+       </div>
+     </div>
+   </div>
+
+ </div>
+
+<div class="container">
+
+<header class="jumbotron subhead" id="overview">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="lead">{{ page.subtitle }}</p>{% endif %}
+    {% block subnav %}{% endblock %}
+    <hr />
+</header>
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+{% include "skeleton/_footer.html" %}
+</footer>
+
+
+</div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ site.url }}/media/js/jquery.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-dropdown.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-scrollspy.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-collapse.js"></script>
+    <script src="{{ site.url }}/media/js/bootstrap-tooltip.js"></script>
+    <script src="{{ site.url }}/media/js/application.js"></script>
+
+</body>
+</html>
+{% endblock %}

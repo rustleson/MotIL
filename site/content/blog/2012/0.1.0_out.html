@@ -1,0 +1,25 @@
+{% extends "_post.html" %}
+{% load webdesign %}
+
+{% hyde
+    title: Version 0.1.0-alpha a.k.a. "Not The Meal" is out.
+    created: 2012-06-23 21:40:00
+%}
+
+{% block article %}
+
+{% article %}
+{% excerpt %}
+#### CHANGELOG ####
+
+* Main menu is implemented
+* Ability to create a new game is implemented
+* Character name is implemented
+* World is generating from a character name
+* Saving sound state is fixed
+
+{% endexcerpt %}
+
+{% endarticle %}
+
+{% endblock %}

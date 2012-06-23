@@ -43,6 +43,7 @@ package Engine.Worlds {
 		
 	public var bc:b2BuoyancyController = new b2BuoyancyController();
 	public var dialog:EntranceDialog;
+	public var helpDialog:HelpDialog;
 	//public var finished:Boolean = false; // flag for the Main would know when to destroy this world
 
 	private var backgroundsCache:Object = new Object();
@@ -70,9 +71,8 @@ package Engine.Worlds {
 	    bc.linearDrag = 0.005;
 	    bc.angularDrag = 0.005;
 	    world.AddController(bc);
-	    this.dialog = new EntranceDialog(Main.appWidth, Main.appHeight);
+	    this.dialog = new EntranceDialog(Main.appWidth, Main.appHeight, $stats);
 	    this.dialog.sprite = Main.sprite;
-	    this.dialog.stats = $stats;
 	    this.stats = $stats;
 	    if (!stats.ageConfirmed) {
 		this.dialog.state = "warning";
@@ -80,10 +80,22 @@ package Engine.Worlds {
 		this.dialog.state = "mainMenu";
 	    }
 	    this.dialog.rebuild();
+	    this.helpDialog = new HelpDialog(appWidth, appHeight);
+	    this.helpDialog.rebuild();
+	    Main.helpSprite.graphics.clear();
 	}
 
 	public override function update():void {
 	    this.dialog.update();
+	    if (this.dialog.state == "help" && this.helpDialog.state != 'visible') {
+		this.helpDialog.toggleHide();
+		//this.dialog.state = "hellActive";
+	    }
+	    if (Input.isKeyPressed(27) && this.helpDialog.state == 'visible') {
+		this.dialog.state = "mainMenu";
+		this.helpDialog.toggleHide();
+	    }
+	    this.helpDialog.update();
 	    super.update();
 	}
 

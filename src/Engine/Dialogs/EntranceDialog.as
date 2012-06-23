@@ -33,10 +33,16 @@ package Engine.Dialogs {
 	private var _state:String = 'hidden';
 	public var stats:ProtagonistStats;
 
-	public function EntranceDialog(w:Number, h:Number):void {
+	public function EntranceDialog(w:Number, h:Number, $stats:ProtagonistStats):void {
 	    super(w, h);
+	    this.stats = $stats;
 	    this.widgets['warning'] = new MessageWidget(90, 90, w - 180, h - 220, w - 180, h - 220, 0x111111);
 	    this.widgets['question'] = new QuestionWidget(90, 90, w - 180, h - 320, w - 180, h - 320, 0x111111);
+	    var menuItems:Array = new Array("New Game", "Continue", "Help");
+	    if (this.stats.tribe == 0) {
+		menuItems.splice(1, 1);
+	    }
+	    this.widgets['menu'] = new MenuWidget(220, 250, 200, h - 320, 0x333333, 0.5, menuItems);
 	    this.widgets.warning.titleFormat = new TextFormat("Huge", 8, 0xff7744);
 	    this.widgets.warning.titleFormat.align = TextFieldAutoSize.RIGHT;	    
 	    this.widgets.warning.messageFormat = new TextFormat("LargeEstudio", 8, 0xff7744);
@@ -47,7 +53,7 @@ package Engine.Dialogs {
 	    this.widgets.question.messageFormat = new TextFormat("LargeEstudio", 8, 0xaaaaaa);
 	    this.widgets.question.messageFormat.align = TextFieldAutoSize.LEFT;	    
 	    this.widgets.question.titleDY = -7;	    
-	    this.widgetsOrder = ['warning', 'question'];
+	    this.widgetsOrder = ['warning', 'question', 'menu'];
 	}
 
 	public function get state():String {
@@ -65,6 +71,9 @@ package Engine.Dialogs {
 	    if (s == "wrongAnswer") {
 		this.widgets.warning.show(new Message("Unfortunately, your answer was wrong. You can try again as many time as you wish, if you're really need to pass this test.", "Wrong Answer", 0xff7744));
 	    }
+	    if (s == "wrongName") {
+		this.widgets.warning.show(new Message("The name could not be empty. Please try again with something real or fictional, but not blank. It's your future character name after all!", "Wrong Name", 0xff7744));
+	    }
 	    if (s == "question1") {
 		this.widgets.question.submitted = false;
 		this.widgets.question.show(new Message("What is the medical term for the butt fucking?", "Question 1", 0xaaaaaa));
@@ -74,6 +83,13 @@ package Engine.Dialogs {
 		this.widgets.question.show(new Message("What does 'Shokushu Goukan' means in Japanese?", "Question 2", 0xaaaaaa));
 	    }
 	    if (s == "mainMenu") {
+		this.widgets.menu.large();
+	    }
+	    if (s == "generation1") {
+		this.widgets.question.submitted = false;
+		this.widgets.question.show(new Message("Enter your character name below. The complete and unique world layout will be randomly generated basing on the name you'll enter.\n\nWARNING: generating the new world will clear all your past game progress and achievements!", "Step 1: The Name", 0xaaaaaa));
+	    }
+	    if (s == "finished") {
 		this.stats.generated = true;
 	    }
 	}
@@ -82,6 +98,9 @@ package Engine.Dialogs {
 	    super.update();
 	    if (this.widgets.warning.state == 'hidden' && this.widgets.warning.transitionComplete && this.stats != null && (this.state == 'warning' || this.state == 'wrongAnswer')) {
 		this.state = "question1";
+	    }
+	    if (this.widgets.warning.state == 'hidden' && this.widgets.warning.transitionComplete && this.stats != null && (this.state == 'wrongName')) {
+		this.state = "generation1";
 	    }
 	    if (this.widgets.question.state == 'hidden' && this.widgets.question.transitionComplete && this.stats != null) {
 		if (this.state == 'question1' && this.widgets.question.submitted) {
@@ -103,7 +122,37 @@ package Engine.Dialogs {
 			this.state = 'wrongAnswer';
 		    }
 		}
-		
+		if (this.state == 'generation1' && this.widgets.question.submitted) {
+		    if (this.widgets.question.answer != "") { 
+			this.stats.name = this.widgets.question.answer;
+			this.stats.space = 1;
+			this.stats.tribe = ProtagonistStats.DAKINI_TRIBE;
+			this.stats.hairColor = 0xdd44dd;
+			this.stats.eyesColor = 0x22CC22;
+			this.stats.hairLength = 1.5;
+			this.stats.save();
+			Main.newCharacter = true;
+			Main.seedFromName(this.stats.name);
+			this.state = 'finished';
+		    } else {
+			this.state = 'wrongName';
+		    }
+		}
+	    }
+	    if (this.widgets.menu.state == 'hidden' && this.widgets.menu.submitted && this.widgets.menu.transitionComplete && this.stats != null) {
+		if (this.widgets.menu.chosenItem == "New Game") {
+		    this.state = "generation1";
+		    this.widgets.menu.submitted = false;
+		}
+		if (this.widgets.menu.chosenItem == "Continue") {
+		    Main.seedFromName(this.stats.name);
+		    this.state = "finished";
+		    this.widgets.menu.submitted = false;
+		}
+		if (this.widgets.menu.chosenItem == "Help") {
+		    this.state = "help";
+		    this.widgets.menu.submitted = false;
+		}
 	    }
 	}
 

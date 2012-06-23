@@ -1,0 +1,356 @@
+
+<section id="overv">
+<div class="page-header"><h1>Overview</h1></div>
+{% markdown %}
+Mandala of the Interpenetrating Lights (MotIL) is a fictional game world based on Indo-Tibetan myths about Dakinis. You are playing a new born female spirit who should grow through sexual experience and explore the world's mysteries. In a cycle of reincarnations, she will pass through eight different Realms to become a spiritual wife of one of the three ultimate Kings of the Mandala, which is the game's win condition.
+
+This hentai platformer, although is not a roguelike in a traditional sense, yet sharing many elements of the roguelike genre: like permadeath, random world generation, freedom of action and complex RPG system. This makes a game difficult to win, but also gives a good replayability. You will *not* unlock all achievements by winning the game once. Instead, you should get all nine different endings in the same world to complete the list. So, after your first win, feel free to commit suicide, reincarnate and start all over with different tribe and/or goals. But even after cleaning the whole world, you still can start a new game and generate completely different world for the bliss of your Dakini!
+{% endmarkdown %}
+</section>
+
+<section id="thestory">
+<div class="page-header"><h1>The Story</h1></div>
+{% markdown %}
+A lonely female spirit, wandering through time and space once came to the gates of the great Mandala. The Mandala was pulsating with its inner lights, and those lights were constantly interpenetrate each other, producing a great bliss for the sake of three mighty Kings. The view was so fascinating, so enchanting and so arousing, no wonder that spirit began to desire to enter the gates of Mandala with her whole heart. The Kings noticed a presence of outer desire and were heartely glad to encourage the new spirit to join them on the way of bliss. 
+
+King Ravana roared: "*Enter the Mandala, and you will know my great bliss of the Corruption!*" 
+
+King Kubera said: "*Enter the Mandala and you will know my great bliss of the Balance.*"
+
+King Heruka wispered: "*Enter the Mandala and you will know my great bliss of the Purity...*"
+
+Hence, a lonely female spirit brushed her doubts aside and came in to become the one with the Mandala...
+{% endmarkdown %}
+</section>
+
+<section id="character">
+<div class="page-header"><h1>Character</h1></div>
+{% markdown %}
+
+Generation
+----------
+
+As a first thing after you entered the Mandala, you should name yourself to let Kings build a world intended just for you. Mandala consists of 233280 different worlds and your name will determine the exact world where you'll be born. Then, you must choose your starting elemental Realm, your Tribe and your appearance. Think wisely on the generation stage, especially about a Realm, because after death you would not have an option to choose Realm and Tribe again, unless your previous incarnation was enlightened (which is hard thing to achive). Instead you will automatically reborn with Tribe, Realm and appearance depending of your previous actions. More detailed info about auto-rebirth is available in "Death and Rebirth" section below. 
+
+Recommended starting combination for beginners is Dakini of the Space Realm. The appearance is just aestetic thing and not very important for the gameplay. Although different hair length could make movements of your character a bit different, because hair having its inertia too and interacting with other objects like walls etc.
+
+<p>&nbsp;</p>
+
+Tribes
+------
+
+There are 3 tribes available to play. If you are in RPG gaming, think of them as of character races. You cannot change the Tribe during single incarnation, and different tribes have different effects, advantages and shortcomings. Following are descriptions of each Tribe:
+
+#### Rakshasi Tribe ####
+
+Rakshasis are evil demonesses, with strong tendences to Corruption. They have skinny complection and grow horns on they heads. Due to they thin bodies, they are very sensitive to both bliss and pain. This makes them hard characters to play, because they are very fragile and could die very easily, especially in the early game. On the other hand, Rakshasis are multi-orgasmic from the very beginning, which gives them ability to level-up lightning fast. If you'll decide to try a Rakshasi, be careful and spend most points to Constitution and Pain Resistance attributes. Some points in Speed would also be good in later game when your body will significally grow. Rakshasi is the favorite tribe of the King Ravana.
+
+#### Yakshini Tribe ####
+
+Yakshinis are nature spirits and guardians of the treasures of the world. As nature spirits, they have tendences to neutrality. Enjoing all goods of the world, they having portly complection and wearing jewel-encrusted crowns. Due to they fat bodies, they are insensitive to both pain and bliss, which makes them hard to achive orgasm and hence hard to level up. On the other hand, they are hard to kill also, and thus can handle much more thick things from the very beginning. If you'll decide to try Yakshini, spend most points to Arousal Boost first, then Speed is also important since they would become hard to move around with their heavy bodies. For the sake of the Kings, leave Constitution stat alone! This is not the thing you need to the very end. Yakshini is the favorite tribe of the King Kubera.
+
+#### Dakini Tribe ####
+
+Dakinis are good spirits of wisdom and knowledge with a strong tendences to Purity. They have average complection and a halo around they heads. Dakini is the easiest Tribe to play, because they are perfectly balanced in sensitivity, which means they are not very easy to kill like Rakshasi, but also not very hard to level-up like Yakshini. This gives Dakini character a lot of flexibility in development. There are no recommended development patterns for Dakini, you can spend points as you like. The only exception is a Speed points in the later game, which is necessary thing for all tribes. Dakini is the favorite tribe of the King Heruka.
+
+<p>&nbsp;</p>
+
+Elements and Karma
+------------------
+
+You and every creature in the game world are having 5 elemental stats by the name of 5 elements in Indo-Tibetan mythology: Space, Water, Earth, Fire and Air. Every stat is representing your affinity with certain element. I.e. having Air of 100% means you are made of pure Air. Elemental stats are interdependent: the sum of all 5 stats are always not exceed 100%. That means if you're increasing one element, all other elements would be decreased correspondingly. 
+
+From the beginning of a particular incarnation, you are starting with 100% in the element corresponding to the elemental realm you are born in. So, birth in the Air Realm gives you 100% Air from the start. You can then change your elemental stats by taking a bliss from different kinds of creatures and objects. I.e. copulating with Air creature will increase Air proportionally to bliss you're taking, and decrease all other elements. Also, using elemental artefacts will costs in loosing corresponding elemental stat points. Number of points lost is inversely to the artefact's level of use.
+
+With changing the elemental stats, your skin color will be changing correspondingly, don't be surprised of it. So, you body skin color is a good helper to rough estimating of your current elemental state.
+
+You and some creatures have also the Karma stat, which is representing the intention alignment. Karma of -100 means you are totally corrupted, +100 means you are totally pure, 0 means perfect balance between corruption and purity. This stat is very important especially in the later game, to achive different endings.
+
+Your starting Karma is depending on the Tribe you're incarnated with. So, Dakini has positive Karma from the start, Rakshasi has negative starting Karma, and Yakshini has a neutral Karma from the beginning. Your Tribe also will have an irresistable tendences towards certain alignment: Dakini is faster to insrease and slower to decrease Karma, Rakshasi, on the contrary, are faster to decrease and slower to increase Karma, and Yakshini are faster to bring Karma to the neutral point, and slower to get it to extremes.
+
+Your Karma would be changed by different types of action, but generally by copulating with a certain type of creatures. Like with elements, enjoing creatures of Corruption will decrease you Karma, enjoing creatures of Purity will increase it, and so on. Also, using artefacts of the Corruption, Balance and Purity will have the same effect.
+
+With changing your Karma, your aura intensity and color will be changed too. Aura of the Corrupted is dark, aura of the Pure is light, and Neutrals have no aura. So, your aura state would be used for rough estimate of your Karma stat without looking at the stat bar.
+
+<p>&nbsp;</p>
+
+Bliss and Pain
+--------------
+
+Bliss is what the world of Mandala is all about. Main Bliss stat is representing your current arousal state and decreasing with a time. Your main goal is to accumulate a Bliss by performing a friction with a certain object, and reach Orgasm Point. 
+
+Your Orgasm Point is another stat which is determining a value of maximum Bliss you can take before reaching the orgasm itself. After you'll reach the orgasm, you will overflow with the energies and get the experience proportionally to the Orgasm Point value. Orgasm Point is improving automatically every time you are getting some Bliss *and* having free points in the Experience Pool. Read further info about Experience Pool in the Experience section below.
+
+Another bliss related stat is Arousal Boost which you can upgrade manually after every level-up. Arousal Boost gives you higher Bliss accumulating speed, so higher this stat is, faster you are arousing, reaching orgasm and hence getting experience.
+
+When you're about to reach orgasm, the game screen will begin to bleach, which is a good inicator of your arousal state.
+
+Pain in the world of Mandala is a thing that makes your life more interesting and more intence. Main Pain stat is representing the level of pain you are currently struggling and like a Bliss it's decreasing with a time. Pain is generally a bad thing, because if you'll reach your Pain Treshold you'll be die out of pain, reborn at first level and gonna start all over again.
+
+Pain Treshold is a stat similar to the Orgasm Point. It's representing a number of maximum Pain you can take without dying, and will be improving automatically every time you are getting some Pain *and* having free points in the Experience Pool.
+
+Another pain related stat is Pain Resistance which you can upgrade manually after every level-up. Pain Resistance gives you slower Pain accumulating speed, so higher this stat is, slower you are getting Pain, hence having more chances to survive.
+
+If you'll reach 95% of your Pain Treshold, and still survive after it, you'll get a lot of near-death experience. It's very powerful thing (you can get few levels at once), yet very dangerous also. Chances to survive after 95% point are very very low, especially in the beginning of the game. Although, it could become a good source of experience in later game if you know how to handle it. Anyway, use near-death experience with a caution.
+
+When you're about to reach your Pain Treshold, the game screen will begin to fade out, which is a warning inicator of your upcoming death.
+
+Generally, both Bliss and Pain are accumulating proportionally to both friction speed and current diameter of the inserted object. And they are inversely to the slot's stretched diameter and length. This means you can handle same object with much less pain if you were stretched your hole on the smaller objects before. Read further info about stretching in the Slots Interaction section below.
+
+<p>&nbsp;</p>
+
+Death and Rebirth
+-----------------
+
+Death is permanent in the world of Mandala, and this makes your life valuable. Once you dead, you are dead and gonna start all over again with another incarnation of your character. The only good thing is that you are guaranteed to reincarnate in the exactly same world as before, unless you'll start a new game. So you can use your knowlendge of this particular world to play more effectively next time.
+
+In the beginning of the new game, you have an option to choose your future incarnation Realm, Tribe and appearance. You will also have this option as a good bonus if your previous incarnation was enlightened. Otherwise, you will be automatically reborn with Realm, Tribe and appearance depending on your previous incarnation actions.
+
+Following rules of auto-rebirth applied:
+
+* The Realm of your future incarnation is determined by the elemental stat you have maximum affinity with. If at the moment of your death you have maximum affinity with Air element, you will be reborn in Air realm, etc.
+* The Tribe of your future incarnation is determined by a type of sexual actions you were most skilled with. If you were most skilled with vaginal sex, you'll be reborn as Dakini. Most skilled with oral sex means you'll be reborn as Yakshini. Most skilled with anal sex leads to reincarnation as Rakshasi.
+* Your future appearance is depending on the place of your death. So, dying in the same room twice, will give you same appearance each time.
+
+Of course, if you're tired of endless reincarnations in the same world, you are always free to start a new game with a different character name, which will generate completely different world for you.
+
+<p>&nbsp;</p>
+
+Experience
+----------
+
+Experience is a thing that makes you grow. You will get experience points after successfully performing one of the following actions:
+
+* reach an Orgasm Point;
+* reach and survive near-death state (95% of your current Pain Treshold);
+* make a creature to ejaculate;
+* succesfully use an artifact;
+
+Every time you're getting experience, all its points are adding to the Experience Pool. Experience Pool is accumulating experience for further allocation to experience-based stats. For example, if you're taking Pain, points will be leaked from a pool and added to the Pain Treshold stat, hence your Pain Treshold will be automatically improving. Simirarly, Orgasm Point stat will also be automatically imroving when you are taking Bliss. Other experience-based stats are artefacts' levels of use. When artifact is activated, its level of use will constantly grow out of Experience Pool too. Note, that Experience Pool cannot accumulate more than 20000 points, so every experience over this value will be lost. 
+
+Your character level is depending on how much total experience you've collected before. When experience value reached certain amount, you will raise your level by one. Exact amount of experience to be collected for the next level could be known if you'll roll a mouse over experience stat bar and look at TNL value. TNL will grow exponentially with every level, so it would be very easy to achieve level 10, not hard to achieve level 20, and very hard to achieve level 40. Level 50 is near impossible... though there are no impossible things in this world. 
+
+With each attained level you will get 2 Upgrade Points to spend on point-dependent stats: Arousal Boost, Pain Resistance, Constitution and Speed. Also, with each level your body will grow a bit, your Tribe attributes like horns or halo will grow too, and your complection will become a bit more thin. So every level your body become more heavy and more sensitive. You can cover your heaviness by upgrading Speed stat and cover your extra-sensitivity by upgrading Constitution stat. Be careful with them though, because neither high speed nor large constitution are welcomed.
+
+{% endmarkdown %}
+</section>
+
+<section id="action">
+<div class="page-header"><h1>Action</h1></div>
+{% markdown %}
+
+Movement
+--------
+
+The movement conception is very easy, but like in the real world, it could take a time to learn how to move effectively and with a grace.
+
+You have 8 keys to move: `<W>` `<A>` `<S>` `<D>` for primal directions, and `<Q>` `<E>` `<Z>` `<C>` for diagonal movement. Each key will apply an impulse to move your body in a certain direction, and also will force your body to constrict muscles and get a certain pre-designed posture. After a short time, if you didn't took other movement actions, your body will relax and move freely under a gravity law. You can hold a directional key to repeatedly apply impulses in a certain direction, which will cause you to move with acceleration. 
+
+Another important movement key is `<X>`. When you hold it, your current muscles costriction state will be frozen, so you can move around in a same pose, or even just relaxed. When you are releasing `<X>` key, your body immediately will be forced to relax, which is another function of this key. Just press it quickly to force relaxation if needed.
+
+With just this basic concept you'll be able to perform a large variety of body movements, tricks and sexual actions. Of course, this is not very easy to learn, so you need some practice in using your body inertia and postures effectively. Begin with just WASD keys and learn how to use rotation moments etc. Even with this 4 keys you can move around the world and interact with a creatures effectively enough. Diagonal directions are mostly a helpers in different situations, but they also could be used for some tricks later. And finally, `<X>` is not the key you need to use very often. It really helps only if you are performing some strange tricks like screwing a stalactite on the ceiling :)
+
+Movement related stats are Speed and Constitution. Speed makes you not just faster, but it's increasing the force of a single impulse to be applied to your body each time. Hence, high values can make your body movements jerky and uncontrollable. Don't upgrade speed in large amounts unless you know what you are doing. Try to add some points first, then test your movements, then add few other points if you're not satisfied and so on.
+
+Constitution makes your complection more fat and heavy. One value that is directly depending on your complection is a sensitivity. More wider you are, less sensitive you also are, both to Bliss and Pain. That means you'll increase both Bliss and Pain slower, which could not be good if you're already not very sensitive, like Yakshini from the start. On the other hand, if you are extra-sensitive like Rakshasi, you *must* raise Constitution to get rid off uncontrollable vortexes of Pain. Another thing connected with Constitution is your maximum Stretched Diameter. Wider you are, wider things you can handle, which is a good side of high constitution.
+
+<p>&nbsp;</p>
+
+Slots Interaction
+-----------------
+
+You have 5 body slots that can be used to give pleasure for other creatures: two hands, mouth, vagina and anus. But only latter three of them will bring Bliss to yourself. Since Bliss is the main source of your experience in game, you gonna learn how to use these three slots effectively.
+
+Each slot (except hands) have 2 stats called Stretched Diameter and Stretched Length. They are representing how much wide and long thing you can dip into this slot without any pain. Values are in nanometers. Yes, world of Mandala is a nano-world, so nanometer is the main unit of measurement there.
+
+Stretched Diameter/Length gonna be enlarged when you're taking pain from the thing wider/longer than you could handle. This is how your holes stretching works. Wider the thing is, more pain you will take from it, but also faster you will stretch a slot with it. It's very dangerous to try a thing that much wider than your current Stretched Diameter, because you will certainly die out of pain with it. Although some very insensitive characters could try it with a chance to survive.
+
+When you're seeing a creature or insertable object, you'll notice three stripes near its end. It's danger levels indicators correspondingly for mouth, vagina and anus. Each of them showing the safety level of this object for certain slot. Green stripe means it's safe, orange means challenging, and red means highly dangerous. You could try things in green diapason with no fear, things in orange would be tried only if you're skilled enough, and things in red should be avoided at any costs.
+
+To let something penetrate you, first you need to relax a sphincter of the slot. Use `<J>` for mouth, `<N>` for vagina and `<M>` for anus. Once slot is ready to get something inside, you need also to hit the tip of the insertable with your slot. This could be somewhat tricky for the beginners, and you should practice in dancing around first. So when you hit the spot, begin to move in opposite directions. Faster you're moving and more friction amplitude is, more Bliss you will take.
+
+If your Pain is getting dangerous, you need to pop the object out of youself immediately! For that, move your body in order to slide out the object, and then quickly press a slot key, to prevent the object from sliding into you again.
+
+To successfully and gracefully copulate with a different types of things, you need a practice. You are completely free to do any movements you like during intercourse, so practice and learn which are more effective and more pleasant for you to see.
+
+<p>&nbsp;</p>
+
+Artefacts
+---------
+
+Artefacts are the powerful objects of each Realm, which you gonna find and absorb into yourself to get its powers. Each Artefact is containing inside the altar of corresponding Realm type. 
+
+To absorb an artefact you firstly gonna be made of pure element (for elemental artefacts) or of "true" Karma (for karma artefacts). I.e. to absorb an Artefact of the Fire Realm, you gonna be made of pure Fire, and to absorb Artefact of the Corruption Realm you need to be totally corrupted first. 
+
+Secondly, you gonna let the altar to penetrate you and make a Bliss offering to the Artefact. All Bliss you're taking while riding on the altar is counted as offered to the Artefact. Artefact itself is accumulating that Bliss and begin to absorbing from the altar. You'll notice that Artefact is moving towards your bosom and lessening. After all necessary Bliss is sacrificed, Artefact enters your body and becomes a part of you.
+
+All absorbed artefacts are shown in the character `<I>`nfo screen , you can read their descriptions by rolling mouse over the artefact icon. Also, you can attach artefacts to any of your 5 slots. Just drag artefact icon and drop it into the slot circle. You cannot drag already attached artefacts. To detach an artefact from a slot, drag its icon out of slot circle.
+
+While artefact is attached to a certain slot, pressing slot's key will activate or deactivate this artefact. Artefacts are having different effects when activated, but all of them will drain corresponding elemental stat or shift Karma towards artefact's alignment while active. Also, they will get experience from the Experience Pool and automatically raise their own level of use. Artefacts level of use is determining how fast elemental stat will be drained. It would drain a stat in a few seconds on the level 1, and will stop draining at all on the level 50.
+
+By absorbing all 5 elemental artefacts, your character will become enlightened, which will give you a third eye on the head and will also unlock certain things in the world.
+
+{% endmarkdown %}
+</section>
+<p>&nbsp;</p>
+
+<section id="theworld">
+<div class="page-header"><h1>The World</h1></div>
+{% markdown %}
+
+Realms
+------
+
+There are total of 8 Realms in the world of Mandala. Elemental realms are: Realm of Space, Realm of Water, Realm of Earth, Realm of Fire and Realm of Air. Intention realms are: Realm of Corruption, Realm of Balance and Realm of Purity. 
+
+Initially, Realm of Space, Realm of Corruption, Realm of Balance and Realm of Purity all are locked and you cannot enter them unless you done certain things before. There are messages in the world that will tell you what you gonna do to pass certain rooms, so listen to the Insubstantial Voice wispering carefully. 
+
+Every Realm is made of corresponding element/karma and featuring different kinds of creatures, textures, backgrounds and music. All stuff (including music) is randomly generated and is unique for every game, although could look similar. The elemental backgrounds particularly are made out of shapes corresponding to elements in Tibetan mythology: dots for Space, circles for Water etc. Colors of the elements are also taken from the Tibetan mythology, so don't ask why the Air is green :) Probably, because the green leaves on a trees are producing oxygen for us.
+
+<p>&nbsp;</p>
+
+Altars
+------
+
+While travelling over the world, you'll find altars devoted to certain element or certain Karma intention. Those altars are the easiest sort of experience, because unlike creatures they are static and you can freely practice your skills with them, without a fear to be raped or to be rejected. 
+
+Also, some altars are containing a powerful artefacts of the realms. You gonna seek this type of altars and absorb its powers with a Bliss offering. Read further info about how to do it in the Artefacts section above. Artefact altars are marked as colored rectangles on the map.
+
+<p>&nbsp;</p>
+
+Monsters
+--------
+
+Monsters are not implemented yet. More info to come later.
+
+<p>&nbsp;</p>
+
+Kings
+-----
+
+Kings are not implemented yet. More info to come later.
+
+{% endmarkdown %}
+</section>
+
+
+<section id="controls">
+<div class="page-header"><h1>Controls</h1></div>
+{% markdown %}
+
+### Movement ###
+
+`<W>`	move up
+
+`<A>` 	move left
+
+`<S>` 	move down
+
+`<D>`	move right
+
+`<Q>`	move diagonally up/left
+
+`<E>` 	move diagonally up/right
+
+`<Z>` 	move diagonally down/left
+
+`<C>`	move diagonally down/right
+
+Hold `<X>` to freeze your current pose or stay relaxed if you already are.
+While pose is frozen, you can move as usually with keys described above.
+
+After releasing `<X>` you will relax immediately, so quickly pressing `<X>` could also be used to force relaxation.
+
+<p>&nbsp;</p>
+
+### Slots Interaction ###
+
+`<H>`	right hand open/close/use
+
+`<K>`	left hand open/close/use
+
+`<J>` 	mouth open/close/use
+
+`<N>`	vagina open/close/use
+
+`<M>`	anus open/close/use
+
+When artifact is attached to a slot, pressing its key will use this artefact. 
+Otherwise, pressing a key from above will constrict or relax slot's sphincter.
+
+While sphincter is relaxed, anyone is free to penetrate you. 
+Some powerful monsters would penetrate you even with sphincter constricted (rape).
+
+<p>&nbsp;</p>
+
+### Interface Interaction ###
+
+`<?>`  		meditate on HELP
+
+`<~>`		toggle log panel
+
+`<I>` 		toggle character info screen 
+
+`<TAB>` 		toggle fullsize map
+
+`<BKSPC>` 	hide all visible widgets
+
+NOTE: use latter only if you are ultimate ninja, because you'll left *without any* useful (and vital) info on the screen.
+
+<p>&nbsp;</p>
+
+### Character Info Screen ###
+
+When this screen in on you can:
+
+* roll mouse over any stat or item to view its quick description;
+* when level-up points available, you can click (+) to upgrade certain stat;
+
+When at least one artifact available:
+
+* drag artifact icon and drop into a slot circle to attach;
+* drag attached artefact out slot circle to detach;
+
+When info screen in minimized and you have level-up point available, you can optionally click yellow (+) in the top right corner to open info screen. 
+
+You can also use quick keys to upgrade your stats even without visiting info screen:
+
+`<Y>` 	upgrade Arousal Boost
+
+`<U>`	upgrade Pain Resistance
+
+`<O>`	upgrade Constitution
+
+`<L>` 	upgrade Speed
+
+<p>&nbsp;</p>
+
+### System Controls ###
+
+`<\>` 	toggle mute sound
+
+`<[>` 	decrease volume by 10%
+
+`<]>` 	increase volume by 10%
+
+`<F8>`	toggle system info (fps, memory usage etc)
+
+<p>&nbsp;</p>
+
+### Buddha Mode ###
+
+Following keys working only when Buddha Mode is activated:
+
+`<1-5>`	manually adjust elemental stats
+
+`<6-7>`	manually adjust alignment
+
+`<8>`  	force level-up
+
+You will also get immortality, full map and all artifacts as a good bonus.
+Although, you will no longer be able to save your progress, so next time you'll restore a game, you begin from the point before you entered a mode.
+
+Feel free to test things in this mode if you know its mantra :)
+
+{% endmarkdown %}
+</section>

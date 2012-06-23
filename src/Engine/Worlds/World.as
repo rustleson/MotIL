@@ -59,7 +59,6 @@ package Engine.Worlds {
 	public var stats:ProtagonistStats;
 	public var seed:uint;
 	public var blitSprite:Sprite;
-	public var tenorion:Tenorion;
 
 	public function World(){
 			

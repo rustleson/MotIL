@@ -100,17 +100,19 @@ package Engine.Dialogs.Widgets {
 	    this.sprite.graphics.clear();
 	    i = 0;
 	    for each (titleText in this.topicTexts) {
-		titleText.x = Math.round(tx + titleText.x + 2);
-		titleText.y = Math.round(ty + titleText.y);
-		this.sprite.graphics.lineStyle(0, 0, 0);
-		if (i == this.dialog.activeTopic) {
-		    this.sprite.graphics.beginFill(Utils.colorLight(this.bgColor, 0.1), 1);
-		    this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height + 4, 5, 5);
-		} else {
-		    this.sprite.graphics.beginFill(this.bgColor, 1);
-		    this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height, 5, 5);
+		if (titleText.width > 0) {
+		    titleText.x = Math.round(tx + titleText.x + 2);
+		    titleText.y = Math.round(ty + titleText.y);
+		    this.sprite.graphics.lineStyle(0, 0, 0);
+		    if (i == this.dialog.activeTopic) {
+			this.sprite.graphics.beginFill(Utils.colorLight(this.bgColor, 0.1), 1);
+			this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height + 4, 5, 5);
+		    } else {
+			this.sprite.graphics.beginFill(this.bgColor, 1);
+			this.sprite.graphics.drawRoundRect(titleText.x - 2, titleText.y + 1, titleText.width + 4, titleText.height, 5, 5);
+		    }
+		    this.sprite.graphics.endFill();
 		}
-		this.sprite.graphics.endFill();
 		i++
 	    }
 	}

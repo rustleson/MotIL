@@ -58,10 +58,11 @@ package{
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
 	    static public var seed:uint;
-	    static public var version:String = "0.0.6-alpha";
+	    static public var version:String = "0.1.0-alpha";
 	    static public var tenorion:Tenorion; 
 	    static public var save:SharedObject = SharedObject.getLocal('MotIL', '/');
 	    private var autoRebirthNeeded:Boolean = false;
+	    public static var newCharacter:Boolean = false;
 	    private var generating:Boolean = true;
 	    private var textureIndex:int = 0;
 	    public static var progressWidget:PercentWidget = new PercentWidget(100, 220, 240, 6, 0xddeedd, "Generating the Mandala:");
@@ -84,13 +85,12 @@ package{
 		input = new Input(sprite);
 		appWidth = stage.stageWidth;
 		appHeight = stage.stageHeight;
-		seed = 2547235893;
 		stats = new ProtagonistStats();
-		if (!stats.load()) {
+		if (!stats.load() || stats.tribe == 0) {
 		    this.autoRebirthNeeded = true;
 		}
+		seedFromName(stats.name); //2547235893; // seed of the old first test world
 		currWorld = new EntranceWorld(stats, seed);
-		currWorld.tenorion = tenorion;
 		// if (stats.muteSound) { }
 		helpSprite.addChild(progressWidget.sprite);
 		progressWidget.transition('large', 0, 0, 2);
@@ -131,6 +131,7 @@ package{
 		    tribe = ProtagonistStats.YAKSHINI_TRIBE;
 		}
 		var ageConfirmed:Boolean = this.stats.ageConfirmed;
+		var name:String = this.stats.name;
 		stats = new ProtagonistStats();
 		stats.space = space;
 		stats.water = water;
@@ -139,6 +140,8 @@ package{
 		stats.air = air;
 		stats.tribe = tribe;
 		stats.ageConfirmed = ageConfirmed;
+		stats.name = name;
+		seedFromName(stats.name);
 		// your appearance will be semi-random, depending on last room's PRNG state 
 		// death in the same room should guarantee same appearance each time
 		stats.hairColor = Utils.HSLtoRGB(Rndm.integer(0, 360), 0.5, Rndm.float(0.1, 0.6));
@@ -150,34 +153,60 @@ package{
 		if (!generating) {
 		    sprite.graphics.clear();
 		    if (stats.death){
-			generating = true;
 			currWorld.deconstruct();
 			this.autoRebirth();
-			currWorld = new MandalaWorld(stats, seed, tenorion, false);
-			currWorld.tenorion = tenorion;
-			currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
-			currWorld.tenorion.matrixPad.generateUniversalSong();
-			currWorld.tenorion.voices[0] = Main.tenorion.presetVoice['valsound.percus3'];
+			currWorld = new MandalaWorld(stats, seed, false);
+			if (save.data.hasOwnProperty('world') && !save.data.world.muteSound) {
+			    tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+			    tenorion.matrixPad.generateUniversalSong();
+			    tenorion.voices[0] = tenorion.presetVoice['valsound.percus3'];
+			}
 			this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 			stats.save();
 		    }
 		    if (stats.generated) {
-			generating = true;
 			currWorld.deconstruct();
-			if (this.autoRebirthNeeded) {
-			    this.autoRebirth();
-			    this.autoRebirthNeeded = false;
-			    currWorld = new MandalaWorld(stats, seed, tenorion, false);
+			if (newCharacter) {
+			    if (this.autoRebirthNeeded) {
+				//this.autoRebirth();
+				//this.autoRebirthNeeded = false;
+			    }
+			    newCharacter = false;
+			    var space:Number = this.stats.space;
+			    var water:Number = this.stats.water;
+			    var earth:Number = this.stats.earth;
+			    var fire:Number = this.stats.fire;
+			    var air:Number = this.stats.air;
+			    var tribe:Number = this.stats.tribe;
+			    var name:String = this.stats.name;
+			    var hairColor:uint = this.stats.hairColor;
+			    var eyesColor:uint = this.stats.eyesColor;
+			    var hairLength:Number = this.stats.hairLength;
+			    var ageConfirmed:Boolean = this.stats.ageConfirmed;
+			    stats = new ProtagonistStats();
+			    stats.space = space;
+			    stats.water = water;
+			    stats.earth = earth;
+			    stats.fire = fire;
+			    stats.air = air;
+			    stats.tribe = tribe;
+			    stats.ageConfirmed = ageConfirmed;
+			    stats.hairColor = hairColor;
+			    stats.eyesColor = eyesColor;
+			    stats.hairLength = hairLength;
+			    stats.name = name;
+			    currWorld = new MandalaWorld(stats, seed, false);
 			    this.stats.statsDialog.widgets.message.show(new Message("Welcome to the Mandala of the Interpenetrating lights! \nWe are always glad to see the young spirit coming.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 			    this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
 			} else {
-			    currWorld = new MandalaWorld(stats, seed, tenorion);
+			    currWorld = new MandalaWorld(stats, seed);
 			    this.stats.statsDialog.widgets.message.show(new Message("Welcome back to the Mandala of the Interpenetrating lights! \nWe are always glad to see your growing spirit again.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
 			    this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
 			}
-			currWorld.tenorion = tenorion;
-			currWorld.tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
-			currWorld.tenorion.matrixPad.generateUniversalSong();
+			if (save.data.hasOwnProperty('world') && !save.data.world.muteSound) {
+			    tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+			    tenorion.matrixPad.generateUniversalSong();
+			}
 			this.stats.generated = false;
 			stats.save();
 		    }
@@ -191,7 +220,17 @@ package{
 		    progressWidget.value += 1/8;
 		    textureIndex++;
 		    if (!generating) {
-			tenorion = new Tenorion();
+			if (save.data.hasOwnProperty('world') && !save.data.world.muteSound || !save.data.hasOwnProperty('world')) {
+			    tenorion = new Tenorion();
+			    if (save.data.hasOwnProperty('world')) {
+				tenorion.driver.volume = save.data.world.soundVolume;
+				tenorion.muteSound = save.data.world.muteSound;
+			    } else {
+				tenorion.driver.volume = 1;
+				tenorion.muteSound = false;
+			    }
+			    tenorion.driver.play();
+			}
 			helpSprite.removeChild(progressWidget.sprite);
 		    }
 		}
@@ -201,10 +240,15 @@ package{
 		this.stats.save();
 	    }
 
-	    public static function updateStage():void {
-		//stage.invalidate();
+	    public static function seedFromName(name:String):void {
+		seed = 0;
+		for (var i:int = 0; i < name.length; i++) {
+		    seed += name.charCodeAt(i) * name.charCodeAt(i) * i * i;
+		}
 	    }
 	    
+	    
+
 	}
 
 }

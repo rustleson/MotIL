@@ -1,0 +1,32 @@
+{% extends "skeleton/_body.html" %}
+{% hyde
+    title: "MotIL"
+    subtitle: "a place where Dakini having fun"
+    created: 2010-12-29 14:30:00
+    listing: True
+%}
+
+{% block content_body %}
+
+  <div class="row">
+	  
+	  <div class="span8">
+	    <div class="well">
+	      <img src="{{ site.url }}/media/images/tentacle-rape.jpg" width="580" height="421" border="0" alt="Tentacle Rape" />
+	    </div>
+	  </div>
+	  
+	  <div class="span4">
+	    <h2>Recent News</h2>
+
+	    {% recent_posts recents 5 %}
+	      {% for post in recents %}
+	      <p>
+		[{{ post.created }}]<br /><a href='{{site.url}}/blog/blog.html'>{{post.title}}</a>
+	      </p>
+	    {% endfor %}
+	  </div>
+
+  </div>
+
+{% endblock %}

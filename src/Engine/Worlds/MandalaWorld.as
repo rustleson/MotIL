@@ -70,9 +70,8 @@ package Engine.Worlds {
 	private var lastAge:uint = 0;
 	private var startedAge:uint;
 
-	public function MandalaWorld(stats:ProtagonistStats, seed:uint, $tenorion:Tenorion = null, loadNeeded:Boolean = true){
+	public function MandalaWorld(stats:ProtagonistStats, seed:uint, loadNeeded:Boolean = true){
 	    this.startedAge = getTimer();
-	    this.tenorion = $tenorion;
 	    secondaryBgSprite = new Sprite();
 	    secondaryBgSprite.cacheAsBitmap = true; // doesn't improve performance, is it really necessary?
 	    sprite.addChild(secondaryBgSprite);
@@ -181,11 +180,11 @@ package Engine.Worlds {
 		if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
 		    this.stats.statsDialog.widgets.log.show("Entered Realm of " + this.stats.ElementalStrings[this.map[proY][proX].type]);
 		}
-		if (this.tenorion != null) {
-		    this.tenorion.matrixPad.tendence = this.roomSongTendencies[this.map[proY][proX].type];
-		    this.tenorion.needRebuild = true;
+		if (Main.tenorion != null) {
+		    Main.tenorion.matrixPad.tendence = this.roomSongTendencies[this.map[proY][proX].type];
+		    Main.tenorion.needRebuild = true;
 		    if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
-			this.tenorion.matrixPad.generateUniversalSong();
+			Main.tenorion.matrixPad.generateUniversalSong();
 		    }
 		}
 		this.curRoomX = proX;
@@ -237,18 +236,31 @@ package Engine.Worlds {
 	    this.chastityBeltAction();
 	    this.pacifierAction();
 	    this.analTentacleAction();
-	    if (this.tenorion != null && Input.isKeyReleased(220)) { // key "\"
-		this.tenorion.muteSound = !this.tenorion.muteSound;
-		if (this.tenorion.muteSound)
-		    this.tenorion.driver.stop();
-		else
-		    this.tenorion.driver.play();
+	    if (Main.tenorion != null && Input.isKeyReleased(220)) { // key "\"
+		Main.tenorion.muteSound = !Main.tenorion.muteSound;
+		if (Main.tenorion.muteSound)
+		    Main.tenorion.driver.stop();
+		else 
+		    Main.tenorion.driver.play();
+		this.save();
 	    }
-	    if (this.tenorion != null && Input.isKeyReleased(219)) { // key "["
-		this.tenorion.driver.volume = Math.max(0, this.tenorion.driver.volume - 0.1);
+	    if (Main.tenorion == null && Input.isKeyReleased(220)) { // key "\"
+		Main.tenorion = new Tenorion();
+		Main.tenorion.driver.play();
+		Main.tenorion.matrixPad.tendence = this.roomSongTendencies[this.map[proY][proX].type];
+		Main.tenorion.needRebuild = true;
+		if (this.curRoomX >= 0 && this.map[proY][proX].type != this.map[this.curRoomY][this.curRoomX].type) {
+		    Main.tenorion.matrixPad.generateUniversalSong();
+		}
+		this.save();
 	    }
-	    if (this.tenorion != null && Input.isKeyReleased(221)) { // key "]"
-		this.tenorion.driver.volume = Math.min(1, this.tenorion.driver.volume + 0.1);
+	    if (Main.tenorion != null && Input.isKeyReleased(219)) { // key "["
+		Main.tenorion.driver.volume = Math.max(0, Main.tenorion.driver.volume - 0.1);
+		this.save();
+	    }
+	    if (Main.tenorion != null && Input.isKeyReleased(221)) { // key "]"
+		Main.tenorion.driver.volume = Math.min(1, Main.tenorion.driver.volume + 0.1);
+		this.save();
 	    }
 	    this.helpDialog.update();
 	    if (Input.isKeyPressed(191) && Input.getKeyHold(16) > 0 || Input.isKeyPressed(27) && this.helpDialog.state == 'visible') {
@@ -611,9 +623,7 @@ package Engine.Worlds {
 	public function save():void {
 	    if (this.stats.buddhaMode)
 		return;
-	    var saveObj:Object = {'soundVolume': this.tenorion.driver.volume,
-				  'muteSound': this.tenorion.muteSound,
-				  'version': Main.version,
+	    var saveObj:Object = {'version': Main.version,
 				  'seed': this.seed,
 				  'curX': this.curRoomX,
 				  'curY': this.curRoomY,
@@ -621,6 +631,10 @@ package Engine.Worlds {
 				  'map': new Array(),
 				  'age': this.stats.age
 				};
+	    if (Main.tenorion != null) {
+		saveObj['soundVolume'] = Main.tenorion.driver.volume;
+		saveObj['muteSound'] = Main.tenorion.muteSound;
+	    }
 	    for (var j:int = 0; j < this.mapHeight; j++) {
 		saveObj.map[j] = new Array();
 		for (var i:int = 0; i < this.mapWidth; i++) {
@@ -634,10 +648,11 @@ package Engine.Worlds {
 	public function load():Boolean {
 	    if (Main.save.data.hasOwnProperty('world')) {
 		var saveObj:Object = Main.save.data.world;
-		this.tenorion.driver.volume = saveObj.soundVolume;
-		this.tenorion.muteSound = saveObj.muteSound;
-		if (!tenorion.muteSound)
-		    tenorion.driver.play();
+		if (!saveObj.muteSound) {
+		    Main.tenorion.driver.volume = saveObj.soundVolume;
+		    Main.tenorion.muteSound = saveObj.muteSound;
+		    Main.tenorion.driver.play();
+		}
 		this.seed = saveObj.seed;
 		this.curRoomX = saveObj.curX;
 		this.curRoomY = saveObj.curY;

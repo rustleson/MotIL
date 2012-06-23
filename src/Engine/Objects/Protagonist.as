@@ -814,7 +814,7 @@ package Engine.Objects {
 	    if (Input.isKeyReleased(88)){ // X
 		    toggleMotors(false);
 	    }
-	    if (Input.isKeyPressed(77)){ // M
+	    if (Input.isKeyPressed(77) && this.stats.anusSlot != null){ // M
 		if (!this.stats.anusSlot.slot.isFree) {
 		    this.stats.anusSlot.slot.disconnect();
 		} else if (this.stats.anusSlot.artefactAttached.name != 'Nothing') {
@@ -824,7 +824,7 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
-	    if (Input.isKeyPressed(78)){ // N
+	    if (Input.isKeyPressed(78) && this.stats.vaginaSlot != null){ // N
 		if (!this.stats.vaginaSlot.slot.isFree) {
 		    this.stats.vaginaSlot.slot.disconnect();
 		} else if (this.stats.vaginaSlot.artefactAttached.name != 'Nothing') {
@@ -834,7 +834,7 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
-	    if (Input.isKeyPressed(74)){ // J
+	    if (Input.isKeyPressed(74) && this.stats.mouthSlot != null){ // J
 		if (!this.stats.mouthSlot.slot.isFree) {
 		    this.stats.mouthSlot.slot.disconnect();
 		} else if (this.stats.mouthSlot.artefactAttached.name != 'Nothing') {
@@ -844,7 +844,7 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
-	    if (Input.isKeyPressed(72)){ // H
+	    if (Input.isKeyPressed(72) && this.stats.leftHandSlot != null){ // H
 		if (!this.stats.leftHandSlot.slot.isFree) {
 		    this.stats.leftHandSlot.slot.disconnect();
 		} else if (this.stats.rightHandSlot.artefactAttached.name != 'Nothing') {
@@ -854,7 +854,7 @@ package Engine.Objects {
 		}
 		this.wasUpdated = true;
 	    }
-	    if (Input.isKeyPressed(75)){ // K
+	    if (Input.isKeyPressed(75) && this.stats.rightHandSlot != null){ // K
 		if (!this.stats.rightHandSlot.slot.isFree) {
 		    this.stats.rightHandSlot.slot.disconnect();
 		} else if (this.stats.leftHandSlot.artefactAttached.name != 'Nothing') {
@@ -865,7 +865,7 @@ package Engine.Objects {
 		this.wasUpdated = true;
 	    }
 	    var i:int;
-	    if (Input.isKeyPressed(73)){ // I
+	    if (Input.isKeyPressed(73) && this.stats.statsDialog != null){ // I
 		this.stats.statsDialog.toggleLarge();
 	    }
 	    if (Input.isKeyPressed(8)){ // Backspace

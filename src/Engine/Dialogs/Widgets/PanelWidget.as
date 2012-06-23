@@ -116,6 +116,7 @@ package Engine.Dialogs.Widgets {
 
 	public function set titleString(t:String):void {
 	    this.titleText.text = t;
+	    this.titleText.setTextFormat(this.titleFormat);
 	    this.needUpdate = true;
 	}
 

@@ -54,10 +54,10 @@
 [+]	+ screen blinking on orgasm (white) and death (black)
 [+]	+ death processing
 
-[ ] * protagonist movement
-[ ]     + poses / impulses
+[+] * protagonist movement
+[+]     + poses / impulses
 [+]     + slots interaction
-[ ]     + front/side/back views and transitions [very optional]
+[?]     + front/side/back views and transitions [very optional]
 
 [ ] * interface
 [ ]     + main
@@ -74,7 +74,7 @@
 [+]     + stats/upgrade
 [ ]     + dialogs / messages
 [+]         - generic dialog system
-[ ]         - entrance greeting
+[+]         - entrance greeting
 [ ]         - tutorial
 [ ]         - conditional rooms terms
 
@@ -103,10 +103,10 @@
 [ ]         - monster room(s)
 [ ]         - conditional room(s)
 [ ]         - entrance room(s)
-[ ]     + room variations
-[ ]         - space (star nexuses)
-[ ]         - water (sea currents, reefs)
-[ ]         - earth (caverns, tunnels)
-[ ]         - fire (lava, steam)
-[ ]         - air (clouds, hurricains)
+[+]     + room variations
+[+]         - space (star nexuses)
+[+]         - water (sea currents, reefs)
+[+]         - earth (caverns, tunnels)
+[+]         - fire (lava, steam)
+[+]         - air (clouds, hurricains)
 
