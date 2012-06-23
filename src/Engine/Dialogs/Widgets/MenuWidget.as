@@ -108,7 +108,7 @@ package Engine.Dialogs.Widgets {
 
 	private function onMenuOver(e:MouseEvent):void {
 	    this.highlightSprite.graphics.clear();
-	    if (!this.submitted) {
+	    if (!this.submitted && this.transitionComplete) {
 		this.highlightSprite.graphics.lineStyle(0, 0, 0);
 		this.highlightSprite.graphics.beginFill(Utils.colorLight(this.panelColor, 0.5), 0.5);
 		this.highlightSprite.graphics.drawRoundRect(e.target.x - 2, e.target.y - 2, e.target.width + 4, e.target.height + 4, this.cornerRadius / 2, this.cornerRadius / 2);
