@@ -95,6 +95,9 @@ package Engine.Worlds {
 		this.dialog.state = "mainMenu";
 		this.helpDialog.toggleHide();
 	    }
+	    if (this.helpDialog.state == 'hidden' && !this.helpDialog.widgets.close.transitionComplete) {
+		this.dialog.state = "mainMenu";
+	    }
 	    this.helpDialog.update();
 	    super.update();
 	}

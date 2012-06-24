@@ -245,7 +245,7 @@ package Engine.Dialogs.Widgets {
 	}
 
 	private function onAnswerClick(e:MouseEvent):void {
-	    if (this.answerText.text == 'enter your answer there') {
+	    if (this.answerText.text == 'enter your answer there' || this.answerText.text == 'enter the name there') {
 		this.answerText.text = '';
 		this.answerText.setTextFormat(this.answerFormat);
 	    }

@@ -39,6 +39,7 @@ package Engine.Dialogs {
 	    this.sprite = Main.helpSprite;
 	    this.widgets['panel'] = new PanelWidget(5, 7, w - 10, h - 10, w - 10, h - 10, 0x222222, 'Hyper Enlightened Liberty Prerequisites (HELP)');
 	    this.widgets['topic'] = new TopicWidget(15, 36, w - 30, h - 40, w - 30, h - 50, 0x111111);
+	    this.widgets['close'] = new CloseWidget(w - 20, 21, 13, 13, this.closeClick, 0x999999);
 	    // parse manual
 	    var lines:Array = this.manual.toString().split(/\n/);
 	    var topicIndex:int = -1;
@@ -57,7 +58,7 @@ package Engine.Dialogs {
 		}
 	    }
 	    this.widgets['topicswitch'] = new TopicSwitchWidget(this, 15, 25, w, h, 0x999999, false);
-	    this.widgetsOrder = ['panel', 'topicswitch', 'topic' ];
+	    this.widgetsOrder = ['panel', 'topicswitch', 'topic', 'close' ];
 	    //this.toggleHide();
 	}
 
@@ -75,6 +76,7 @@ package Engine.Dialogs {
 		this.widgets.panel.large();
 		this.widgets.topicswitch.large();
 		this.widgets.topic.show(new Message(this.topics[this.activeTopic].content, this.topics[this.activeTopic].title));
+		this.widgets.close.large();
 	    } else {
 		this._state = 'hidden';
 		for each (widgetName in this.widgetsOrder) {
@@ -86,6 +88,10 @@ package Engine.Dialogs {
 
 	public function get state():String {
 	    return this._state;
+	}
+
+	private function closeClick(e:MouseEvent):void {
+	    this.toggleHide();
 	}
 
     }

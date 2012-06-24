@@ -373,7 +373,7 @@ package Engine.Worlds {
 				isAltar = true;
 			    }
 			    // build altar/artefact room
-			    if (isArtefact || this.map[j][i].power % 4 == 0) {
+			    if ((isArtefact || this.map[j][i].power % 4 == 0) && !(this.map[j][i].freedomTop && this.map[j][i].freedomBottom && this.map[j][i].freedomLeft && this.map[j][i].freedomRight)) {
 				var r:AltarRoom = new AltarRoom(this, this.map[j][i].posX, this.map[j][i].posY, this.map[j][i].width, this.map[j][i].height, this.map[j][i].type, this.map[j][i].prefix, this.map[j][i].seed, Math.floor(23 * (this.map[j][i].power - minPower) / (maxPower - minPower)) + this.realmDifficulty[t], isArtefact);
 				if (isArtefact) {
 				    r.artefact = this.stats.artefacts[this.realmArtefacts[t]];

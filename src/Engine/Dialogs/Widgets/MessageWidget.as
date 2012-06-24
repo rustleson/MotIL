@@ -25,6 +25,7 @@ package Engine.Dialogs.Widgets {
 	
     import General.Input;
     import flash.text.*;
+    import flash.events.MouseEvent;
     import Engine.Objects.Utils;
 
     public class MessageWidget extends Widget{
@@ -84,7 +85,7 @@ package Engine.Dialogs.Widgets {
 	    this.sprite.addChild(this.messageText);
 	    // continue text
 	    this.contText = new TextField();
-	    this.contText.text = 'hit <space> to continue';
+	    this.contText.text = 'click or hit <space> to continue';
 	    this.contText.selectable = false;
 	    this.contText.embedFonts = true;
 	    this.contText.wordWrap = true;
@@ -94,6 +95,7 @@ package Engine.Dialogs.Widgets {
 	    this.contText.x = x;
 	    this.contText.y = y;
 	    this.contText.setTextFormat(this.contFormat);
+	    this.contText.addEventListener(MouseEvent.CLICK, onContClick);
 	    this.sprite.addChild(this.contText);
 	}
 
@@ -181,6 +183,11 @@ package Engine.Dialogs.Widgets {
 	    }
 	    super.update();
 	}
+
+	private function onContClick(e:MouseEvent):void {
+	    this.hidden();
+	}
+
     }
 	
 }
