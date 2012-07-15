@@ -383,6 +383,19 @@ package General{
 			//ascii[27] = "ESC";
 		}
 		
+	        public static function emulateKeyPress(code:uint):void {
+		    keyState[code] = Math.max(keyState[code], 1);
+		    lastKey = code;
+		}
+		
+	        public static function emulateKeyRelease(code:uint):void {
+		    keyState[code] = -1;
+		    for (var i:int = bufferSize-1; i > 0 ; i--){
+			keyBuffer[i] = keyBuffer[i - 1];
+		    }
+		    keyBuffer[0] = [code, 0];
+		}
+
 		//======================
 		// member data
 		//======================

@@ -65,6 +65,7 @@ package Engine.Stats {
 	public var generated:Boolean = false; 
 	public var age:uint = 0;
 	public var name:String = "";
+	public var wasUpdated:Boolean = false;
 
 	public function ProtagonistStats(){
 	    this.vaginaSlot = new SlotStat();
@@ -136,6 +137,7 @@ package Engine.Stats {
 	}
 
 	public function isEnlightened():Boolean {
+	    //return true; // !!! debug issues, remove as soon as possible !!!
 	    return this.artefacts.wheel.obtained && this.artefacts.vajra.obtained && this.artefacts.jewel.obtained && this.artefacts.lotus.obtained && this.artefacts.sword.obtained; 
 	}
 

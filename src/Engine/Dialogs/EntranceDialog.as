@@ -32,10 +32,15 @@ package Engine.Dialogs {
 
 	private var _state:String = 'hidden';
 	public var stats:ProtagonistStats;
+	public var realmMessage:Message = new Message("Choose starting elemental Realm. Your character will be born with a color and maximum affinity with the Realm. Think wise, because probably she will also keep reborning in the same Realm for a certain period.", "The Realm", 0xaaaaaa);
+	public var tribeMessage:Message = new Message("Choose starting Tribe. Unlike elemental affinity, Tribe is permanent for a single incarnation. Different tribes have different effects, advantages and shortcomings. Roll mouse over Tribe circle to read detailed info.", "The Tribe", 0xaaaaaa);
+	private var rebirth:Boolean = false;
+	private var nameSelected:Boolean = false;
 
-	public function EntranceDialog(w:Number, h:Number, $stats:ProtagonistStats):void {
+	public function EntranceDialog(w:Number, h:Number, $stats:ProtagonistStats, $rebirth:Boolean = false):void {
 	    super(w, h);
 	    this.stats = $stats;
+	    this.rebirth = $rebirth;
 	    this.widgets['warning'] = new MessageWidget(90, 90, w - 180, h - 220, w - 180, h - 220, 0x111111);
 	    this.widgets['story'] = new MessageWidget(90, 40, w - 180, h - 80, w - 180, h - 80, 0x111111);
 	    this.widgets['question'] = new QuestionWidget(90, 150, w - 180, h - 320, w - 180, h - 320, 0x111111);
@@ -45,7 +50,9 @@ package Engine.Dialogs {
 	    }
 	    this.widgets['menu'] = new MenuWidget(220, 210, 200, h - 320, 0x333333, 0.5, menuItems);
 	    this.widgets['mandala'] = new RotatingMandalaWidget(w / 2, h / 2);
+	    this.widgets['tribes'] = new TribesWidget(w / 2, h / 2);
 	    this.widgets['backbutton'] = new ButtonWidget(10, h - 35, this.backClick, 0x444444, "<< Back");
+	    this.widgets['info'] = new MessageWidget(95, 380, w - 105, h - 390, w - 105, h - 390, 0x111111, false, false, false);
 	    this.widgets.warning.titleFormat = new TextFormat("Huge", 8, 0xff7744);
 	    this.widgets.warning.titleFormat.align = TextFieldAutoSize.RIGHT;	    
 	    this.widgets.warning.messageFormat = new TextFormat("LargeEstudio", 8, 0xff7744);
@@ -61,7 +68,12 @@ package Engine.Dialogs {
 	    this.widgets.question.messageFormat = new TextFormat("LargeEstudio", 8, 0xaaaaaa);
 	    this.widgets.question.messageFormat.align = TextFieldAutoSize.LEFT;	    
 	    this.widgets.question.titleDY = -7;	    
-	    this.widgetsOrder = ['mandala', 'warning', 'story', 'question', 'menu', 'backbutton'];
+	    this.widgets.info.titleFormat = new TextFormat("Huge", 8, 0xeeeeee);
+	    this.widgets.info.titleFormat.align = TextFieldAutoSize.RIGHT;	    
+	    this.widgets.info.messageFormat = new TextFormat("LargeEstudio", 8, 0xeeeeee);
+	    this.widgets.info.messageFormat.align = TextFieldAutoSize.LEFT;	    
+	    this.widgets.info.titleDY = -7;	    
+	    this.widgetsOrder = ['mandala', 'tribes', 'warning', 'story', 'question', 'info', 'menu', 'backbutton'];
 	}
 
 	public function get state():String {
@@ -77,11 +89,15 @@ package Engine.Dialogs {
 	    if (s == "warning") {
 		this.widgets.warning.show(new Message("This game contains explicit scenes of the adult nature. If you didn't reach adult age in your country, please leave immediately. Otherwise, be warned, a lot of scenes in the game are containing nudity, hardcore sexual actions, bestiality with fictional creatures and rape. Although graphics is very abstract and there are not much anatomic details, it would be enough to insult a person who is not ready for the things described above. To ensure you are adult and in this type of things, please answer questions following this warning message. Once you'll answer correctly, you will not see this warning again.", "Content Warning", 0xff7744));
 	    }
+	    if (s == "death") {
+		this.widgets.warning.show(new Message("Unfortunately, you have been died. But since you was enlightened before death, you have an option to choose Realm, Tribe and appearance of your future incarnation. Think wise and good luck!", "Necrolog", 0xff7744));
+		this.widgets.mandala.large();
+	    }
 	    if (s == "wrongAnswer") {
 		this.widgets.warning.show(new Message("Unfortunately, your answer was wrong. You can try again as many time as you wish, if you're really need to pass this test.", "Wrong Answer", 0xff7744));
 	    }
 	    if (s == "story") {
-		this.widgets.story.show(new Message("\nA lonely female spirit, wandering through time and space once came to the gates of the great Mandala. The Mandala was pulsating with its inner lights, and those lights were constantly interpenetrate each other, producing a great bliss for the sake of three mighty Kings.\n\nThe view was so fascinating, so enchanting and so arousing, no wonder that spirit began to desire to enter the gates of Mandala with her whole heart. The Kings noticed a presence of outer desire and were heartely glad to encourage the new spirit to join them on the way of bliss.\n\nKing Ravana roared: \"Enter the Mandala, and you will know my great bliss of the Corruption!\"\n\nKing Kubera said: \"Enter the Mandala and you will know my great bliss of the Balance.\"\n\nKing Heruka wispered: \"Enter the Mandala and you will know my great bliss of the Purity...\"\n\nHence, a lonely female spirit brushed her doubts aside and came in to become the one with the Mandala...", "Step 0: The Story", 0xeeeeee));
+		this.widgets.story.show(new Message("\nA lonely female spirit, wandering through time and space once came to the gates of the great Mandala. The Mandala was pulsating with its inner lights, and those lights were constantly interpenetrate each other, producing a great bliss for the sake of three mighty Kings.\n\nThe view was so fascinating, so enchanting and so arousing, no wonder that spirit began to desire to enter the gates of Mandala with her whole heart. The Kings noticed a presence of outer desire and were heartely glad to encourage the new spirit to join them on the way of bliss.\n\nKing Ravana roared: \"Enter the Mandala, and you will know my great bliss of the Corruption!\"\n\nKing Kubera said: \"Enter the Mandala and you will know my great bliss of the Balance.\"\n\nKing Heruka wispered: \"Enter the Mandala and you will know my great bliss of the Purity...\"\n\nHence, a lonely female spirit brushed her doubts aside and came in to become the one with the Mandala...", "The Story", 0xeeeeee));
 		this.widgets.mandala.large();
 	    }
 	    if (s == "wrongName") {
@@ -100,19 +116,40 @@ package Engine.Dialogs {
 		this.widgets.mandala.small();
 	    }
 	    if (s == "generation1") {
+		if (!this.nameSelected) {
+		    this.widgets.backbutton.large();
+		}
 		this.widgets.question.submitted = false;
-		this.widgets.question.show(new Message("Enter your character name below. The complete and unique world layout will be randomly generated basing on the name you'll enter.\n\nWARNING: generating the new world will clear all your past game progress and achievements!", "Step 1: The Name", 0xaaaaaa));
+		this.widgets.question.show(new Message("Enter your character name below. The complete and unique world layout will be randomly generated basing on the name you'll enter.\n\nWARNING: generating the new world will clear all your past game progress and achievements!", "The Name", 0xaaaaaa));
 		this.widgets.question.answerText.text = 'enter the name there';
 		this.widgets.question.answerText.setTextFormat(this.widgets.question.answerFormat);
+		this.widgets.mandala.large();
+	    }
+	    if (s == "generation2") {
+		if (!this.rebirth) {
+		    this.widgets.backbutton.large(); // prevent user to step back on rebirth stage
+		}
+		//this.widgets.mandala.activeRealm = -1;
+		this.widgets.mandala.realmSelected = false;
+		this.widgets.info.show(this.realmMessage);
+		this.widgets.mandala.realm();
+	    }
+	    if (s == "generation3") {
+		this.widgets.tribes.tribeSelected = false;
 		this.widgets.backbutton.large();
-		//this.widgets.backbutton.titleString = "<< Back to the main menu";
+		this.widgets.tribes.activeTribe = 0;
+		this.widgets.info.show(this.tribeMessage);
+		this.widgets.tribes.small();
+	    }
+	    if (s == "fadeout") {
+		this.widgets.mandala.fadeout();
 	    }
 	    if (s == "finished") {
 		this.stats.generated = true;
-		this.sprite.graphics.clear();
-		while(this.sprite.numChildren > 0) {   
-		    this.sprite.removeChildAt(0); 
-		}
+		//this.sprite.graphics.clear();
+		//while(this.sprite.numChildren > 0) {   
+		//    this.sprite.removeChildAt(0); 
+		//}
 	    }
 	}
 
@@ -126,6 +163,9 @@ package Engine.Dialogs {
 	    }
 	    if (this.widgets.story.state == 'hidden' && this.widgets.story.transitionComplete && this.stats != null && (this.state == 'story')) {
 		this.state = "generation1";
+	    }
+	    if (this.widgets.warning.state == 'hidden' && this.widgets.warning.transitionComplete && this.stats != null && (this.state == 'death')) {
+		this.state = "generation2";
 	    }
 	    if (this.widgets.question.state == 'hidden' && this.widgets.question.transitionComplete && this.stats != null) {
 		if (this.state == 'question1' && this.widgets.question.submitted) {
@@ -149,19 +189,43 @@ package Engine.Dialogs {
 		}
 		if (this.state == 'generation1' && this.widgets.question.submitted) {
 		    if (this.widgets.question.answer != "" && this.widgets.question.answer != 'enter the name there') { 
-			this.stats.name = this.widgets.question.answer.toLowerCase();
-			this.stats.space = 1;
-			this.stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-			this.stats.hairColor = 0xdd44dd;
-			this.stats.eyesColor = 0x22CC22;
+			this.stats.space = 0;
+			this.stats.water = 0;
+			this.stats.earth = 0;
+			this.stats.fire = 0;
+			this.stats.air = 0;
+			this.stats.tribe = 0;
+			this.stats.hairColor = 0;
+			this.stats.eyesColor = 0;
+			this.stats.level = 1;
 			this.stats.hairLength = 1.5;
-			this.stats.save();
-			Main.newCharacter = true;
-			Main.seedFromName(this.stats.name);
-			this.state = 'finished';
+			this.stats.alignment = 0;
+			this.stats.name = this.widgets.question.answer.toLowerCase();
+			this.stats.wasUpdated = true;
+			this.state = 'generation2';
+			this.nameSelected = true;
 		    } else {
 			this.state = 'wrongName';
 		    }
+		}
+		if (this.state == 'generation2' && this.widgets.mandala.realmSelected && this.widgets.mandala.transitionComplete) {
+		    this.state = 'generation3';
+		}
+		if (this.state == 'generation2' && this.widgets.mandala.realmSelected) {
+		    this.widgets.info.hidden();
+		}
+		if (this.state == 'generation3' && this.widgets.tribes.tribeSelected && this.widgets.tribes.transitionComplete) {
+		    //this.stats.tribe = ProtagonistStats.DAKINI_TRIBE;
+		    this.stats.hairColor = 0xdd44dd;
+		    this.stats.eyesColor = 0x22CC22;
+		    this.stats.hairLength = 1.5;
+		    this.stats.save();
+		    Main.seedFromName(this.stats.name);
+		    this.state = 'fadeout';
+		}
+		if (this.state == 'fadeout' && this.widgets.mandala.transitionComplete) {
+		    Main.newCharacter = !this.rebirth;
+		    this.state = 'finished';
 		}
 	    }
 	    if (this.widgets.menu.submitted && this.widgets.menu.chosenItem == "Continue" && this.widgets.mandala.state != 'hidden') {
@@ -187,6 +251,12 @@ package Engine.Dialogs {
 	private function backClick(e:MouseEvent):void {
 	    if (this.state == 'generation1') {
 		this.state = 'mainMenu';
+	    }
+	    if (this.state == 'generation2') {
+		this.state = 'generation1';
+	    }
+	    if (this.state == 'generation3') {
+		this.state = 'generation2';
 	    }
 	}
 

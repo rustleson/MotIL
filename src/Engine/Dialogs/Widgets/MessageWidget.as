@@ -52,7 +52,7 @@ package Engine.Dialogs.Widgets {
 	private var messageQueue:Array;
 
 	public function MessageWidget(x:Number = 0, y:Number = 0, ws:Number = 0, hs:Number = 0, wl:Number = 0, hl:Number = 0, 
-				    c:uint = 0, right:Boolean = false, bottom:Boolean = false):void {
+				      c:uint = 0, right:Boolean = false, bottom:Boolean = false, isContinueText:Boolean = true):void {
 	    super(x, y, title);
 	    this.messageQueue = new Array();
 	    this.widthSmall = ws;
@@ -85,17 +85,19 @@ package Engine.Dialogs.Widgets {
 	    this.sprite.addChild(this.messageText);
 	    // continue text
 	    this.contText = new TextField();
-	    this.contText.text = 'click or hit <space> to continue';
-	    this.contText.selectable = false;
-	    this.contText.embedFonts = true;
-	    this.contText.wordWrap = true;
-	    this.contFormat = new TextFormat("Tiny", 8, Utils.colorDark(this.textColor,0.3));
-	    this.contFormat.align = TextFieldAutoSize.RIGHT;	    
-	    this.contText.width = wl - 10;
-	    this.contText.x = x;
-	    this.contText.y = y;
-	    this.contText.setTextFormat(this.contFormat);
-	    this.contText.addEventListener(MouseEvent.CLICK, onContClick);
+	    if (isContinueText) {
+		this.contText.text = 'click or hit <space> to continue';
+		this.contText.selectable = false;
+		this.contText.embedFonts = true;
+		this.contText.wordWrap = true;
+		this.contFormat = new TextFormat("Tiny", 8, Utils.colorDark(this.textColor,0.3));
+		this.contFormat.align = TextFieldAutoSize.RIGHT;	    
+		this.contText.width = wl - 10;
+		this.contText.x = x;
+		this.contText.y = y;
+		this.contText.setTextFormat(this.contFormat);
+		this.contText.addEventListener(MouseEvent.CLICK, onContClick);
+	    }
 	    this.sprite.addChild(this.contText);
 	}
 
@@ -162,9 +164,18 @@ package Engine.Dialogs.Widgets {
 	    }
 	}
 
-	public function show(m:Message):void {
-	    this.messageQueue.push(m);
-	    this.hidden();
+	public function show(m:Message, immediate:Boolean = false):void {
+	    if (immediate) {
+		this.titleText.text = m.title;
+		this.titleText.setTextFormat(this.titleFormat);
+		this.textColor = m.color;
+		this.messageText.text = m.text;
+		this.messageText.setTextFormat(this.messageFormat);
+		this.icon = m.icon;
+	    } else {
+		this.messageQueue.push(m);
+		this.hidden();
+	    }
 	}
 
 	public override function update():void {

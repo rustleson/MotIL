@@ -58,7 +58,7 @@ package{
 	    public var input:Input;
 	    public var stats:ProtagonistStats;
 	    static public var seed:uint;
-	    static public var version:String = "0.1.2-alpha";
+	    static public var version:String = "0.2.0-alpha";
 	    static public var tenorion:Tenorion; 
 	    static public var save:SharedObject = SharedObject.getLocal('MotIL', '/');
 	    private var autoRebirthNeeded:Boolean = false;
@@ -152,17 +152,31 @@ package{
 	    public function update(e:Event):void{
 		if (!generating) {
 		    sprite.graphics.clear();
+		    var ageConfirmed:Boolean;
+		    var name:String;
 		    if (stats.death){
 			currWorld.deconstruct();
-			this.autoRebirth();
-			currWorld = new MandalaWorld(stats, seed, false);
-			if (save.data.hasOwnProperty('world') && !save.data.world.muteSound) {
-			    tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
-			    tenorion.matrixPad.generateUniversalSong();
-			    tenorion.voices[0] = tenorion.presetVoice['valsound.percus3'];
+			if (stats.isEnlightened()) {
+			    newCharacter = false;
+			    ageConfirmed = this.stats.ageConfirmed;
+			    name = this.stats.name;
+			    stats = new ProtagonistStats();
+			    stats.ageConfirmed = ageConfirmed;
+			    stats.name = name;
+			    seedFromName(stats.name);
+			    currWorld = new EntranceWorld(stats, seed, true);
+			    stats.save();
+			} else {
+			    this.autoRebirth();
+			    currWorld = new MandalaWorld(stats, seed, false);
+			    if (save.data.hasOwnProperty('world') && !save.data.world.muteSound) {
+				tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
+				tenorion.matrixPad.generateUniversalSong();
+				tenorion.voices[0] = tenorion.presetVoice['valsound.percus3'];
+			    }
+			    this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
+			    stats.save();
 			}
-			this.stats.statsDialog.widgets.message.show(new Message("You have been died and reborn again. Be careful this time. Good luck!", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-			stats.save();
 		    }
 		    if (stats.generated) {
 			currWorld.deconstruct();
@@ -178,11 +192,11 @@ package{
 			    var fire:Number = this.stats.fire;
 			    var air:Number = this.stats.air;
 			    var tribe:Number = this.stats.tribe;
-			    var name:String = this.stats.name;
+			    name = this.stats.name;
 			    var hairColor:uint = this.stats.hairColor;
 			    var eyesColor:uint = this.stats.eyesColor;
 			    var hairLength:Number = this.stats.hairLength;
-			    var ageConfirmed:Boolean = this.stats.ageConfirmed;
+			    ageConfirmed = this.stats.ageConfirmed;
 			    stats = new ProtagonistStats();
 			    stats.space = space;
 			    stats.water = water;
@@ -201,7 +215,7 @@ package{
 			} else {
 			    currWorld = new MandalaWorld(stats, seed);
 			    this.stats.statsDialog.widgets.message.show(new Message("Welcome back to the Mandala of the Interpenetrating lights! \nWe are always glad to see your growing spirit again.", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial));
-			    this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
+			    //this.stats.statsDialog.widgets.message.show(new Message("You can meditate on this world's sacred book called \n\"Hyper Enlightened Liberty Prerequisites\" (HELP) \njust by pressing <?> at any time. ", "Insubstantial voice wispering...", 0xaaaaaa, Icons.Insubstantial)); 
 			}
 			if (save.data.hasOwnProperty('world') && !save.data.world.muteSound) {
 			    tenorion.matrixPad.tendence = (currWorld as MandalaWorld).roomSongTendencies[(currWorld as MandalaWorld).startType];
