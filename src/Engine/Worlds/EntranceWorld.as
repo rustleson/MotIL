@@ -179,7 +179,7 @@ package Engine.Worlds {
 		  default:
 		    break;
 		}
-	    } else if (this.dialog.state == 'generation3') {
+	    } else if (this.dialog.state == 'generation3' && this.dialog.widgets.tribes.transitionComplete) {
 		this.dialog.widgets.info.show(this.dialog.tribeMessage, true);
 		if (this.stats.tribe != 0) {
 		    this.stats.tribe = 0;
@@ -188,7 +188,20 @@ package Engine.Worlds {
 		    this.stats.wasUpdated = true;
 		}
 	    }
-
+	    if (this.dialog.state == 'generation4') {
+		if (this.dialog.widgets.eyesColor.color != this.stats.eyesColor) {
+		    this.stats.eyesColor = this.dialog.widgets.eyesColor.color;
+		    this.stats.wasUpdated = true;
+		}
+		if (this.dialog.widgets.hairColor.color != this.stats.hairColor) {
+		    this.stats.hairColor = this.dialog.widgets.hairColor.color;
+		    this.stats.wasUpdated = true;
+		}
+		if (this.dialog.widgets.hairLength.value != this.stats.hairLength) {
+		    this.stats.hairLength = this.dialog.widgets.hairLength.value;
+		    this.stats.wasUpdated = true;
+		}
+	    }
 	    this.impulseCounter++;
 	    if (impulseCounter % 52 == 0) {
 		var t:Number = Math.random();

@@ -52,7 +52,16 @@ package Engine.Dialogs {
 	    this.widgets['mandala'] = new RotatingMandalaWidget(w / 2, h / 2);
 	    this.widgets['tribes'] = new TribesWidget(w / 2, h / 2);
 	    this.widgets['backbutton'] = new ButtonWidget(10, h - 35, this.backClick, 0x444444, "<< Back");
+	    this.widgets['playbutton'] = new ButtonWidget(w - 95, 20, this.playClick, 0x44aa44, "Play >>");
 	    this.widgets['info'] = new MessageWidget(95, 380, w - 105, h - 390, w - 105, h - 390, 0x111111, false, false, false);
+	    this.widgets['hairLength'] = new LengthWidget(w - 20, 65, 180, 8, 'Hair Length', null, true, false);
+	    this.widgets['hairColor'] = new ColorWidget(w - 20, 80, 180, 8, 'Hair', null, true, false);
+	    this.widgets.hairColor.minBrightness = 0;
+	    this.widgets.hairColor.hue = 20;
+	    this.widgets.hairColor.brightness = 0.45;
+	    this.widgets['eyesColor'] = new ColorWidget(20, 80, 180, 8, 'Eyes', null, false, false);
+	    this.widgets.eyesColor.hue = 100;
+	    this.widgets.eyesColor.brightness = 0.45;
 	    this.widgets.warning.titleFormat = new TextFormat("Huge", 8, 0xff7744);
 	    this.widgets.warning.titleFormat.align = TextFieldAutoSize.RIGHT;	    
 	    this.widgets.warning.messageFormat = new TextFormat("LargeEstudio", 8, 0xff7744);
@@ -73,7 +82,7 @@ package Engine.Dialogs {
 	    this.widgets.info.messageFormat = new TextFormat("LargeEstudio", 8, 0xeeeeee);
 	    this.widgets.info.messageFormat.align = TextFieldAutoSize.LEFT;	    
 	    this.widgets.info.titleDY = -7;	    
-	    this.widgetsOrder = ['mandala', 'tribes', 'warning', 'story', 'question', 'info', 'menu', 'backbutton'];
+	    this.widgetsOrder = ['mandala', 'tribes', 'warning', 'story', 'question', 'info', 'menu', 'backbutton', 'playbutton', 'hairColor', 'hairLength', 'eyesColor'];
 	}
 
 	public function get state():String {
@@ -141,6 +150,14 @@ package Engine.Dialogs {
 		this.widgets.info.show(this.tribeMessage);
 		this.widgets.tribes.small();
 	    }
+	    if (s == "generation4") {
+		this.widgets.backbutton.large();
+		this.widgets.playbutton.large();
+		this.widgets.hairColor.large();
+		this.widgets.hairLength.large();
+		this.widgets.eyesColor.large();
+		this.widgets.info.show(new Message("You are in one step to begin your journey. Last thing, you could customize your appearance by choosing desired hair style and eyes color. They take no effect on character stats, so feel free to just choose what you like. Click Play button when you'll be ready.", "The Appearance", 0xaaaaaa));
+	    }
 	    if (s == "fadeout") {
 		this.widgets.mandala.fadeout();
 	    }
@@ -195,8 +212,8 @@ package Engine.Dialogs {
 			this.stats.fire = 0;
 			this.stats.air = 0;
 			this.stats.tribe = 0;
-			this.stats.hairColor = 0;
-			this.stats.eyesColor = 0;
+			this.stats.hairColor = this.widgets.hairColor.color;
+			this.stats.eyesColor = this.widgets.eyesColor.color;
 			this.stats.level = 1;
 			this.stats.hairLength = 1.5;
 			this.stats.alignment = 0;
@@ -215,13 +232,10 @@ package Engine.Dialogs {
 		    this.widgets.info.hidden();
 		}
 		if (this.state == 'generation3' && this.widgets.tribes.tribeSelected && this.widgets.tribes.transitionComplete) {
-		    //this.stats.tribe = ProtagonistStats.DAKINI_TRIBE;
-		    this.stats.hairColor = 0xdd44dd;
-		    this.stats.eyesColor = 0x22CC22;
-		    this.stats.hairLength = 1.5;
-		    this.stats.save();
-		    Main.seedFromName(this.stats.name);
-		    this.state = 'fadeout';
+		    this.state = 'generation4';
+		}
+		if (this.state == 'generation3' && this.widgets.tribes.tribeSelected) {
+		    this.widgets.info.hidden();
 		}
 		if (this.state == 'fadeout' && this.widgets.mandala.transitionComplete) {
 		    Main.newCharacter = !this.rebirth;
@@ -258,6 +272,18 @@ package Engine.Dialogs {
 	    if (this.state == 'generation3') {
 		this.state = 'generation2';
 	    }
+	    if (this.state == 'generation4') {
+		this.state = 'generation3';
+	    }
+	}
+
+	private function playClick(e:MouseEvent):void {
+	    this.stats.hairColor = this.widgets.hairColor.color;
+	    this.stats.eyesColor = this.widgets.eyesColor.color;
+	    this.stats.hairLength = this.widgets.hairLength.value;
+	    this.stats.save();
+	    Main.seedFromName(this.stats.name);
+	    this.state = 'fadeout';
 	}
 
     }

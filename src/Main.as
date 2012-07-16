@@ -144,8 +144,8 @@ package{
 		seedFromName(stats.name);
 		// your appearance will be semi-random, depending on last room's PRNG state 
 		// death in the same room should guarantee same appearance each time
-		stats.hairColor = Utils.HSLtoRGB(Rndm.integer(0, 360), 0.5, Rndm.float(0.1, 0.6));
-		stats.eyesColor = Utils.HSLtoRGB(Rndm.integer(0, 360), 0.5, 0.5);
+		stats.hairColor = Utils.HSLtoRGB(Rndm.integer(0, 360), 0.85, Rndm.float(0.1, 0.7));
+		stats.eyesColor = Utils.HSLtoRGB(Rndm.integer(0, 360), 0.85, Rndm.float(0.15, 0.7));
 		stats.hairLength = Rndm.float(0.5, 2.5);
 	    }
 		
