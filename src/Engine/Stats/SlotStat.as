@@ -64,14 +64,18 @@ package Engine.Stats {
 	    }
 	}
 
-	public function get painD():Number {
-	    var pos:Number = this.currentPosition;
-	    var d:Number = (this.slot != null && this.slot.connectedSlot != null) ? this.slot.connectedSlot.getDiameter(pos) : 0;
+	public function getPainD(d:Number):Number {
 	    if (d > this.stretchedDiameter.valueFrac) {
 		var ld:Number = (this.stretchedDiameter.toValue - this.stretchedDiameter.fromValue) / 50;
 		return Math.exp((d - this.stretchedDiameter.valueFrac) / ld) / 10;
 	    } else 
 		return 0
+	}
+
+	public function get painD():Number {
+	    var pos:Number = this.currentPosition;
+	    var d:Number = (this.slot != null && this.slot.connectedSlot != null) ? this.slot.connectedSlot.getDiameter(pos) : 0;
+            return this.getPainD(d);
 	}
 
 	public function get painL():Number {

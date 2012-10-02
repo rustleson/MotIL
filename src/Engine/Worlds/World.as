@@ -134,7 +134,7 @@ package Engine.Worlds {
 	    var objSprite:Sprite;
 	    for each (var objname:String in objectsOrder) {
 		obj = objects[objname];
-		objSprite = obj.draw(viewport, physScale);
+		objSprite = obj.draw(viewport, physScale, false, this.stats);
 		if (!sprite.contains(objSprite)) {
 		    sprite.addChild(objSprite);
 		}

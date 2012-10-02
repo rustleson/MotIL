@@ -967,7 +967,7 @@ package Engine.Objects {
 
 	}
 
-	public override function draw(viewport:b2AABB, physScale:Number, forceRedraw:Boolean = false):Sprite{
+	public override function draw(viewport:b2AABB, physScale:Number, forceRedraw:Boolean = false, stats:ProtagonistStats = null):Sprite{
 	    var spr:Sprite = super.draw(viewport, physScale, forceRedraw);
 	    if (!spr.contains(this.hairSprite)) {
 		spr.addChildAt(this.hairSprite, 0);

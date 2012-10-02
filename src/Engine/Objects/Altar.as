@@ -86,6 +86,7 @@ package Engine.Objects {
 	    headSlot.localAnchor = new b2Vec2(0, -(length + thickness) / 2);
 	    headSlot.radiuses = new Array();
 	    headSlot.owner = this;
+	    headSlot.depth = length;
 	    for (var i:int = 0; i <= 10; i++) {
 		headSlot.radiuses.push(new b2Vec2(length * i / 10 / 2, (Math.sqrt(i) / Math.sqrt(10) * thickness / 2)));
 	    }

@@ -35,6 +35,7 @@ package Engine.Objects {
     import flash.events.EventDispatcher;	
     import flash.geom.Matrix;
     import flash.geom.Point;
+    import Engine.Stats.*;
     
     use namespace b2internal;
 	
@@ -93,7 +94,7 @@ package Engine.Objects {
 	    }
 	}
 
-	public function draw(viewport:b2AABB, physScale:Number, forceRedraw:Boolean = false):Sprite{
+	public function draw(viewport:b2AABB, physScale:Number, forceRedraw:Boolean = false, stats:ProtagonistStats = null):Sprite{
 	    var xf:b2Transform;
 	    if (this.wasUpdated) {
 		forceRedraw = true;
@@ -114,7 +115,7 @@ package Engine.Objects {
 			var bodyPosition:b2Vec2 = body.GetPosition();
 			var bodyRotation:Number = body.GetAngle();
 			var matrix:Matrix = new Matrix(); 
-			if (!body.sprite || forceRedraw || udata.hasOwnProperty('slot') && !udata.slot.isFree || udata.hasOwnProperty('alwaysUpdate')) {
+			if (!body.sprite || forceRedraw || udata.hasOwnProperty('slot') && !udata.slot.isFree || udata.hasOwnProperty('alwaysUpdate') || udata.hasOwnProperty('slot') && udata.slot.type == Slot.FATHER) {
 			    if (!body.sprite)
 				body.sprite = new Sprite();
 			    var drawingFunction:Function = body.drawingFunction as Function ? body.drawingFunction as Function : this.drawGenericShape;
@@ -122,6 +123,9 @@ package Engine.Objects {
 				body.sprite.graphics.clear();
 			    } else {
 				drawingFunction(f.GetShape(), xf, color, physScale, bodyPosition.x - xf.position.x, bodyPosition.y - xf.position.y, udata, body.sprite);
+				if (udata.hasOwnProperty('slot') && udata.slot.type == Slot.FATHER) {
+				    drawSafetyIndicator(body.sprite, physScale, udata, stats);
+				}
 				if (udata.hasOwnProperty('slot')) {
 				    if (udata.slot.type == Slot.MOTHER && udata.slot.connectedSlot != null) {
 					var spr:Sprite;
@@ -283,6 +287,37 @@ package Engine.Objects {
 	    //return spr;
 
         }
+
+	public function drawSafetyIndicator(spr:Sprite, drawScale:Number, udata:Object, stats:ProtagonistStats):void {
+	    var scalingFactor:Number = 30;
+	    var maxRadius:Number = udata.slot.getMaxDiameter();
+	    var maxLength:Number = udata.slot.depth;
+	    var vaginaPain:Number = stats.vaginaSlot.getPainD(udata.slot.getDiameter(stats.vaginaSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var vaginaSafety:Number = Math.min(1, vaginaPain / stats.maxPain.value);
+            var vaginaSafetyColor:uint = (Math.round(Math.min(0.5, vaginaSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, vaginaSafety) - 0.5) * 2) * 0xff) << 8);
+	    var mouthPain:Number = stats.mouthSlot.getPainD(udata.slot.getDiameter(stats.mouthSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var mouthSafety:Number = Math.min(1, mouthPain / stats.maxPain.value);
+            var mouthSafetyColor:uint = (Math.round(Math.min(0.5, mouthSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, mouthSafety) - 0.5) * 2) * 0xff) << 8);
+	    var anusPain:Number = stats.anusSlot.getPainD(udata.slot.getDiameter(stats.anusSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var anusSafety:Number = Math.min(1, anusPain / stats.maxPain.value);
+            var anusSafetyColor:uint = (Math.round(Math.min(0.5, anusSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, anusSafety) - 0.5) * 2) * 0xff) << 8);
+	    spr.graphics.lineStyle(2, 0xcccccc, 0.8);
+	    spr.graphics.beginFill(0x000000, 0.8);
+	    var indX:Number = Math.round(maxRadius * drawScale + 2);
+	    var indY:Number = Math.round(-maxLength * drawScale);
+	    spr.graphics.drawRoundRect(indX, indY, 12, 10, 3, 3);
+	    spr.graphics.endFill();
+	    spr.graphics.lineStyle(2, mouthSafetyColor, 0.8);
+	    spr.graphics.moveTo(indX + 3, indY + 3);
+	    spr.graphics.lineTo(indX + 3, indY + 7);
+	    spr.graphics.lineStyle(2, vaginaSafetyColor, 0.8);
+	    spr.graphics.moveTo(indX + 6, indY + 3);
+	    spr.graphics.lineTo(indX + 6, indY + 7);
+	    spr.graphics.lineStyle(2, anusSafetyColor, 0.8);
+	    spr.graphics.moveTo(indX + 9, indY + 3);
+	    spr.graphics.lineTo(indX + 9, indY + 7);
+	}
+
 
 	public function buildGenericSlotMask(maskSprite:Sprite, body:b2Body, drawScale:Number):void {
 	    maskSprite.graphics.clear();

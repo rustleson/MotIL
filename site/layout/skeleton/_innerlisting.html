@@ -21,7 +21,7 @@
         <span><time pubdate><i>{{ list_page.created|date:"Y-m-d" }}</i></time></span>
         </header>
         <p>
-        {% render_excerpt list_page %}
+        {% render_article list_page %}
 	</p>
         </article>
     {% if forloop.last != True %}<hr />{% endif %}
