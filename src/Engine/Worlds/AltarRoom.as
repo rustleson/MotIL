@@ -52,7 +52,7 @@ package Engine.Worlds {
 	    this.objectsOrder.push(this.prefix + 'leftStaircase');
 	    this.objects[this.prefix + 'rightStaircase'] = new Staircase(this.world.world, this.posX + roomWidth / 2, this.posY + roomHeight / 2 + 100 / this.world.physScale + dy, 30 * stairNum / this.world.physScale, 20.5 * stairNum / this.world.physScale, stairNum, false, this.type);
 	    this.objectsOrder.push(this.prefix + 'rightStaircase');
-	    this.objects[this.prefix + 'altar'] = new Altar(this.world.world, this.posX + roomWidth / 2 - 30 / this.world.physScale, this.posY + roomHeight / 2 + 30 / this.world.physScale + dy, 60 / this.world.physScale, 70 / this.world.physScale, Math.max(5, Math.min(16, Math.floor(this.power / 4))) / this.world.physScale, Math.max(15, Math.min(36, Math.floor(this.power / 1.5))) / this.world.physScale, type, 0.7);
+	    this.objects[this.prefix + 'altar'] = new Altar(this.world.world, this.posX + roomWidth / 2 - 30 / this.world.physScale, this.posY + roomHeight / 2 + 30 / this.world.physScale + dy, 60 / this.world.physScale, 70 / this.world.physScale, Math.max(5, Math.min(16, Math.floor(this.power / 4))) / this.world.physScale, Math.max(15, Math.min(36, Math.floor(this.power / 1.5))) / this.world.physScale, type, 0.7, this.artefact);
 	    if (this.artefact != null) {
 		this.objects[this.prefix + 'altar'].artefact = this.artefact;
 	    }

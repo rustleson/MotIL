@@ -35,6 +35,7 @@ package Engine.Objects {
     import flash.events.EventDispatcher;	
     import flash.geom.Matrix;
     import flash.geom.Point;
+    import flash.text.*;
     import Engine.Stats.*;
     
     use namespace b2internal;
@@ -53,6 +54,8 @@ package Engine.Objects {
 	private var _alpha:Number;
 	public var sprite:Sprite;
 	public var wasUpdated:Boolean;
+	[Embed(source="/Assets/NeostandardExtended.ttf", fontFamily="Tiny", embedAsCFF = "false", advancedAntiAliasing = "true")]
+	public static const TINY_FONT:String;
 
 	public function WorldObject() {
 
@@ -292,13 +295,13 @@ package Engine.Objects {
 	    var scalingFactor:Number = 30;
 	    var maxRadius:Number = udata.slot.getMaxDiameter();
 	    var maxLength:Number = udata.slot.depth;
-	    var vaginaPain:Number = stats.vaginaSlot.getPainD(udata.slot.getDiameter(stats.vaginaSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var vaginaPain:Number = Math.max(0, stats.vaginaSlot.getPainD(udata.slot.getDiameter(stats.vaginaSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor);
             var vaginaSafety:Number = Math.min(1, vaginaPain / stats.maxPain.value);
             var vaginaSafetyColor:uint = (Math.round(Math.min(0.5, vaginaSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, vaginaSafety) - 0.5) * 2) * 0xff) << 8);
-	    var mouthPain:Number = stats.mouthSlot.getPainD(udata.slot.getDiameter(stats.mouthSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var mouthPain:Number = Math.max(0, stats.mouthSlot.getPainD(udata.slot.getDiameter(stats.mouthSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor);
             var mouthSafety:Number = Math.min(1, mouthPain / stats.maxPain.value);
             var mouthSafetyColor:uint = (Math.round(Math.min(0.5, mouthSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, mouthSafety) - 0.5) * 2) * 0xff) << 8);
-	    var anusPain:Number = stats.anusSlot.getPainD(udata.slot.getDiameter(stats.anusSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor;
+            var anusPain:Number = Math.max(0, stats.anusSlot.getPainD(udata.slot.getDiameter(stats.anusSlot.stretchedLength.valueFrac)) * stats.pain.incRate * scalingFactor);
             var anusSafety:Number = Math.min(1, anusPain / stats.maxPain.value);
             var anusSafetyColor:uint = (Math.round(Math.min(0.5, anusSafety) * 2 * 0xff) << 16) + (Math.round((1 - (Math.max(0.5, anusSafety) - 0.5) * 2) * 0xff) << 8);
 	    spr.graphics.lineStyle(2, 0xcccccc, 0.8);
@@ -316,6 +319,27 @@ package Engine.Objects {
 	    spr.graphics.lineStyle(2, anusSafetyColor, 0.8);
 	    spr.graphics.moveTo(indX + 9, indY + 3);
 	    spr.graphics.lineTo(indX + 9, indY + 7);
+	    var titleText:TextField = new TextField();
+	    titleText.text = udata.title;
+	    //titleText.width = 150;
+	    titleText.selectable = false;
+	    titleText.embedFonts = true;
+	    titleText.wordWrap = true;
+	    titleText.width = 1000;
+	    var titleFormat:TextFormat = new TextFormat("Tiny", 8, 0xdddddd);
+	    titleFormat.align = TextFieldAutoSize.LEFT;	    
+	    titleText.setTextFormat(titleFormat);
+	    spr.graphics.lineStyle(0, 0, 0);
+	    spr.graphics.beginFill(0x000000, 0.8);
+	    spr.graphics.drawRoundRect(indX + 15, indY, titleText.textWidth + 10, 10, 3, 3);
+	    spr.graphics.endFill();
+	    var textBitmap:BitmapData = new BitmapData(titleText.textWidth + 10, 15, true, 0x000000ff);
+	    textBitmap.draw(titleText);
+	    var matrix:Matrix = new Matrix();
+	    matrix.translate(15 + indX, -5 + indY % 15);
+	    spr.graphics.beginBitmapFill(textBitmap, matrix.clone(), true);
+	    spr.graphics.drawRect(indX + 15, indY, titleText.textWidth + 10, 10);
+	    spr.graphics.endFill();
 	}
 
 

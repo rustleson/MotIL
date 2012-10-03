@@ -91,6 +91,7 @@ package Engine.Objects {
 		headSlot.radiuses.push(new b2Vec2(length * i / 10 / 2, (Math.sqrt(i) / Math.sqrt(10) * thickness / 2)));
 	    }
 	    bodies['linga'].GetUserData()['slot'] = headSlot;
+	    bodies['linga'].GetUserData()['title'] = (this.artefact != null ? "Elemental Altar" : "Linga Altar") + " D" + (headSlot.getMaxDiameter() * 100).toFixed(1);
 	    bodies['linga'].drawingFunction = this.drawLinga as Function;
 	    bodiesOrder = ['linga', 'altar'];
 
